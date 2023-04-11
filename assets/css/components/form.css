@@ -1,0 +1,345 @@
+.form-item label {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  color: #181c32;
+  margin-bottom: 0;
+}
+.form-item input {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #000;
+  height: 54px;
+}
+.form-item input::placeholder {
+  color: #a1a5bf;
+}
+.ant-col-14 {
+  width: 100%;
+}
+@media (max-width: 1440px) {
+  .form-item label {
+    font-size: 14px;
+  }
+  .form-item input {
+    height: 40px;
+  }
+}
+
+.quill-editor {
+  border-radius: 0.475rem;
+}
+.ql-toolbar.ql-snow {
+  border: 1px solid #eff2f5;
+  border-radius: 0.475rem;
+}
+.ql-container.ql-snow {
+  border: 1px solid #eff2f5;
+  border-radius: 0.475rem;
+}
+.ql-container {
+  height: 447px !important;
+}
+.ql-toolbar {
+  border-radius: 8px 8px 0 0 !important;
+  border: 1px solid #e4e6ef !important;
+  border-bottom: 0 !important;
+}
+.ql-container {
+  border-radius: 0px 0px 8px 8px !important;
+  border: 1px solid #e4e6ef !important;
+}
+.ql-picker-label {
+}
+.product-editor .ql-container {
+  height: 173px !important;
+}
+@media (max-width: 1440px) {
+  .ql-container {
+    height: 200px !important;
+  }
+  .product-editor .ql-container {
+    height: 173px !important;
+  }
+}
+.ant-form-vertical .ant-form-item {
+  /* margin-bottom: 0 !important; */
+  padding-bottom: 0 !important;
+}
+.gruppa-card {
+  background: #ffffff;
+  border: 1px solid #e4e6ef;
+  border-radius: 8px;
+}
+.gruppa-card .gruppa-card-header {
+  padding-top: 24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+.gruppa-card .gruppa-card-header h5 {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  color: #020105;
+}
+.gruppa-card .gruppa-card-header span {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #5d5d5f;
+  margin-left: 20px;
+}
+.gruppa-card .gruppa-card-body {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 16px;
+}
+.gruppa-card .gruppa-card-body > span {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ff0000;
+  margin-bottom: 6px;
+}
+.gruppa-card .gruppa-card-body > p {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #5d5d5f;
+}
+.gruppa-card .gruppa-card-body > p > span {
+  font-weight: 500;
+  color: #020105;
+}
+.gruppa-card .gruppa-card-footer {
+  border-top: 1px solid #ebebeb;
+  padding: 17px 24px 24px 24px;
+}
+.gruppa-card .gruppa-card-footer span {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 26px;
+  text-decoration-line: underline;
+  color: #40bff4;
+}
+.gruppa-card .gruppa-card-footer span svg {
+  margin-right: 5px;
+}
+.gruppa-card .gruppa-card-footer h6 {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 26px;
+  text-align: right;
+  color: #020105;
+}
+@media (max-width: 1440px) {
+  .create-inner-variant {
+    border-radius: 5.46px;
+    padding-top: 11px;
+    padding-bottom: 11px;
+    font-family: "TT Interfaces";
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    font-style: normal;
+    line-height: 18px;
+  }
+}
+
+.create-inner-variant {
+  border: 1px dashed #3699ff;
+  border-radius: 8px;
+  padding: 15px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "TT Interfaces";
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  font-style: normal;
+  line-height: 18px;
+  color: #3699ff;
+  cursor: pointer;
+  margin-top: 24px;
+}
+.create-inner-variant svg {
+  margin-right: 6px;
+}
+.variant-btn {
+  border-radius: 5.46px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.variant-btn-delete {
+  color: #f64e60;
+  background-color: #ffe2e5;
+  border-color: transparent;
+  transition: color 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.variant-btn-delete:hover {
+  color: #fff;
+  background-color: #f64e60;
+  border-color: transparent;
+}
+.variant-btn-delete:hover svg path {
+  stroke: #fff;
+}
+.from_hr_top {
+  border-top: 1px solid #d6dee9;
+}
+.outline-light-blue-btn {
+  background: #e1f0ff;
+  color: #5899ff;
+}
+@media (max-width: 1440px) {
+  .form-btn,
+  .outline-btn {
+    border-radius: 5.46px;
+    font-family: "TT Interfaces";
+    font-weight: 600 !important;
+    font-style: normal;
+  }
+}
+.outline-light-blue-btn:hover {
+  color: #fff;
+  background-color: #3699ff;
+  border-color: transparent;
+}
+.outline-light-blue-btn:hover svg path {
+  stroke: #fff;
+}
+.outline-btn {
+  border-radius: 5.46px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-family: "TT Interfaces";
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  font-style: normal;
+  transition: color 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-light-primary {
+  color: #3699ff;
+  background-color: #e1f0ff;
+  border-color: transparent;
+  font-family: "Inter", sans-serif;
+  font-weight: 600 !important;
+  font-size: 12.025px !important;
+}
+
+.add-header-btn-padding {
+  padding: 7.15px 9.75px !important;
+}
+.btn-light-primary:hover {
+  color: #fff;
+  background-color: #3699ff;
+  border-color: transparent;
+}
+.add-btn {
+  transition: color 0.15s ease, background-color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.15s ease;
+  border-radius: 5.46px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600 !important;
+  font-size: 12.025px !important;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+  cursor: pointer;
+}
+.time_picker {
+  padding-left: 16px;
+  padding-right: 16px;
+  background: #eff2f5;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+.time_picker .ant-time-picker {
+  width: 40px;
+}
+.time_picker input {
+  padding: 0 !important;
+  border: none;
+  background: #eff2f5;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+
+  color: #6c7b9a;
+}
+.time_picker .ant-time-picker-icon {
+  display: none;
+}
+@media (max-width: 1440px) {
+  .time_picker input {
+    font-weight: 400;
+    font-size: 12px;
+  }
+  .time_picker {
+    padding-left: 12px;
+    padding-right: 12px;
+
+    background: #eff2f5;
+    border-radius: 8px;
+  }
+  .time-add-btn {
+    width: 43px;
+    height: 43px;
+    background: #f3f6f9;
+    border-radius: 8px;
+  }
+}
+.time-add-btn {
+  width: 43px;
+  height: 43px;
+  background: #f3f6f9;
+  border-radius: 8px;
+}
+@media (max-width: 1440px) {
+  .column-btns span .action-btn {
+    background: #f3f6f9;
+    border-radius: 5.46px;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .column-btns span .action-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

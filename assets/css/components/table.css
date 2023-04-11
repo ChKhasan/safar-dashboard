@@ -1,0 +1,110 @@
+.main-table .ant-table-thead .column-name,
+.main-table .ant-table-thead .column-service,
+.main-table .ant-table-thead .column-actions,
+.main-table .ant-table-thead .column-subservice {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #6c7b9a;
+  background-color: #fff;
+}
+
+.service-table .ant-table-thead .column-times,
+.service-table .ant-table-thead .column-additional {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
+  color: #6c7b9a;
+  background-color: #fafbfc;
+}
+.service-table .ant-table-thead .column-name .ant-table-column-title {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 32px;
+  color: #181c32;
+}
+.column-name,
+.column-service,
+.column-actions,
+.column-subservice {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-transform: capitalize;
+  color: #181c32;
+}
+@media (max-width: 1440px) {
+  .column-name,
+  .column-service,
+  .column-actions,
+  .column-subservice {
+    font-size: 14px;
+  }
+  .service-table .ant-table-thead .column-name .ant-table-column-title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+  .ant-table-thead .column-name,
+  .ant-table-thead .column-service,
+  .ant-table-thead .column-actions,
+  .ant-table-thead .column-subservice {
+    font-size: 11.7px !important;
+  }
+}
+.column-btns span .action-btn {
+  background: #f3f6f9;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.column-btns .el-dropdown .el-dropdown-link {
+  display: flex;
+  padding: 8px 17.25px;
+  color: #7e8299;
+  background: #f9f9f9;
+  border-radius: 5.525px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12.35px;
+  line-height: 18px;
+  align-items: center;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.column-btns .el-dropdown .el-dropdown-link:hover {
+  background: #f1faff;
+  color: #009ef7;
+}
+.column-btns .el-dropdown .el-dropdown-link svg {
+  width: 15px;
+  height: 15px;
+}
+.ant-table-thead
+  > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+  > td,
+.ant-table-tbody
+  > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+  > td,
+.ant-table-thead
+  > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+  > td,
+.ant-table-tbody
+  > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+  > td {
+  background: transparent !important;
+}
