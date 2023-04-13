@@ -1,5 +1,4 @@
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: "safar-adminka",
     htmlAttrs: {
@@ -14,27 +13,27 @@ export default {
     link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
   },
   ssr: false,
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: ["ant-design-vue/dist/antd.css", "~/assets/css/main.css"],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: "~plugins/antdv.js", ssr: false },
     { src: "~plugins/quill-editor.js", ssr: false },
   ],
-
-  // Auto import components: https://go.nuxtjs.dev/config-components
+  axios: {
+    credentials: true,
+    init(axios) {
+      axios.defaults.withCredentials = true;
+    },
+    baseURL: "https://api.safarpark.uz/api",
+  },
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: ["@nuxtjs/svg"],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/bootstrap
     "bootstrap-vue/nuxt",
+    "@nuxtjs/axios",
   ],
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 };

@@ -1,20 +1,41 @@
 .form-item label {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500 !important;
+  font-size: 13.65px !important;
   line-height: 24px;
+  margin-bottom: 6.5px;
   color: #181c32;
-  margin-bottom: 0;
+  position: relative;
+  white-space: nowrap;
+  padding-bottom: 0 !important;
 }
-.form-item input {
-  font-family: "TT Interfaces";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
-  color: #000;
-  height: 54px;
+.form-item .ant-form-item-required::before {
+  content: "*" !important;
+  position: absolute !important;
+  top: 2px !important;
+  right: -15px;
+  color: #3699ff !important;
+}
+.form-item input,
+.form-item .ant-select-selection {
+  background: #fff;
+  padding: 10px 13px !important;
+  border: 1px solid #e4e6ef;
+  border-radius: 6.175px;
+  font-family: "Inter", sans-serif;
+  font-weight: 400 !important;
+  font-size: 14.3px !important;
+  line-height: 21.5px !important;
+  color: #181c32 !important;
+  min-height: 42px !important;
+}
+.form-item .ant-select-selection {
+  display: flex;
+  align-items: center;
+}
+.form-item input:focus {
+  border-color: #e4e6ef;
+  box-shadow: none;
 }
 .form-item input::placeholder {
   color: #a1a5bf;
@@ -279,6 +300,8 @@
   border-radius: 8px;
   display: flex;
   align-items: center;
+  min-height: 43px;
+  margin-bottom: 5px;
 }
 .time_picker .ant-time-picker {
   width: 40px;
@@ -290,7 +313,7 @@
   font-family: "Inter";
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 12px;
   line-height: 18px;
   display: flex;
   align-items: center;
@@ -340,4 +363,101 @@
     width: 24px;
     height: 24px;
   }
+}
+.search-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 6.5px;
+  margin-left: 0;
+}
+.search-input input {
+  background: #f9f9f9;
+  border-color: #f9f9f9;
+  color: #000;
+  transition: color 0.2s ease;
+  appearance: none;
+  background-clip: padding-box;
+  display: block;
+  width: 100%;
+  border: none;
+  padding: 10px 13px;
+  padding-left: 45px;
+  font-family: "Inter", sans-serif;
+  font-size: 14.3px;
+  font-weight: 500;
+  border-radius: 6.175px;
+  line-height: 1.5;
+}
+.search-input input:focus {
+  outline: none;
+}
+.search-input input::placeholder {
+  color: #a1a5b7;
+}
+.search-input span {
+  position: absolute;
+  left: 10px;
+  color: #a1a5b7;
+}
+.search-input span svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.form_tab {
+  display: inline-flex;
+  position: relative;
+  transition: transform 0.3s;
+  float: left;
+  z-index: 2;
+}
+.form_tab > div {
+  display: inline-flex;
+  border-radius: 8.125px 8.125px 0 0;
+  background: #fff;
+  padding: 10px;
+  white-space: nowrap;
+  position: relative;
+  transition: transform 0.3s;
+  float: left;
+  z-index: 2;
+}
+.form_tab span {
+  padding: 7px 14px;
+  margin-right: 0;
+  border-right: 1px solid #e4e6ef;
+  font-family: "TT Interfaces";
+  font-weight: 500;
+  font-size: 16px;
+  font-style: normal;
+  height: auto;
+  line-height: 16px;
+  color: #a1a5bf;
+  cursor: pointer;
+}
+.form_tab span:last-child {
+  border-right: 0px solid transparent;
+}
+
+.avtive-formTab {
+  color: #3699ff !important;
+}
+.border-left-radius {
+  border-top-left-radius: 0 !important;
+}
+.ant-time-picker-input[disabled] {
+  background-color: transparent !important;
+}
+.ant-time-picker:last-child::after {
+  display: none;
+}
+.ant-time-picker::after {
+  content: "-";
+  position: absolute;
+  right: -2px;
+  top: 4px;
+}
+.disabledTime::after {
+  color: #c0c9da;
 }

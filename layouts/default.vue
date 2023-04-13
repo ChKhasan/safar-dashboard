@@ -32,84 +32,26 @@
             :default-selected-keys="['1']"
             :default-open-keys="['sub1']"
           >
-            <a-sub-menu key="sub1" style="color: #9d9da6">
+            <a-sub-menu :key="menu.sub" style="color: #9d9da6" v-for="menu in menuData">
               <span slot="title">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M21 10H13V11C13 11.6 12.6 12 12 12C11.4 12 11 11.6 11 11V10H3C2.4 10 2 10.4 2 11V13H22V11C22 10.4 21.6 10 21 10Z"
-                    fill="currentColor"
-                  ></path>
-                  <path
-                    opacity="0.3"
-                    d="M12 12C11.4 12 11 11.6 11 11V3C11 2.4 11.4 2 12 2C12.6 2 13 2.4 13 3V11C13 11.6 12.6 12 12 12Z"
-                    fill="currentColor"
-                  ></path>
-                  <path
-                    opacity="0.3"
-                    d="M18.1 21H5.9C5.4 21 4.9 20.6 4.8 20.1L3 13H21L19.2 20.1C19.1 20.6 18.6 21 18.1 21ZM13 18V15C13 14.4 12.6 14 12 14C11.4 14 11 14.4 11 15V18C11 18.6 11.4 19 12 19C12.6 19 13 18.6 13 18ZM17 18V15C17 14.4 16.6 14 16 14C15.4 14 15 14.4 15 15V18C15 18.6 15.4 19 16 19C16.6 19 17 18.6 17 18ZM9 18V15C9 14.4 8.6 14 8 14C7.4 14 7 14.4 7 15V18C7 18.6 7.4 19 8 19C8.6 19 9 18.6 9 18Z"
-                    fill="currentColor"
-                  ></path></svg
-                ><span v-if="!collapsed">Каталог</span></span
+                <span v-html="catalogIcon"></span
+                ><span v-if="!collapsed">{{ menu.title }}</span></span
               >
-              <a-menu-item key="1" class="is-active"
+              <a-menu-item
+                :key="items.key"
+                v-for="items in menu.menuItems"
+                :class="{ 'is-active': items.name == 'Xizmatlar' }"
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
-                <nuxt-link to="/"> Xizmatlar</nuxt-link>
+                <nuxt-link :to="items.to"> {{ items.name }}</nuxt-link>
               </a-menu-item>
-              <a-menu-item key="2"
-                ><span v-if="!collapsed" class="menu-bullet"
-                  ><span class="bullet-dot"></span
-                ></span>
-                Категории2
-              </a-menu-item>
-              <a-menu-item key="3"
-                ><span v-if="!collapsed" class="menu-bullet"
-                  ><span class="bullet-dot"></span
-                ></span>
-                Категории3
-              </a-menu-item>
-              <a-menu-item key="4"
-                ><span v-if="!collapsed" class="menu-bullet"
-                  ><span class="bullet-dot"></span
-                ></span>
-                Категории4
-              </a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="sub2" style="color: #9d9da6">
-              <span slot="title"
-                ><a-icon type="laptop" /><span v-if="!collapsed">Категории 2</span></span
-              >
-              <a-menu-item key="5"> Категории5 </a-menu-item>
-              <a-menu-item key="6"> Категории6 </a-menu-item>
-              <a-menu-item key="7"> Категории7 </a-menu-item>
-              <a-menu-item key="8"> Категории8 </a-menu-item>
-            </a-sub-menu>
-            <a-sub-menu key="sub3" :style="{ color: '#9d9da6' }">
-              <span slot="title"
-                ><a-icon type="notification" /><span v-if="!collapsed"
-                  >Категории 3</span
-                ></span
-              >
-              <a-menu-item key="9" :style="{ color: '#9d9da6' }">
-                Категории9
-              </a-menu-item>
-              <a-menu-item key="10"> Категории0 </a-menu-item>
-              <a-menu-item key="11"> Категории1 </a-menu-item>
-              <a-menu-item key="12"> Категории2 </a-menu-item>
             </a-sub-menu>
           </a-menu>
         </div>
       </a-layout-sider>
       <a-layout class="layout-right" :class="{ 'right-collapsed': collapsed }">
-        <div class="layout-header">
-        </div>
+        <div class="layout-header"></div>
         <a-layout-content class="layout-body">
           <Nuxt />
         </a-layout-content>
@@ -125,7 +67,57 @@ export default {
     return {
       collapsed: false,
       logo: require("../assets/svg/logo-light.svg?raw"),
-
+      catalogIcon: require("../assets/svg/toolbar-catalog.svg?raw"),
+      menuData: [
+        {
+          title: "Каталог",
+          sub: "sub1",
+          menuItems: [
+            {
+              key: "1",
+              name: "Xizmatlar",
+              to: "/",
+              path: "/",
+            },
+            {
+              key: "2",
+              name: "Категории2",
+              to: "/",
+              path: "/",
+            },
+            {
+              key: "3",
+              name: "Категории2",
+              to: "/",
+              path: "/",
+            },
+          ],
+        },
+        {
+          title: "Категории 2",
+          sub: "sub2",
+          menuItems: [
+            {
+              key: "4",
+              name: "Xizmatlar2",
+              to: "/",
+              path: "/",
+            },
+            {
+              key: "5",
+              name: "Категории22",
+              to: "/",
+              path: "/",
+            },
+            {
+              key: "6",
+              name: "Категории22",
+              to: "/",
+              path: "/",
+            },
+          ],
+        },
+      ],
     };
   },
   methods: {
