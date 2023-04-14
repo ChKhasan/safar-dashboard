@@ -1,0 +1,381 @@
+<template>
+  <div class="">
+    <TitleBlock title="Xizmatlar">
+      <div class="d-flex">
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          type="primary"
+          @click="addGalleries"
+        >
+          <span class="svg-icon"> </span>
+          Добавить
+        </a-button>
+      </div>
+    </TitleBlock>
+    <div class="container_xl app-container mt-4">
+      <div class="card_block main-table px-4 pb-4">
+        <div class="d-flex justify-content-between align-items-center card_header">
+          <div class="prodduct-list-header-grid w-100 align-items-center">
+            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
+            <div>{{ search }}</div>
+            <a-button
+              type="primary"
+              class="d-flex align-items-center justify-content-center"
+              style="height: 38px"
+              ><a-icon type="reload"
+            /></a-button>
+          </div>
+        </div>
+        <a-table
+          :columns="columns"
+          :pagination="false"
+          :data-source="galleries"
+          :loading="loading"
+        >
+          <span slot="sm_files" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text[0]" />
+            <img
+              v-else
+              class="table-image"
+              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
+            />
+          </span>
+          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="desc" slot-scope="text">
+            <span v-html="text.ru"></span>
+          </span>
+          <span slot="id" slot-scope="text">
+            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
+            <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
+            <a-popconfirm
+              title="Are you sure delete this row?"
+              ok-text="Yes"
+              cancel-text="No"
+              @confirm="deleteAction(text)"
+            >
+              <span class="action-btn" v-html="deleteIcon"> </span>
+            </a-popconfirm>
+          </span>
+        </a-table>
+      </div>
+    </div>
+    <a-modal
+      v-model="visible"
+      :dialog-style="{ top: '5px' }"
+      :title="title"
+      :closable="false"
+      width="720px"
+      @ok="handleOk"
+    >
+      <div class="d-flex flex-column">
+        <div class="form_tab mb-4 bottom_hr">
+          <span
+            v-for="(item, index) in formTabData"
+            :key="index"
+            @click="formTab = item.index"
+            :class="{ 'avtive-formTab': formTab == item.index }"
+          >
+            {{ item.label }}
+          </span>
+        </div>
+        <div
+          class="d-flex flex-column"
+          v-for="(item, index) in formTabData"
+          :key="index"
+          v-if="formTab == item.index"
+        >
+          <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+            <a-form-model-item class="form-item mb-3" label="Заголовок">
+              <a-input
+                v-model="form.title[item.index]"
+                placeholder="Заголовок"
+                prop="title.ru"
+              />
+            </a-form-model-item>
+            <a-form-model-item class="form-item mb-3" label="Описание">
+              <quill-editor
+                class="product-editor mt-1"
+                v-model="form.desc[item.index]"
+                :options="editorOption"
+              />
+            </a-form-model-item>
+          </a-form-model>
+          <div class="clearfix">
+            <a-upload
+              action="https://api.safarpark.uz/api/files/upload"
+              list-type="picture-card"
+              :file-list="fileList"
+              :multiple="true"
+              @preview="handlePreview"
+              @change="handleChange"
+            >
+              <div v-if="fileList.length < 8">
+                <a-icon type="plus" />
+                <div class="ant-upload-text">Upload</div>
+              </div>
+            </a-upload>
+            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+              <img alt="example" style="width: 100%" :src="previewImage" />
+            </a-modal>
+          </div>
+        </div>
+      </div>
+      <template slot="footer">
+        <div class="add_modal-footer d-flex justify-content-end">
+          <div
+            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="handleOk"
+          >
+            Cancel
+          </div>
+          <a-button
+            class="add-btn add-header-btn btn-primary"
+            type="primary"
+            :loading="loadingBtn"
+            @click="saveData"
+          >
+            <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+            Save
+          </a-button>
+        </div>
+      </template>
+    </a-modal>
+  </div>
+</template>
+
+<script>
+import SearchInput from "../components/form/Search-input.vue";
+import TitleBlock from "../components/Title-block.vue";
+import status from "../mixins/status";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+const columns = [
+  {
+    title: "заголовок",
+    dataIndex: "sm_files",
+    key: "sm_files",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "sm_files" },
+    className: "column-name",
+    align: "left",
+    width: 60,
+    colSpan: 2,
+  },
+  {
+    dataIndex: "title",
+    key: "title",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "name" },
+    className: "column-name",
+    colSpan: 0,
+  },
+  {
+    title: "описание",
+    dataIndex: "desc",
+    key: "desc",
+    className: "column-subservice",
+    scopedSlots: { customRender: "desc" },
+  },
+
+  {
+    title: "Actions",
+    className: "column-btns",
+    dataIndex: "id",
+    key: "id",
+    align: "right",
+    scopedSlots: { customRender: "id" },
+    width: 100,
+  },
+];
+
+export default {
+  name: "IndexPage",
+  mixins: [status],
+  data() {
+    return {
+      editorOption: {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [
+              {
+                size: [],
+              },
+            ],
+            ["bold", "italic", "underline", "strike"],
+
+            ["image"],
+            ["code-block"],
+          ],
+        },
+      },
+      title: "Добавить блога",
+      editId: null,
+      formTab: "ru",
+      visible: false,
+      loadingBtn: false,
+      formTabData: [
+        {
+          label: "Русский",
+          index: "ru",
+        },
+        {
+          label: "O'zbek",
+          index: "uz",
+        },
+      ],
+      eyeIcon: require("../assets/svg/Eye.svg?raw"),
+      editIcon: require("../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../assets/svg/delete.svg?raw"),
+      loading: false,
+      search: "",
+      columns,
+      galleries: [],
+      previewVisible: false,
+      previewImage: "",
+      fileList: [],
+      form: {
+        title: {
+          ru: "",
+          uz: "",
+        },
+        desc: {
+          ru: "",
+          uz: "",
+        },
+        files: [],
+      },
+    };
+  },
+  mounted() {
+    this.__GET_GALLERIES();
+  },
+  methods: {
+    changeSearch(val) {
+      this.search = val.target.value;
+    },
+    saveData() {
+      if (this.editId) {
+        this.__EDIT_GALLERIES(this.form);
+      } else {
+        this.__POST_GALLERIES(this.form);
+      }
+    },
+    editAction(id) {
+      this.title = "Изменить блога";
+      this.editId = id;
+      this.__GET_GALLERIES_BY_ID(id);
+    },
+    deleteAction(id) {
+      this.__DELETE_GALLERIES(id);
+    },
+    async __GET_GALLERIES() {
+      this.loading = true;
+      const data = await this.$store.dispatch("fetchGalleries/getGalleries");
+      this.loading = false;
+      this.galleries = data?.galleries?.data;
+    },
+    addGalleries() {
+      this.title = "Добавить блога";
+      this.editId = null;
+      this.visible = true;
+    },
+    handleOk() {
+      this.visible = false;
+    },
+    async __POST_GALLERIES(data) {
+      try {
+        await this.$store.dispatch("fetchGalleries/postGalleries", data);
+        this.notification("success", "success", "Услуга успешно добавлен");
+        this.$router.push("/galleries");
+        this.handleOk();
+        this.__GET_GALLERIES();
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
+    async __GET_GALLERIES_BY_ID(id) {
+      try {
+        const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
+        this.visible = true;
+        this.form = data?.gallery;
+        this.fileList = data?.gallery.sm_files.map((item, index) => {
+          return {
+            uid: `-${index}`,
+            name: "image.png",
+            status: "done",
+            oldImg: true,
+            url: item,
+          };
+        });
+        this.form.files = data?.gallery.sm_files;
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
+    async __DELETE_GALLERIES(id) {
+      try {
+        this.loading = true;
+        await this.$store.dispatch("fetchGalleries/deleteGalleries", id);
+        this.loading = false;
+        this.notification("success", "success", "Услуга был успешно удален");
+        this.__GET_GALLERIES();
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
+    async __EDIT_GALLERIES(res) {
+      try {
+        await this.$store.dispatch("fetchGalleries/editGalleries", {
+          id: this.editId,
+          data: res,
+        });
+        this.handleOk();
+        this.__GET_GALLERIES();
+        this.notification("success", "success", "Пост успешно изменена");
+        this.$router.push("/galleries");
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+    handleChange({ fileList }) {
+      this.fileList = fileList;
+      if (fileList[0]?.response?.path) {
+        this.form.files = fileList.map((item) => item?.response?.path);
+      }
+    },
+  },
+  components: { TitleBlock, SearchInput },
+};
+</script>
+<style lang="css">
+.prodduct-list-header-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr 40px;
+  grid-gap: 8px;
+}
+.card_header {
+  padding: 16.25px 0;
+}
+</style>

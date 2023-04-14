@@ -5,7 +5,7 @@
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="$router.push('/add_park_services')"
+          @click="$router.push('/add_news')"
         >
           <span class="svg-icon"> </span>
           Добавить
@@ -29,22 +29,29 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="services"
-          :scroll="{ x: 1500 }"
+          :data-source="posts"
           :loading="loading"
         >
+          <span slot="sm_poster" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text" />
+            <img
+              v-else
+              class="table-image"
+              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
+            />
+          </span>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="guarantee" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="package_options" slot-scope="text">
-            <span class="option-items" v-for="desc in text">{{ desc?.desc?.ru }}</span>
+          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="desc" slot-scope="text">
+            <span v-html="text.ru"></span>
           </span>
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span
               class="action-btn"
               v-html="editIcon"
-              @click="$router.push(`/edit_park_services/${text}`)"
+              @click="$router.push(`/edit_news/${text}`)"
             >
             </span>
             <a-popconfirm
@@ -68,47 +75,46 @@ import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 const columns = [
   {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
+    title: "заголовок",
+    dataIndex: "sm_poster",
+    key: "sm_poster",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "sm_poster" },
+    className: "column-name",
+    align: "left",
+    width: 60,
+    colSpan: 2,
+  },
+  {
+    dataIndex: "title",
+    key: "title",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    fixed: "left",
-    width: 200,
+    colSpan: 0,
   },
   {
-    title: "xizmatlarimiz",
-    dataIndex: "guarantee",
-    key: "guarantee",
+    title: "подзаголовок",
+    dataIndex: "subtitle",
+    key: "subtitle",
     className: "column-service",
-    scopedSlots: { customRender: "guarantee" },
+    scopedSlots: { customRender: "subtitle" },
   },
   {
-    title: "Qo'shimcha xizmatlar",
-    dataIndex: "package_options",
-    key: "package_options",
+    title: "описание",
+    dataIndex: "desc",
+    key: "desc",
     className: "column-subservice",
-    scopedSlots: { customRender: "package_options" },
-    width: 600,
+    scopedSlots: { customRender: "desc" },
   },
-  {
-    title: "Actions",
-    key: "tags",
-    dataIndex: "tags",
-    scopedSlots: { customRender: "tags" },
-    className: "column-actions",
-    align: "left",
-  },
+
   {
     title: "Actions",
     className: "column-btns",
-    key: "id",
     dataIndex: "id",
-
+    key: "id",
     align: "right",
     scopedSlots: { customRender: "id" },
-    fixed: "right",
     width: 100,
   },
 ];
@@ -124,32 +130,32 @@ export default {
       loading: false,
       search: "",
       columns,
-      services: [],
+      posts: [],
     };
   },
   mounted() {
-    this.__GET_SERVICES();
+    this.__GET_POSTS();
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_SERVICES(id);
+      this.__DELETE_POSTS(id);
     },
-    async __GET_SERVICES() {
+    async __GET_POSTS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchServices/getServices");
+      const data = await this.$store.dispatch("fetchPosts/getPosts");
       this.loading = false;
-      this.services = data?.services;
+      this.posts = data?.posts?.data;
     },
-    async __DELETE_SERVICES(id) {
+    async __DELETE_POSTS(id) {
       try {
         this.loading = true;
-        await this.$store.dispatch("fetchServices/deleteServices", id);
+        await this.$store.dispatch("fetchPosts/deletePosts", id);
         this.loading = false;
         this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_SERVICES();
+        this.__GET_POSTS();
       } catch (e) {
         this.statusFunc(e.response);
       }

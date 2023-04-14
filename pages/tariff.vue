@@ -41,17 +41,12 @@
           </span>
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
-            <span
-              class="action-btn"
-              v-html="editIcon"
-              @click="$router.push(`/edit_park_services/${text}`)"
-            >
-            </span>
+            <span class="action-btn" v-html="editIcon"> </span>
             <a-popconfirm
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="deleteAction(text)"
+              @confirm="deleteAction(text.id)"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
             </a-popconfirm>
@@ -104,8 +99,6 @@ const columns = [
     title: "Actions",
     className: "column-btns",
     key: "id",
-    dataIndex: "id",
-
     align: "right",
     scopedSlots: { customRender: "id" },
     fixed: "right",
@@ -128,28 +121,26 @@ export default {
     };
   },
   mounted() {
-    this.__GET_SERVICES();
+    this.__GET_TARIFF();
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_SERVICES(id);
+      this.__DELETE_TARIFF(id);
     },
-    async __GET_SERVICES() {
-      this.loading = true;
-      const data = await this.$store.dispatch("fetchServices/getServices");
-      this.loading = false;
+    async __GET_TARIFF() {
+      const data = await this.$store.dispatch("fetchTariff/getTariff");
       this.services = data?.services;
     },
-    async __DELETE_SERVICES(id) {
+    async __DELETE_TARIFF(id) {
       try {
         this.loading = true;
         await this.$store.dispatch("fetchServices/deleteServices", id);
         this.loading = false;
         this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_SERVICES();
+        this.__GET_TARIFF();
       } catch (e) {
         this.statusFunc(e.response);
       }
@@ -159,12 +150,5 @@ export default {
 };
 </script>
 <style lang="css">
-.prodduct-list-header-grid {
-  display: grid;
-  grid-template-columns: 3fr 2fr 40px;
-  grid-gap: 8px;
-}
-.card_header {
-  padding: 16.25px 0;
-}
+@import "../assets/css/pages/tariff.css";
 </style>

@@ -29,8 +29,8 @@
             mode="inline"
             style="background: #1e1e2d"
             :class="{ 'menu-collabsed': collapsed }"
-            :default-selected-keys="['1']"
-            :default-open-keys="['sub1']"
+            :default-selected-keys="['3']"
+            :default-open-keys="defaultOpens"
           >
             <a-sub-menu :key="menu.sub" style="color: #9d9da6" v-for="menu in menuData">
               <span slot="title">
@@ -40,7 +40,7 @@
               <a-menu-item
                 :key="items.key"
                 v-for="items in menu.menuItems"
-                :class="{ 'is-active': items.name == 'Xizmatlar' }"
+                :class="{ 'is-active': items.to == $route.path }"
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
@@ -66,36 +66,39 @@ export default {
   data() {
     return {
       collapsed: false,
+      defaultOpens: ["1"],
       logo: require("../assets/svg/logo-light.svg?raw"),
       catalogIcon: require("../assets/svg/toolbar-catalog.svg?raw"),
       menuData: [
         {
           title: "Каталог",
-          sub: "sub1",
+          sub: "1",
           menuItems: [
             {
               key: "1",
-              name: "Xizmatlar",
+              name: "Услуги",
               to: "/",
-              path: "/",
             },
             {
               key: "2",
-              name: "Категории2",
-              to: "/",
-              path: "/",
+              name: "Тариф",
+              to: "/tariff",
             },
             {
               key: "3",
-              name: "Категории2",
-              to: "/",
-              path: "/",
+              name: "Новости",
+              to: "/news",
+            },
+            {
+              key: "4",
+              name: "Галереи",
+              to: "/galleries",
             },
           ],
         },
         {
           title: "Категории 2",
-          sub: "sub2",
+          sub: "2",
           menuItems: [
             {
               key: "4",
@@ -120,6 +123,12 @@ export default {
       ],
     };
   },
+
+  computed: {
+    routerName() {
+      return this.$route.name;
+    },
+  },
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
@@ -128,6 +137,7 @@ export default {
       console.log(broken);
     },
   },
+
   components: { TitleBlock },
 };
 </script>

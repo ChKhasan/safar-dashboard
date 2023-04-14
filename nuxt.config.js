@@ -20,7 +20,7 @@ export default {
     { src: "~plugins/quill-editor.js", ssr: false },
   ],
   axios: {
-    credentials: true,
+    credentials: false,
     init(axios) {
       axios.defaults.withCredentials = true;
     },
@@ -30,10 +30,7 @@ export default {
 
   buildModules: ["@nuxtjs/svg"],
 
-  modules: [
-    "bootstrap-vue/nuxt",
-    "@nuxtjs/axios",
-  ],
+  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios"],
 
   build: {},
 };

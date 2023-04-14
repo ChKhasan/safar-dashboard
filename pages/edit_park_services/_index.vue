@@ -32,8 +32,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.name = item.index"
-                :class="{ 'avtive-formTab': formTab.name == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -43,7 +43,7 @@
             class="card_block px-4 py-4 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.name == item.index"
+            v-if="formTab == item.index"
           >
             <a-form-model-item class="form-item mb-3" label="Xizmat nomi">
               <a-input v-model="form.name[item.index]" placeholder="Group name" />
@@ -68,8 +68,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.guarantee = item.index"
-                :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -79,7 +79,7 @@
             class="card_block border-left-radius px-4 py-4 mt-0"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.guarantee == item.index"
+            v-if="formTab == item.index"
           >
             <a-form-model-item class="form-item mb-0" label="Kafolatlarni kiritish">
               <quill-editor
@@ -129,14 +129,26 @@
             </div>
           </div>
         </div>
+        <div class="container_xl app-container">
+          <div class="card_block px-4 py-4 mt-0">
+            <div class="tariff-card-grid">
+              <TariffCard />
+              <TariffCard />
+            </div>
+            <div class="create-inner-variant" @click="addGroup">
+              <span> </span>
+              Qo’shish
+            </div>
+          </div>
+        </div>
         <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.sub_service = item.index"
-                :class="{ 'avtive-formTab': formTab.sub_service == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -146,7 +158,7 @@
             class="card_block px-4 py-4 mt-0 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.sub_service == item.index"
+            v-if="formTab == item.index"
           >
             <FormTitle title="Qo’shimcha xizmlatlar narxlari" />
             <div
@@ -162,7 +174,11 @@
                   />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
-                  <a-input v-model="service.price" placeholder="Service price" />
+                  <a-input
+                    type="number"
+                    v-model="service.price"
+                    placeholder="Service price"
+                  />
                 </a-form-model-item>
               </div>
               <div
@@ -183,8 +199,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.faq = item.index"
-                :class="{ 'avtive-formTab': formTab.faq == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -194,7 +210,7 @@
             class="card_block px-4 py-4 mt-0 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.faq == item.index"
+            v-if="formTab == item.index"
           >
             <FormTitle title="Ko’p so’raladigan savollarga javob yozish" />
             <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
@@ -228,8 +244,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.package = item.index"
-                :class="{ 'avtive-formTab': formTab.package == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -239,7 +255,7 @@
             class="card_block px-4 py-4 mt-0 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.package == item.index"
+            v-if="formTab == item.index"
           >
             <FormTitle title="Варианты пакетов" />
             <span
@@ -273,8 +289,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab.feedback = item.index"
-                :class="{ 'avtive-formTab': formTab.feedback == item.index }"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -284,7 +300,7 @@
             class="card_block px-4 py-4 mt-0 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab.feedback == item.index"
+            v-if="formTab == item.index"
           >
             <div class="d-flex justify-content-between">
               <FormTitle title="Komentariya" />
@@ -299,12 +315,12 @@
                   <a-form-model-item class="form-item mb-3" label="Foydalanuvchi">
                     <a-input v-model="feedback.name[item.index]" placeholder="User" />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3" label="Brend">
+                  <!-- <a-form-model-item class="form-item mb-3" label="Brend">
                     <a-input
                       v-model="feedback.feedback[item.index]"
                       placeholder="Brand"
                     />
-                  </a-form-model-item>
+                  </a-form-model-item> -->
                   <div class="d-flex align-items-center">
                     <div
                       @click="deleteFeedbacks(feedback.indexId)"
@@ -314,7 +330,12 @@
                   </div>
                 </div>
                 <a-form-model-item class="form-item mb-0 mt-0" label="Matni">
-                  <a-input type="textarea" rows="6" placeholder="Xabar yozing" />
+                  <a-input
+                    type="textarea"
+                    v-model="feedback.feedback[item.index]"
+                    rows="6"
+                    placeholder="Xabar yozing"
+                  />
                 </a-form-model-item>
               </div>
               <div class="clearfix">
@@ -347,12 +368,13 @@
 </template>
 
 <script>
-import TitleBlock from "../components/Title-block.vue";
+import TitleBlock from "../../components/Title-block.vue";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import FormTitle from "../components/Form-title.vue";
-import status from "../mixins/status";
+import FormTitle from "../../components/Form-title.vue";
+import status from "../../mixins/status";
+import TariffCard from "../../components/cards/tariffCard.vue";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -369,19 +391,11 @@ export default {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      xIcon: require("../assets/svg/x.svg?raw"),
-      plusIcon: require("../assets/svg/plus.svg?raw"),
-      infoIcon: require("../assets/svg/info.svg?raw"),
-      editIcon: require("../assets/svg/edit.svg?raw"),
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
-      formTab: {
-        name: "ru",
-        guarantee: "ru",
-        sub_service: "ru",
-        faq: "ru",
-        package: "ru",
-        feedback: "ru",
-      },
+      service: [],
+      xIcon: require("../../assets/svg/x.svg?raw"),
+      plusIcon: require("../../assets/svg/plus.svg?raw"),
+      infoIcon: require("../../assets/svg/info.svg?raw"),
+      formTab: "ru",
       formTabData: [
         {
           label: "Русский",
@@ -582,23 +596,185 @@ export default {
       };
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__POST_SERVICES(data);
+          this.__EDIT_SERVICES(data);
         } else {
           return false;
         }
       });
     },
-    async __POST_SERVICES(data) {
+    async __EDIT_SERVICES(data) {
       try {
-        await this.$store.dispatch("fetchServices/postServices", data);
+        await this.$store.dispatch("fetchServices/editServices", {
+          id: this.$route.params.index,
+          data: data,
+        });
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push("/");
       } catch (e) {
         this.statusFunc(e.response);
       }
     },
-    async __GET_SERVICES() {
-      this.servies = this.$store.dispatch("fetchServices/getServices");
+    async __GET_SERVICES_BY_ID() {
+      const data = await this.$store.dispatch(
+        "fetchServices/getServicesById",
+        this.$route.params.index
+      );
+      console.log(data);
+      //   form: {
+      //     name: {
+      //       ru: "",
+      //       uz: "",
+      //     },
+      //     desc: {
+      //       ru: "",
+      //       uz: "",
+      //     },
+      //     guarantee: {
+      //       ru: "",
+      //       uz: "",
+      //     },
+      //     statistics: [
+      //       {
+      //         indexId: 1,
+      //         name: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         number: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         img: "",
+      //         statisticFile: [],
+      //       },
+      //       {
+      //         indexId: 2,
+      //         name: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         number: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         img: "",
+      //         statisticFile: [],
+      //       },
+      //       {
+      //         indexId: 3,
+      //         name: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         number: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         img: "",
+      //         statisticFile: [],
+      //       },
+      //     ],
+      //     additional_services: [
+      //       {
+      //         indexId: 1,
+      //         name: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         price: 0,
+      //       },
+      //     ],
+      //     faqs: [
+      //       {
+      //         indexId: 1,
+      //         question: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         answer: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //       },
+      //     ],
+      //     package_options: [
+      //       {
+      //         indexId: 1,
+      //         desc: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //       },
+      //     ],
+      //     feedbacks: [
+      //       {
+      //         indexId: 1,
+      //         name: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         feedback: {
+      //           ru: "",
+      //           uz: "",
+      //         },
+      //         logo: "",
+      //         feedbacksFile: [],
+      //       },
+      //     ],
+      //   },
+      this.form = {
+        ...data?.service,
+        statistics: data?.service.statistics.map((item, index) => {
+          return {
+            ...item,
+            indexId: item.id,
+            img: item?.sm_img ? item?.sm_img : "",
+            statisticFile: [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                oldImg: true,
+                url: item?.sm_img ? item?.sm_img : "",
+              },
+            ],
+          };
+        }),
+        additional_services: data?.service.additional_services.map((item, index) => {
+          return {
+            ...item,
+            indexId: item.id,
+          };
+        }),
+        faqs: data?.service.faqs.map((item, index) => {
+          return {
+            ...item,
+            indexId: item.id,
+          };
+        }),
+        package_options: data?.service.package_options.map((item, index) => {
+          return {
+            ...item,
+            indexId: item.id,
+          };
+        }),
+        feedbacks: data?.service.feedbacks.map((item, index) => {
+          return {
+            ...item,
+            indexId: item.id,
+            logo: item.sm_logo,
+            feedbacksFile: [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                oldImg: true,
+                url: item?.sm_logo ? item?.sm_logo : "",
+              },
+            ],
+          };
+        }),
+      };
     },
     deleteFaqs(indexId) {
       if (this.form.faqs.length > 1)
@@ -628,6 +804,7 @@ export default {
           ru: "",
           uz: "",
         },
+        id: 0,
         indexId: Math.max(...this.form.package_options.map((o) => o.indexId)) + 1,
       });
     },
@@ -641,6 +818,7 @@ export default {
           ru: "",
           uz: "",
         },
+        id: 0,
         indexId: Math.max(...this.form.faqs.map((o) => o.indexId)) + 1,
       });
     },
@@ -656,6 +834,7 @@ export default {
         },
         logo: "",
         feedbacksFile: [],
+        id: 0,
         indexId: Math.max(...this.form.feedbacks.map((o) => o.indexId)) + 1,
       });
     },
@@ -666,11 +845,12 @@ export default {
           uz: "",
         },
         price: 0,
+        id: 0,
         indexId: Math.max(...this.form.additional_services.map((o) => o.indexId)) + 1,
       });
     },
     addGroup() {
-      this.$router.push("add_services");
+      this.$router.push(`/add_tariff/${this.$route.params.index}`);
     },
     handleCancel() {
       this.previewVisible = false;
@@ -694,11 +874,53 @@ export default {
     },
   },
   mounted() {
-    this.__GET_SERVICES();
+    this.__GET_SERVICES_BY_ID();
   },
-  components: { TitleBlock, FormTitle },
+  components: { TitleBlock, FormTitle, TariffCard },
 };
 </script>
 <style lang="css">
-@import "../assets/css/pages/services.css";
+.services-grid {
+  display: grid;
+  grid-gap: 24px;
+  grid-template-columns: 1fr;
+}
+
+.grid-with-img {
+  display: grid;
+  grid-template-columns: auto 273px;
+  grid-gap: 24px;
+}
+.grid-with-img .clearfix {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+.grid-with-img .ant-upload-list-picture-card-container,
+.grid-with-img .ant-upload-list-picture-card .ant-upload-list-item,
+.grid-with-img .ant-upload.ant-upload-select-picture-card {
+  width: 100%;
+  height: 273px;
+}
+.faqs-grid {
+  margin-bottom: 24px;
+}
+.faqs-grid:last-child {
+  margin-bottom: 0;
+}
+.grid-with-btn {
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  grid-gap: 24px;
+}
+.statistic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 12px;
+}
+.tariff-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 20px;
+}
 </style>

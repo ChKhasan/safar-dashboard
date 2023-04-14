@@ -11,6 +11,7 @@
         <div class="d-flex">
           <div
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="$router.push('/add_park_services')"
           >
             Отмена
           </div>
@@ -31,8 +32,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab = item.index"
-                :class="{ 'avtive-formTab': formTab == item.index }"
+                @click="formTab.name = item.index"
+                :class="{ 'avtive-formTab': formTab.name == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -42,13 +43,13 @@
             class="card_block px-4 py-4 border-left-radius"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab == item.index"
+            v-if="formTab.name == item.index"
           >
             <div class="grid-2">
               <a-form-model-item
                 class="form-item mb-3 required"
                 label="Xizmat nomi"
-                :prop="`name.ru`"
+                prop="name.ru"
               >
                 <a-input v-model="form.name[item.index]" placeholder="Group name" />
               </a-form-model-item>
@@ -62,11 +63,7 @@
           </div>
         </div>
         <div class="container_xl app-container">
-          <a-range-picker :show-time="{ format: 'HH:mm' }" mode="time">
-            <template slot="renderExtraFooter"> extra footer </template>
-          </a-range-picker>
           <div class="card_block mt-4 service-table px-4 py-3">
-            {{ form.schedule }}
             <a-table :columns="columns" :pagination="false" :data-source="data">
               <span slot="customTitle"><a-icon type="smile-o" /> Name</span>a
               <span slot="time" slot-scope="text">
@@ -140,8 +137,8 @@
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab = item.index"
-                :class="{ 'avtive-formTab': formTab == item.index }"
+                @click="formTab.tariff = item.index"
+                :class="{ 'avtive-formTab': formTab.tariff == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -151,7 +148,7 @@
             class="card_block py-4 border-left-radius"
             v-for="(item, index2) in formTabData"
             :key="index2"
-            v-if="formTab == item.index"
+            v-if="formTab.tariff == item.index"
           >
             <span class="px-4"><FormTitle title="Narxni kiritish" /></span>
             <div class="grid-3 px-4">
@@ -163,10 +160,18 @@
                 </a-select>
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Minimal mijoz">
-                <a-input v-model="form.min_clients" />
+                <a-input
+                  type="number"
+                  v-model="form.min_clients"
+                  :disabled="form.min_clients == null"
+                />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Maximal mijoz">
-                <a-input v-model="form.max_clients" />
+                <a-input
+                  type="number"
+                  v-model="form.max_clients"
+                  :disabled="form.max_clients == null"
+                />
               </a-form-model-item>
             </div>
             <div class="px-4 from_hr_top pt-3">
@@ -255,14 +260,14 @@
           </div>
         </div>
 
-        <div class="container_xl app-container d-flex flex-column">
+        <div class="container_xl app-container d-flex flex-column mt-4">
           <div class="form_tab">
             <div>
               <span
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab = item.index"
-                :class="{ 'avtive-formTab': formTab == item.index }"
+                @click="formTab.info = item.index"
+                :class="{ 'avtive-formTab': formTab.info == item.index }"
               >
                 {{ item.label }}
               </span>
@@ -272,7 +277,7 @@
             class="card_block border-left-radius px-4 py-4 mt-0"
             v-for="(item, index) in formTabData"
             :key="index"
-            v-if="formTab == item.index"
+            v-if="formTab.info == item.index"
           >
             <a-form-model-item class="form-item mb-0" label="Kafolatlarni kiritish">
               <quill-editor class="product-editor mt-1" :options="editorOption" />
@@ -281,7 +286,7 @@
               <div v-for="statistic in [1, 2, 3]" class="d-flex">
                 <div class="clearfix">
                   <a-upload
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileList"
                     @preview="handlePreview"
@@ -318,12 +323,13 @@
 </template>
 
 <script>
-import FormTitle from "../components/Form-title.vue";
-import TitleBlock from "../components/Title-block.vue";
+import FormTitle from "../../components/Form-title.vue";
+import TitleBlock from "../../components/Title-block.vue";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import moment from "moment";
+import status from "../../mixins/status";
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -413,6 +419,7 @@ const data = [
 ];
 export default {
   name: "IndexPage",
+  mixins: [status],
   data() {
     return {
       top: 10,
@@ -497,6 +504,7 @@ export default {
             },
           ],
         ],
+        service_id: null,
         type: "tariff",
         min_clients: null,
         max_clients: null,
@@ -520,13 +528,17 @@ export default {
       bottom: 10,
       value: "",
       wrapperCol: { span: 14 },
-      xIcon: require("../assets/svg/x.svg?raw"),
-      plusIcon: require("../assets/svg/plus.svg?raw"),
-      infoIcon: require("../assets/svg/info.svg?raw"),
-      editIcon: require("../assets/svg/edit.svg?raw"),
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
+      xIcon: require("../../assets/svg/x.svg?raw"),
+      plusIcon: require("../../assets/svg/plus.svg?raw"),
+      infoIcon: require("../../assets/svg/info.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
       data,
-      formTab: "ru",
+      formTab: {
+        name: "ru",
+        tariff: "ru",
+        info: "ru",
+      },
       formTabData: [
         {
           label: "Русский",
@@ -594,6 +606,7 @@ export default {
     onSubmit() {
       const data = {
         ...this.form,
+        service_id: this.$route.params.index,
         tab_start_text: this.form.type != "tariff" ? null : this.form.tab_start_text,
         prices: this.form.prices.map((item) => {
           return {
@@ -619,12 +632,22 @@ export default {
 
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          this.__POST_TARIFF(data);
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
+    },
+    async __POST_TARIFF(data) {
+      try {
+        await this.$store.dispatch("fetchTariff/postTariff", data);
+        console.log("asdasd");
+        this.notification("success", "success", "Услуга успешно добавлен");
+        this.$router.push("/");
+        console.log("data");
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
     },
     addTimePicker(id) {
       this.form.schedule[id].push({
@@ -662,12 +685,7 @@ export default {
     },
     onChangeTime(e, index, name, ind) {
       let val = moment(e).format("hh:mm");
-      console.log(val);
       this.form.schedule[index][ind][name] = val;
-      console.log(this.form.schedule);
-      console.log(index);
-      // console.log(this.form.schedule[index][0]);
-      // console.log(this.form.schedule[index][0][name]);
     },
     onOk(value) {
       console.log("onOk: ", value);
@@ -686,8 +704,9 @@ export default {
       this.fileList = fileList;
     },
   },
+
   watch: {
-    "form.type"() {
+    "form.type"(val) {
       this.form.prices = [
         {
           id: 999,
@@ -700,45 +719,19 @@ export default {
           ],
         },
       ];
+      if (val == "tariff") {
+        this.form.min_clients = null;
+        this.form.max_clients = null;
+      } else {
+        this.form.min_clients = "";
+        this.form.max_clients = "";
+      }
+      console.log(val);
     },
   },
   components: { TitleBlock, FormTitle },
 };
 </script>
 <style lang="css">
-.grid-3 {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: repeat(3, 1fr);
-}
-.grid-3-with-2delete {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 2fr 1fr auto;
-}
-.grid-2-with-2delete {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 1fr auto !important;
-}
-.grid-2-with {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: auto 1fr auto !important;
-}
-.index-block {
-  width: 42px;
-  height: 100%;
-  background: #fff;
-  border: 1px solid #e4e6ef;
-  border-radius: 6.175px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.statistic-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 12px;
-}
+@import "../../assets/css/pages/tariff.css";
 </style>

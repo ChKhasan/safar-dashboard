@@ -1,0 +1,226 @@
+<template lang="html">
+  <div class="posts">
+    <TitleBlock title="Новости">
+      <div class="d-flex">
+        <div
+          class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+          @click="$router.push('/')"
+        >
+          Отмена
+        </div>
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          type="primary"
+          @click="onSubmit"
+        >
+          <span class="svg-icon"> </span>
+          Добавить
+        </a-button>
+      </div>
+    </TitleBlock>
+    <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+      <div>
+        <div class="container_xl app-container mt-4 d-flex flex-column mb-5">
+          <div class="form_tab">
+            <div>
+              <span
+                v-for="(item, index) in formTabData"
+                :key="index"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
+              >
+                {{ item.label }}
+              </span>
+            </div>
+          </div>
+          <div class="posts-grid">
+            <div
+              class="card_block main-table px-4 py-4 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab == item.index"
+            >
+              <FormTitle title="Новости" />
+              <a-form-model-item class="form-item mb-3" label="Заголовок">
+                <a-input
+                  v-model="form.title[item.index]"
+                  placeholder="Заголовок"
+                  prop="title.ru"
+                />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3" label="Подзаголовок">
+                <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок" />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3" label="Описание">
+                <quill-editor
+                  v-model="form.desc[item.index]"
+                  class="product-editor mt-1"
+                  :options="editorOption"
+                />
+              </a-form-model-item>
+            </div>
+            <div class="card_block main-table px-4 py-4">
+              <FormTitle title="Параметры" />
+              <div class="clearfix">
+                <a-upload
+                  action="https://api.safarpark.uz/api/files/upload"
+                  list-type="picture-card"
+                  :file-list="fileList"
+                  @preview="handlePreview"
+                  @change="handleChange"
+                >
+                  <div v-if="fileList.length < 1">
+                    <a-icon type="plus" />
+                    <div class="ant-upload-text">Upload</div>
+                  </div>
+                </a-upload>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </a-modal>
+              </div>
+              <a-form-model-item class="form-item mb-3" label="Instagram">
+                <a-input v-model="form.instagram" placeholder="link" />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3" label="Telegram">
+                <a-input v-model="form.telegram" placeholder="link" />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3" label="Facebook">
+                <a-input v-model="form.facebook" placeholder="link" />
+              </a-form-model-item>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a-form-model>
+  </div>
+</template>
+<script>
+import FormTitle from "../components/Form-title.vue";
+import TitleBlock from "../components/Title-block.vue";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import status from "../mixins/status";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+export default {
+  mixins: [status],
+  data() {
+    return {
+      editorOption: {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [
+              {
+                size: [],
+              },
+            ],
+            ["bold", "italic", "underline", "strike"],
+
+            ["image"],
+            ["code-block"],
+          ],
+        },
+      },
+      formTab: "ru",
+      formTabData: [
+        {
+          label: "Русский",
+          index: "ru",
+        },
+        {
+          label: "O'zbek",
+          index: "uz",
+        },
+      ],
+      rules: {
+        title: {
+          ru: [
+            {
+              required: true,
+              message: "Please input Activity name",
+              trigger: "change",
+            },
+          ],
+        },
+      },
+      form: {
+        title: {
+          ru: "",
+          uz: "",
+        },
+        subtitle: {
+          ru: "",
+          uz: "",
+        },
+        desc: {
+          ru: "",
+          uz: "",
+        },
+        poster: "",
+        instagram: "",
+        telegram: "",
+        facebook: "",
+      },
+      previewVisible: false,
+      previewImage: "",
+      fileList: [],
+    };
+  },
+  methods: {
+    onSubmit() {
+      this.$refs["ruleForm"].validate((valid) => {
+        if (valid) {
+          this.__POST_POSTS(this.form);
+        } else {
+          return false;
+        }
+      });
+    },
+    async __POST_POSTS(data) {
+      try {
+        await this.$store.dispatch("fetchPosts/postPosts", data);
+        this.notification("success", "success", "Пост успешно добавлен");
+        this.$router.push("/news");
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
+    handleChange({ fileList }) {
+      this.fileList = fileList;
+      if (fileList[0]?.response?.path) this.form.poster = fileList[0]?.response?.path;
+    },
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+  },
+  components: { TitleBlock, FormTitle },
+};
+</script>
+<style lang="css">
+.posts-grid {
+  display: grid;
+  grid-gap: 13px;
+  grid-template-columns: 5fr 2fr;
+}
+.posts .ant-upload.ant-upload-select-picture-card,
+.posts .ant-upload-list-picture-card .ant-upload-list-item,
+.posts .ant-upload-list-picture-card-container {
+  width: 100% !important;
+  height: 150px !important;
+}
+</style>

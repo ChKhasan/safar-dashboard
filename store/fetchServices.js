@@ -31,12 +31,4 @@ export const actions = {
     const res = await this.$axios.$delete(`/services/${id}`);
     return res;
   },
-  async postGroups({}, data) {
-    const res = await this.$axios.$post(`/services_groups`, data);
-    return res;
-  },
-  async getGroups() {
-    const res = await this.$axios.$get(`/services_groups/all`);
-    return res;
-  },
 };
