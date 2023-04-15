@@ -203,6 +203,14 @@
   background-color: #3699ff;
   border-color: transparent;
 }
+.add-btn svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+.add-btn svg path {
+  fill: #fff;
+}
 .add-btn {
   transition: color 0.15s ease, background-color 0.15s ease,
     border-color 0.15s ease, box-shadow 0.15s ease;
@@ -380,6 +388,9 @@
   position: absolute;
   right: -2px;
   top: 4px;
+}
+.disabledTime {
+  pointer-events: none;
 }
 .disabledTime::after {
   color: #c0c9da;

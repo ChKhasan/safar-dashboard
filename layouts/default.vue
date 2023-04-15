@@ -94,6 +94,16 @@ export default {
               name: "Галереи",
               to: "/galleries",
             },
+            {
+              key: "5",
+              name: "F.A.Q",
+              to: "/faqs",
+            },
+            {
+              key: "6",
+              name: "Заявки",
+              to: "/applications",
+            },
           ],
         },
         {

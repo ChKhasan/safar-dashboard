@@ -1,14 +1,13 @@
 <template>
   <div class="">
-    <TitleBlock title="Тарифы">
+    <TitleBlock title="Xizmatlar">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="$router.push('/add_park_services')"
+          @click="$router.push('/add_news')"
         >
           <span class="svg-icon" v-html="addIcon"> </span>
-
           Добавить
         </a-button>
       </div>
@@ -30,32 +29,29 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="tariffs"
+          :data-source="posts"
           :loading="loading"
         >
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="sm_poster" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text" />
+            <img
+              v-else
+              class="table-image"
+              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
+            />
+          </span>
+          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
           <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="schedule" slot-scope="text">
-            <span class="option-items d-flex" v-for="(desc, index) in text">
-              <span v-if="desc == null">Круглосутоно</span>
-              <span
-                v-if="desc !== null && desc"
-                style="margin-left: 8px"
-                v-for="(time, ind) in desc"
-              >
-                <span v-if="time == null">No date</span>
-                <span v-if="ind == 0 && time !== null">{{ week[index] }}:</span>
-                <span v-if="time !== null">{{ time }},</span>
-              </span>
-            </span>
+          <span slot="desc" slot-scope="text">
+            <span v-html="text.ru"></span>
           </span>
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span
               class="action-btn"
               v-html="editIcon"
-              @click="$router.push(`/edit_tariff/${text}`)"
+              @click="$router.push(`/edit_news/${text}`)"
             >
             </span>
             <a-popconfirm
@@ -68,29 +64,6 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
-          <a-select
-            v-model="params.pageSize"
-            class="table-page-size"
-            style="width: 120px"
-            @change="($event) => changePageSizeGlobal($event, '/tariff', '__GET_TARIFF')"
-          >
-            <a-select-option
-              v-for="item in pageSizes"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-              >{{ item.label }}
-            </a-select-option>
-          </a-select>
-          <a-pagination
-            class="table-pagination"
-            :simple="false"
-            v-model.number="current"
-            :total="totalPage"
-            :page-size.sync="params.pageSize"
-          />
-        </div>
       </div>
     </div>
   </div>
@@ -100,45 +73,45 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
-import global from "../mixins/global";
 const columns = [
   {
-    title: "ID",
-    key: "indexId",
+    title: "заголовок",
+    dataIndex: "sm_poster",
+    key: "sm_poster",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "indexId" },
-    className: "column-service",
+    scopedSlots: { customRender: "sm_poster" },
+    className: "column-name",
     align: "left",
-    width: 50,
+    colSpan: 2,
   },
   {
-    title: "имя",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "title",
+    key: "title",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    width: 200,
+    colSpan: 0,
   },
   {
     title: "подзаголовок",
     dataIndex: "subtitle",
     key: "subtitle",
-    className: "column-name",
+    className: "column-service",
     scopedSlots: { customRender: "subtitle" },
   },
   {
-    title: "расписание",
-    dataIndex: "schedule",
-    key: "schedule",
-    className: "column-name",
-    scopedSlots: { customRender: "schedule" },
+    title: "описание",
+    dataIndex: "desc",
+    key: "desc",
+    className: "column-subservice",
+    scopedSlots: { customRender: "desc" },
   },
+
   {
-    title: "ДЕЙСТВИЯ",
+    title: "Actions",
     className: "column-btns",
-    key: "id",
     dataIndex: "id",
+    key: "id",
     align: "right",
     scopedSlots: { customRender: "id" },
     width: 100,
@@ -147,7 +120,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status, global],
+  mixins: [status],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -157,43 +130,32 @@ export default {
       loading: false,
       search: "",
       columns,
-      tariffs: [],
-      week: ["пн", "вт", "ср", "чт", "пт", "сб"],
+      posts: [],
     };
   },
-  async mounted() {
-    if (
-      !Object.keys(this.$route.query).includes("page") ||
-      !Object.keys(this.$route.query).includes("per_page")
-    ) {
-      await this.$router.replace({
-        path: `/tariff`,
-        query: { page: this.params.page, per_page: this.params.pageSize },
-      });
-    }
-    this.__GET_TARIFF();
-    this.current = Number(this.$route.query.page);
-    this.params.pageSize = Number(this.$route.query.per_page);
+  mounted() {
+    this.__GET_POSTS();
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_TARIFF(id);
+      this.__DELETE_POSTS(id);
     },
-    async __GET_TARIFF() {
-      const data = await this.$store.dispatch("fetchTariff/getTariff");
-      this.tariffs = data?.tariffs?.data;
-      this.totalPage = data?.tariffs?.total;
+    async __GET_POSTS() {
+      this.loading = true;
+      const data = await this.$store.dispatch("fetchApplications/getApplications");
+      this.loading = false;
+      this.posts = data?.applications?.data;
     },
-    async __DELETE_TARIFF(id) {
+    async __DELETE_POSTS(id) {
       try {
         this.loading = true;
-        await this.$store.dispatch("fetchTariff/deleteTariff", id);
+        await this.$store.dispatch("fetchApplications/deleteApplications", id);
         this.loading = false;
-        this.notification("success", "success", "Тариф был успешно удален");
-        this.__GET_TARIFF();
+        this.notification("success", "success", "Услуга был успешно удален");
+        this.__GET_POSTS();
       } catch (e) {
         this.statusFunc(e.response);
       }
@@ -203,5 +165,12 @@ export default {
 };
 </script>
 <style lang="css">
-@import "../assets/css/pages/tariff.css";
+.prodduct-list-header-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr 40px;
+  grid-gap: 8px;
+}
+.card_header {
+  padding: 16.25px 0;
+}
 </style>

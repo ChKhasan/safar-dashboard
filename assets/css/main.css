@@ -48,3 +48,6 @@ ul {
 .ant-modal-wrap {
   z-index: 2000 !important;
 }
+.ant-notification {
+  z-index: 2001 !important;
+}

@@ -7,7 +7,7 @@
           type="primary"
           @click="$router.push('/add_park_services')"
         >
-          <span class="svg-icon"> </span>
+          <span class="svg-icon" v-html="addIcon"></span>
           Добавить
         </a-button>
       </div>
@@ -33,11 +33,15 @@
           :scroll="{ x: 1500 }"
           :loading="loading"
         >
-          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="guarantee" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="name" slot-scope="text" v-html="text?.ru"></span>
+          <span slot="guarantee" slot-scope="text" v-html="text?.ru"></span>
           <span slot="package_options" slot-scope="text">
-            <span class="option-items" v-for="desc in text">{{ desc?.desc?.ru }}</span>
+            <span
+              class="option-items"
+              v-for="desc in text"
+              v-html="desc?.desc?.ru"
+            ></span>
           </span>
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
@@ -67,6 +71,16 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 const columns = [
+  {
+    title: "ID",
+    key: "indexId",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "indexId" },
+    className: "column-service",
+    align: "left",
+    width: 50,
+    fixed: 'left'
+  },
   {
     title: "Name",
     dataIndex: "name",
@@ -121,6 +135,7 @@ export default {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
       editIcon: require("../assets/svg/edit.svg?raw"),
       deleteIcon: require("../assets/svg/delete.svg?raw"),
+      addIcon: require("../assets/svg/add-icon.svg?raw"),
       loading: false,
       search: "",
       columns,

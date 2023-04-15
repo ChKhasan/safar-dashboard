@@ -20,8 +20,10 @@
   left: 0;
   z-index: 2000;
 }
-.ant-menu-sub {
+.ant-menu-sub .ant-menu-item{
   /* padding-left: 12px !important; */
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 .a_menu {
   overflow-y: auto;

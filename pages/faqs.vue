@@ -1,13 +1,13 @@
 <template>
   <div class="">
-    <TitleBlock title="Галереи">
+    <TitleBlock title="F.A.Q">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="addGalleries"
+          @click="addFaqs"
         >
-          <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+          <span class="svg-icon" v-html="addIcon"></span>
           Добавить
         </a-button>
       </div>
@@ -29,23 +29,15 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="galleries"
+          :data-source="faqs"
           :loading="loading"
         >
-          <span slot="sm_files" slot-scope="text">
-            <img v-if="text != null" class="table-image" :src="text[0]" />
-            <img
-              v-else
-              class="table-image"
-              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
-            />
+          <span slot="question" slot-scope="text">
+            <span>{{ text?.ru }}</span>
           </span>
+          <span slot="answer" slot-scope="text" v-html="text?.ru"></span>
           <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="desc" slot-scope="text">
-            <span v-html="text.ru"></span>
-          </span>
+
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
@@ -64,9 +56,7 @@
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="
-              ($event) => changePageSizeGlobal($event, '/galleries', '__GET_GALLERIES')
-            "
+            @change="($event) => changePageSizeGlobal($event, '/faqs', '__GET_FAQS')"
           >
             <a-select-option
               v-for="item in pageSizes"
@@ -111,41 +101,24 @@
           :key="index"
           v-if="formTab == item.index"
         >
-          <a-form-model
-            :model="form"
-            ref="ruleFormGalleries"
-            :rules="rules"
-            layout="vertical"
-          >
-            <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
-              <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
+            <a-form-model-item class="form-item mb-3" label="Вопрос" prop="question.ru">
+              <a-input
+                type="textarea"
+                rows="5"
+                v-model="form.question[item.index]"
+                placeholder="Вопрос"
+              />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Описание">
-              <quill-editor
-                class="product-editor mt-1"
-                v-model="form.desc[item.index]"
-                :options="editorOption"
+            <a-form-model-item class="form-item mb-3" label="Ответ" prop="answer.ru">
+              <a-input
+                type="textarea"
+                rows="5"
+                v-model="form.answer[item.index]"
+                placeholder="Ответ"
               />
             </a-form-model-item>
           </a-form-model>
-          <div class="clearfix">
-            <a-upload
-              action="https://api.safarpark.uz/api/files/upload"
-              list-type="picture-card"
-              :file-list="fileList"
-              :multiple="true"
-              @preview="handlePreview"
-              @change="handleChange"
-            >
-              <div v-if="fileList.length < 8">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">Upload</div>
-              </div>
-            </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
-          </div>
         </div>
       </div>
       <template slot="footer">
@@ -159,10 +132,9 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
-            :loading="loadingBtn"
             @click="saveData"
           >
-            <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -198,31 +170,23 @@ const columns = [
     width: 50,
   },
   {
-    title: "заголовок",
-    dataIndex: "sm_files",
-    key: "sm_files",
+    title: "вопрос",
+    dataIndex: "question",
+    key: "question",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "sm_files" },
+    scopedSlots: { customRender: "question" },
     className: "column-name",
     align: "left",
-    colSpan: 2,
+    width: "45%",
   },
   {
-    dataIndex: "title",
-    key: "title",
+    title: "ответ",
+    dataIndex: "answer",
+    key: "answer",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "name" },
-    className: "column-name",
-    colSpan: 0,
+    scopedSlots: { customRender: "answer" },
+    className: "column-service",
   },
-  {
-    title: "описание",
-    dataIndex: "desc",
-    key: "desc",
-    className: "column-subservice",
-    scopedSlots: { customRender: "desc" },
-  },
-
   {
     title: "Actions",
     className: "column-btns",
@@ -259,7 +223,6 @@ export default {
       editId: null,
       formTab: "ru",
       visible: false,
-      loadingBtn: false,
       formTabData: [
         {
           label: "Русский",
@@ -277,25 +240,31 @@ export default {
       loading: false,
       search: "",
       columns,
-      galleries: [],
-      previewVisible: false,
-      previewImage: "",
-      fileList: [],
+      faqs: [],
       rules: {
-        title: {
+        question: {
           ru: [{ required: true, message: "This field is required", trigger: "change" }],
+        },
+        answer: {
+          ru: [
+            {
+              required: true,
+              message: "This field is required",
+              trigger: "change",
+            },
+          ],
         },
       },
       form: {
-        title: {
+        question: {
           ru: "",
           uz: "",
         },
-        desc: {
+        answer: {
           ru: "",
           uz: "",
         },
-        files: [],
+        service_id: null,
       },
     };
   },
@@ -305,11 +274,11 @@ export default {
       !Object.keys(this.$route.query).includes("per_page")
     ) {
       await this.$router.replace({
-        path: `/galleries`,
+        path: `/faqs`,
         query: { page: this.params.page, per_page: this.params.pageSize },
       });
     }
-    this.__GET_GALLERIES();
+    this.__GET_FAQS();
     this.current = Number(this.$route.query.page);
     this.params.pageSize = Number(this.$route.query.per_page);
   },
@@ -318,12 +287,12 @@ export default {
       this.search = val.target.value;
     },
     saveData() {
-      this.$refs["ruleFormGalleries"][0].validate((valid) => {
+      this.$refs["ruleFormFaq"][0].validate((valid) => {
         if (valid) {
           if (this.editId) {
-            this.__EDIT_GALLERIES(this.form);
+            this.__EDIT_FAQS(this.form);
           } else {
-            this.__POST_GALLERIES(this.form);
+            this.__POST_FAQS(this.form);
           }
         } else {
           return false;
@@ -333,19 +302,19 @@ export default {
     editAction(id) {
       this.title = "Изменить";
       this.editId = id;
-      this.__GET_GALLERIES_BY_ID(id);
+      this.__GET_FAQS_BY_ID(id);
     },
     deleteAction(id) {
-      this.__DELETE_GALLERIES(id);
+      this.__DELETE_FAQS(id);
     },
-    async __GET_GALLERIES() {
+    async __GET_FAQS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchGalleries/getGalleries");
+      const data = await this.$store.dispatch("fetchFaqs/getFaqs");
       this.loading = false;
-      this.galleries = data?.galleries?.data;
-      this.totalPage = data?.galleries?.total;
+      this.faqs = data?.faqs?.data;
+      this.totalPage = data?.faqs?.total;
     },
-    addGalleries() {
+    addFaqs() {
       this.title = "Добавить";
       this.emptyData();
       this.fileList = [];
@@ -355,94 +324,65 @@ export default {
     handleOk() {
       this.visible = false;
     },
-    async __POST_GALLERIES(data) {
+    async __POST_FAQS(data) {
       try {
-        await this.$store.dispatch("fetchGalleries/postGalleries", data);
+        await this.$store.dispatch("fetchFaqs/postFaqs", data);
         this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/galleries");
+        this.$router.push("/faqs");
         this.handleOk();
         this.emptyData();
-        this.__GET_GALLERIES();
+        this.__GET_FAQS();
       } catch (e) {
         this.statusFunc(e.response);
       }
     },
-    async __GET_GALLERIES_BY_ID(id) {
+    async __GET_FAQS_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
+        // const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
+        const data = await this.$store.dispatch("fetchFaqs/getFaqs");
+
         this.visible = true;
-        this.form = data?.gallery;
-        this.fileList = data?.gallery.sm_files.map((item, index) => {
-          return {
-            uid: `-${index}`,
-            name: "image.png",
-            status: "done",
-            oldImg: true,
-            url: item,
-          };
-        });
-        this.form.files = data?.gallery.sm_files;
+        this.form = data?.faqs.find((item) => item.id == id);
       } catch (e) {
         this.statusFunc(e.response);
       }
     },
     emptyData() {
       this.form = {
-        title: {
+        question: {
           ru: "",
           uz: "",
         },
-        desc: {
+        answer: {
           ru: "",
           uz: "",
         },
-        files: [],
+        service_id: null,
       };
     },
-    async __DELETE_GALLERIES(id) {
+    async __DELETE_FAQS(id) {
       try {
         this.loading = true;
-        await this.$store.dispatch("fetchGalleries/deleteGalleries", id);
+        await this.$store.dispatch("fetchFaqs/deleteFaqs", id);
         this.loading = false;
         this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_GALLERIES();
+        this.__GET_FAQS();
       } catch (e) {
         this.statusFunc(e.response);
       }
     },
-    async __EDIT_GALLERIES(res) {
+    async __EDIT_FAQS(res) {
       try {
-        await this.$store.dispatch("fetchGalleries/editGalleries", {
+        await this.$store.dispatch("fetchFaqs/editFaqs", {
           id: this.editId,
           data: res,
         });
         this.handleOk();
-
-        this.__GET_GALLERIES();
+        this.__GET_FAQS();
         this.notification("success", "success", "Пост успешно изменена");
-        this.$router.push("/galleries");
+        this.$router.push("/faqs");
       } catch (e) {
         this.statusFunc(e.response);
-      }
-    },
-    handleCancel() {
-      this.previewVisible = false;
-    },
-    async handlePreview(file) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-      }
-      this.previewImage = file.url || file.preview;
-      this.previewVisible = true;
-    },
-    handleChange({ fileList }) {
-      this.loadingBtn = true;
-      this.fileList = fileList;
-      if (fileList[0]?.response?.path) {
-        this.form.files = fileList.map((item) => item?.response?.path);
-        this.loadingBtn = false;
-      } else if (fileList.length == 0) {
-        this.loadingBtn = false;
       }
     },
   },

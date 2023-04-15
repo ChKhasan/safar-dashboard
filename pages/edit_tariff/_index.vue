@@ -75,6 +75,7 @@
                   <span
                     class="time_picker"
                     style="margin-right: 16px"
+                    v-if="form.schedule.length > 0"
                     v-for="(timePicker, ind) in form.schedule[text - 1]"
                   >
                     <a-time-picker
@@ -99,6 +100,7 @@
                   </span>
                   <div
                     class="outline-btn time-add-btn"
+                    v-if="form.schedule.length > 0"
                     :class="{ disabledTime: form.schedule[text - 1][0].disabled }"
                     @click="addTimePicker(text - 1)"
                   >
@@ -111,6 +113,8 @@
                   >Круглосутоно
                   <a-checkbox
                     class="mx-3"
+                    v-if="form.schedule.length > 0"
+                    :checked="form.schedule[text - 1][0].disabled"
                     @change="($event) => onChangeDay($event, text - 1)"
                   >
                   </a-checkbox
@@ -141,7 +145,11 @@
             <span class="px-4"><FormTitle title="Narxni kiritish" /></span>
             <div class="grid-3 px-4">
               <a-form-model-item class="form-item mb-3" label="Turi">
-                <a-select :default-value="services[0]" v-model="form.type">
+                <a-select
+                  :default-value="services[0]"
+                  v-model="form.type"
+                  @change="changeTariff"
+                >
                   <a-select-option v-for="(service, index) in services" :key="service">
                     {{ service }}
                   </a-select-option>
@@ -151,14 +159,17 @@
                 <a-input
                   type="number"
                   v-model="form.min_clients"
-                  :disabled="form.min_clients == null"
+                  :disabled="form.type == 'tariff'"
+                  placeholder="Minimal"
                 />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Maximal mijoz">
                 <a-input
                   type="number"
                   v-model="form.max_clients"
-                  :disabled="form.max_clients == null"
+                  :disabled="form.type == 'tariff'"
+                  placeholder="Maximal"
+
                 />
               </a-form-model-item>
             </div>
@@ -474,50 +485,7 @@ export default {
           ru: "",
           uz: "",
         },
-        schedule: [
-          [
-            {
-              start: "",
-              end: "",
-              disabled: false,
-            },
-          ],
-          [
-            {
-              start: "",
-              end: "",
-              disabled: false,
-            },
-          ],
-          [
-            {
-              start: "",
-              end: "",
-              disabled: false,
-            },
-          ],
-          [
-            {
-              start: "",
-              end: "",
-              disabled: false,
-            },
-          ],
-          [
-            {
-              start: "",
-              end: "",
-              disabled: false,
-            },
-          ],
-          [
-            {
-              start: "",
-              disabled: false,
-              end: "",
-            },
-          ],
-        ],
+        schedule: [],
         service_id: null,
         type: "tariff",
         min_clients: null,
@@ -640,6 +608,11 @@ export default {
       },
     };
   },
+  async mounted() {
+    await this.__GET_TARIFF_BY_ID();
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  },
   methods: {
     onChangeDay(e, index) {
       if (e.target.checked) {
@@ -697,32 +670,42 @@ export default {
             return rest;
           }),
       };
+      console.log(data);
       const { fileListStat, ...rest } = data;
-      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__POST_TARIFF(rest);
+          this.__EDIT_TARIFF(rest);
         } else {
           return false;
         }
       });
     },
-    async __POST_TARIFF(data) {
-      try {
-        await this.$store.dispatch("fetchTariff/postTariff", data);
-        console.log("asdasd");
-        this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/");
-        console.log("data");
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
-    },
+
     addTimePicker(id) {
       this.form.schedule[id].push({
         start: "00:00",
         end: "00:00",
       });
+    },
+    changeTariff() {
+      this.form.prices = [
+        {
+          id: 999,
+          name: "",
+          prices: [
+            {
+              id: 99,
+              name: "",
+            },
+          ],
+        },
+      ];
+      if (this.form.type == "tariff") {
+        this.form.tab_start_text = {
+          ru: "",
+          uz: "",
+        };
+      }
     },
     addPrice(id) {
       const price = this.form.prices.find((item) => item.id == id);
@@ -742,6 +725,67 @@ export default {
         ],
         id: Math.max(...this.form.prices.map((o) => o.id)) + 1,
       });
+    },
+    async __GET_TARIFF_BY_ID() {
+      const data = await this.$store.dispatch(
+        "fetchTariff/getTariffById",
+        this.$route.params.index
+      );
+      this.form = data?.tariff;
+      this.form.schedule = data?.tariff.schedule.map((item) => {
+        if (item == null) {
+          return [
+            {
+              start: "",
+              end: "",
+              disabled: true,
+            },
+          ];
+        } else if (item[0] == null) {
+          return [
+            {
+              start: "",
+              end: "",
+              disabled: false,
+            },
+          ];
+        } else {
+          return item.map((elem) => {
+            const time = elem.split("-");
+            return {
+              start: time[0],
+              end: time[1],
+              disabled: false,
+            };
+          });
+        }
+      });
+      this.form.prices = data?.tariff.prices.map((item, index) => {
+        return {
+          id: 999 + index,
+          name: item.name,
+          prices: item.prices.map((elem, ind) => {
+            return {
+              id: 99 + ind,
+              name: elem,
+            };
+          }),
+        };
+      });
+      this.form.fileListStat = []
+      console.log(this.form);
+    },
+    async __EDIT_TARIFF(data) {
+      try {
+        await this.$store.dispatch("fetchTariff/editTariff", {
+          id: this.$route.params.index,
+          data: data,
+        });
+        this.notification("success", "success", "Услуга успешно добавлен");
+        this.$router.push("/");
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
     },
     deletePrice(parentId, id) {
       const parent = this.form.prices.find((item) => item.id == parentId);
@@ -789,28 +833,28 @@ export default {
   },
 
   watch: {
-    "form.type"(val) {
-      this.form.prices = [
-        {
-          id: 999,
-          name: "",
-          prices: [
-            {
-              id: 99,
-              name: "",
-            },
-          ],
-        },
-      ];
-      if (val == "tariff") {
-        this.form.min_clients = null;
-        this.form.max_clients = null;
-      } else {
-        this.form.min_clients = "";
-        this.form.max_clients = "";
-      }
-      console.log(val);
-    },
+    // "form.type"(val) {
+    //   this.form.prices = [
+    //     {
+    //       id: 999,
+    //       name: "",
+    //       prices: [
+    //         {
+    //           id: 99,
+    //           name: "",
+    //         },
+    //       ],
+    //     },
+    //   ];
+    //   if (val == "tariff") {
+    //     this.form.min_clients = null;
+    //     this.form.max_clients = null;
+    //   } else {
+    //     this.form.min_clients = "";
+    //     this.form.max_clients = "";
+    //   }
+    //   console.log(val);
+    // },
   },
   components: { TitleBlock, FormTitle },
 };

@@ -7,7 +7,7 @@
           type="primary"
           @click="$router.push('/add_news')"
         >
-          <span class="svg-icon"> </span>
+          <span class="svg-icon" v-html="addIcon"> </span>
           Добавить
         </a-button>
       </div>
@@ -30,6 +30,7 @@
           :columns="columns"
           :pagination="false"
           :data-source="posts"
+          :page-size="params.pageSize"
           :loading="loading"
         >
           <span slot="sm_poster" slot-scope="text">
@@ -40,6 +41,7 @@
               src="../assets/images/photo_2023-03-04_13-28-58.jpg"
             />
           </span>
+          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
           <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
@@ -64,6 +66,29 @@
             </a-popconfirm>
           </span>
         </a-table>
+        <div class="d-flex justify-content-between mt-4">
+          <a-select
+            v-model="params.pageSize"
+            class="table-page-size"
+            style="width: 120px"
+            @change="($event) => changePageSizeGlobal($event, '/news', '__GET_POSTS')"
+          >
+            <a-select-option
+              v-for="item in pageSizes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              >{{ item.label }}
+            </a-select-option>
+          </a-select>
+          <a-pagination
+            class="table-pagination"
+            :simple="false"
+            v-model.number="current"
+            :total="totalPage"
+            :page-size.sync="params.pageSize"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +98,17 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
+import global from "../mixins/global";
 const columns = [
+  {
+    title: "ID",
+    key: "indexId",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "indexId" },
+    className: "column-service",
+    align: "left",
+    width: 50,
+  },
   {
     title: "заголовок",
     dataIndex: "sm_poster",
@@ -82,7 +117,6 @@ const columns = [
     scopedSlots: { customRender: "sm_poster" },
     className: "column-name",
     align: "left",
-    width: 60,
     colSpan: 2,
   },
   {
@@ -121,20 +155,32 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status],
+  mixins: [status, global],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
       editIcon: require("../assets/svg/edit.svg?raw"),
       deleteIcon: require("../assets/svg/delete.svg?raw"),
+      addIcon: require("../assets/svg/add-icon.svg?raw"),
       loading: false,
       search: "",
       columns,
       posts: [],
     };
   },
-  mounted() {
+  async mounted() {
+    if (
+      !Object.keys(this.$route.query).includes("page") ||
+      !Object.keys(this.$route.query).includes("per_page")
+    ) {
+      await this.$router.replace({
+        path: `/news`,
+        query: { page: this.params.page, per_page: this.params.pageSize },
+      });
+    }
     this.__GET_POSTS();
+    this.current = Number(this.$route.query.page);
+    this.params.pageSize = Number(this.$route.query.per_page);
   },
   methods: {
     changeSearch(val) {
@@ -148,6 +194,7 @@ export default {
       const data = await this.$store.dispatch("fetchPosts/getPosts");
       this.loading = false;
       this.posts = data?.posts?.data;
+      this.totalPage = data?.posts?.total;
     },
     async __DELETE_POSTS(id) {
       try {

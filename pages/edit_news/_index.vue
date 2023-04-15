@@ -190,10 +190,7 @@ export default {
 
     async __GET_POSTS_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch(
-          "fetchPosts/getPostsById",
-          this.$route.params.index
-        );
+        const data = await this.$store.dispatch("fetchPosts/getPostsById", id);
         this.form = { ...data.post };
         if (this.form.sm_poster) {
           this.fileList = [
@@ -224,7 +221,11 @@ export default {
     },
     handleChange({ fileList }) {
       this.fileList = fileList;
-      if (fileList[0]?.response?.path) this.form.poster = fileList[0]?.response?.path;
+      if (fileList[0]?.response?.path) {
+        this.form.poster = fileList[0]?.response?.path;
+      } else if (fileList.length == 0) {
+        this.form.poster = "";
+      }
     },
     handleCancel() {
       this.previewVisible = false;

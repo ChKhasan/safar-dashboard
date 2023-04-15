@@ -153,3 +153,55 @@
   border-radius: 6.175px;
   background: #ffffff;
 }
+.table-page-size .ant-select-selection--single {
+  height: 34px;
+  width: 72px;
+  background: #f9f9f9;
+  border: none;
+}
+.table-page-size .ant-select-selection-selected-value {
+  background: #f9f9f9;
+}
+.table-pagination .ant-pagination-item-active {
+  background: #009ef7;
+  color: #ffffff !important;
+}
+.table-pagination .ant-pagination-item-active:hover,
+.table-pagination .ant-pagination-item-active:focus {
+  background: #009ef7 !important;
+}
+.table-pagination .ant-pagination-item-active:hover a,
+.table-pagination .ant-pagination-item-active:focus a {
+  color: #ffffff !important;
+}
+
+.table-pagination .ant-pagination-item-active a {
+  pointer-events: none !important;
+}
+.table-pagination .ant-pagination-item a {
+  font-weight: 600;
+  pointer-events: none !important;
+}
+.table-pagination .ant-pagination-item {
+  border: none;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.475rem;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+.table-pagination .ant-pagination-item:hover {
+  color: #009ef7;
+  background: #f9f9f9;
+}
+.ant-pagination-item-link:hover {
+  color: #009ef7;
+  background: #f9f9f9 !important;
+}
+.ant-pagination-item-link {
+  border: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
