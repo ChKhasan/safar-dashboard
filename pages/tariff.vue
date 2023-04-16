@@ -2,15 +2,6 @@
   <div class="">
     <TitleBlock title="Тарифы">
       <div class="d-flex">
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          type="primary"
-          @click="$router.push('/add_park_services')"
-        >
-          <span class="svg-icon" v-html="addIcon"> </span>
-
-          Добавить
-        </a-button>
       </div>
     </TitleBlock>
     <div class="container_xl app-container mt-4">

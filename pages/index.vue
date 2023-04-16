@@ -30,7 +30,6 @@
           :columns="columns"
           :pagination="false"
           :data-source="services"
-          :scroll="{ x: 1500 }"
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
@@ -79,7 +78,6 @@ const columns = [
     className: "column-service",
     align: "left",
     width: 50,
-    fixed: 'left'
   },
   {
     title: "Name",
@@ -88,7 +86,6 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    fixed: "left",
     width: 200,
   },
   {
@@ -104,25 +101,14 @@ const columns = [
     key: "package_options",
     className: "column-subservice",
     scopedSlots: { customRender: "package_options" },
-    width: 600,
-  },
-  {
-    title: "Actions",
-    key: "tags",
-    dataIndex: "tags",
-    scopedSlots: { customRender: "tags" },
-    className: "column-actions",
-    align: "left",
   },
   {
     title: "Actions",
     className: "column-btns",
     key: "id",
     dataIndex: "id",
-
     align: "right",
     scopedSlots: { customRender: "id" },
-    fixed: "right",
     width: 100,
   },
 ];
