@@ -19,6 +19,11 @@ export default {
     { src: "~plugins/antdv.js", ssr: false },
     { src: "~plugins/quill-editor.js", ssr: false },
   ],
+  loadingIndicator: {
+    name: 'chasing-dots',
+    color: '#1890ff',
+    background: 'white'
+  },
   axios: {
     credentials: false,
     init(axios) {

@@ -300,18 +300,7 @@ export default {
     };
   },
   async mounted() {
-    if (
-      !Object.keys(this.$route.query).includes("page") ||
-      !Object.keys(this.$route.query).includes("per_page")
-    ) {
-      await this.$router.replace({
-        path: `/galleries`,
-        query: { page: this.params.page, per_page: this.params.pageSize },
-      });
-    }
-    this.__GET_GALLERIES();
-    this.current = Number(this.$route.query.page);
-    this.params.pageSize = Number(this.$route.query.per_page);
+    this.getFirstData("/galleries", "__GET_GALLERIES");
   },
   methods: {
     changeSearch(val) {
@@ -336,13 +325,23 @@ export default {
       this.__GET_GALLERIES_BY_ID(id);
     },
     deleteAction(id) {
-      this.__DELETE_GALLERIES(id);
+      this.__DELETE_GLOBAL(
+        id,
+        "fetchGalleries/deleteGalleries",
+        "Тариф был успешно удален",
+        "__GET_GALLERIES"
+      );
     },
     async __GET_GALLERIES() {
       this.loading = true;
       const data = await this.$store.dispatch("fetchGalleries/getGalleries");
       this.loading = false;
-      this.galleries = data?.galleries?.data;
+      this.galleries = data?.galleries?.data.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+        };
+      });
       this.totalPage = data?.galleries?.total;
     },
     addGalleries() {
@@ -399,17 +398,6 @@ export default {
         files: [],
       };
     },
-    async __DELETE_GALLERIES(id) {
-      try {
-        this.loading = true;
-        await this.$store.dispatch("fetchGalleries/deleteGalleries", id);
-        this.loading = false;
-        this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_GALLERIES();
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
-    },
     async __EDIT_GALLERIES(res) {
       try {
         await this.$store.dispatch("fetchGalleries/editGalleries", {
@@ -444,6 +432,11 @@ export default {
       } else if (fileList.length == 0) {
         this.loadingBtn = false;
       }
+    },
+  },
+  watch: {
+    async current(val) {
+      this.changePagination("/galleries", "__GET_GALLERIES");
     },
   },
   components: { TitleBlock, SearchInput },

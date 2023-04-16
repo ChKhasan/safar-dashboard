@@ -269,18 +269,7 @@ export default {
     };
   },
   async mounted() {
-    if (
-      !Object.keys(this.$route.query).includes("page") ||
-      !Object.keys(this.$route.query).includes("per_page")
-    ) {
-      await this.$router.replace({
-        path: `/faqs`,
-        query: { page: this.params.page, per_page: this.params.pageSize },
-      });
-    }
-    this.__GET_FAQS();
-    this.current = Number(this.$route.query.page);
-    this.params.pageSize = Number(this.$route.query.per_page);
+    this.getFirstData("/faqs", "__GET_FAQS");
   },
   methods: {
     changeSearch(val) {
@@ -305,13 +294,23 @@ export default {
       this.__GET_FAQS_BY_ID(id);
     },
     deleteAction(id) {
-      this.__DELETE_FAQS(id);
+      this.__DELETE_GLOBAL(
+        id,
+        "fetchFaqs/deleteFaqs",
+        "Услуга был успешно удален",
+        "__GET_FAQS"
+      );
     },
     async __GET_FAQS() {
       this.loading = true;
       const data = await this.$store.dispatch("fetchFaqs/getFaqs");
       this.loading = false;
-      this.faqs = data?.faqs?.data;
+      this.faqs = data?.faqs?.data.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+        };
+      });
       this.totalPage = data?.faqs?.total;
     },
     addFaqs() {
@@ -360,17 +359,6 @@ export default {
         service_id: null,
       };
     },
-    async __DELETE_FAQS(id) {
-      try {
-        this.loading = true;
-        await this.$store.dispatch("fetchFaqs/deleteFaqs", id);
-        this.loading = false;
-        this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_FAQS();
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
-    },
     async __EDIT_FAQS(res) {
       try {
         await this.$store.dispatch("fetchFaqs/editFaqs", {
@@ -384,6 +372,11 @@ export default {
       } catch (e) {
         this.statusFunc(e.response);
       }
+    },
+  },
+  watch: {
+    async current(val) {
+      this.changePagination("/faqs", "__GET_FAQS");
     },
   },
   components: { TitleBlock, SearchInput },

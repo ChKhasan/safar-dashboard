@@ -115,6 +115,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
+  middleware: "auth",
   mixins: [status],
   data() {
     return {
@@ -142,7 +143,12 @@ export default {
       this.loading = true;
       const data = await this.$store.dispatch("fetchServices/getServices");
       this.loading = false;
-      this.services = data?.services;
+      this.services = data?.services.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+        };
+      });
     },
     async __DELETE_SERVICES(id) {
       try {

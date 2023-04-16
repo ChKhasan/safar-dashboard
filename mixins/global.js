@@ -47,5 +47,43 @@ export default {
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     },
+    async changePagination(url, dataFunc) {
+      if (this.$route.query.page != val) {
+        await this.$router.replace({
+          path: url,
+          query: {
+            page: val,
+            per_page: this.params.pageSize,
+          },
+        });
+        this[dataFunc]();
+      }
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    },
+    async getFirstData(url, dataFunc) {
+      if (
+        !Object.keys(this.$route.query).includes("page") ||
+        !Object.keys(this.$route.query).includes("per_page")
+      ) {
+        await this.$router.replace({
+          path: url,
+          query: { page: this.params.page, per_page: this.params.pageSize },
+        });
+      }
+      this[dataFunc]();
+      this.current = Number(this.$route.query.page);
+      this.params.pageSize = Number(this.$route.query.per_page);
+    },
+    async __DELETE_GLOBAL(id, link, message, data) {
+      try {
+        await this.$store.dispatch(link, id);
+        this.notification("success", "success", message);
+        console.log(data);
+        this[data]();
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
   },
 };

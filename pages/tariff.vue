@@ -1,8 +1,7 @@
 <template>
   <div class="">
     <TitleBlock title="Тарифы">
-      <div class="d-flex">
-      </div>
+      <div class="d-flex"></div>
     </TitleBlock>
     <div class="container_xl app-container mt-4">
       <div class="card_block main-table px-4 pb-4">
@@ -26,7 +25,7 @@
         >
           <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="subtitle" slot-scope="text" v-html="text?.ru"></span>
           <span slot="schedule" slot-scope="text">
             <span class="option-items d-flex" v-for="(desc, index) in text">
               <span v-if="desc == null">Круглосутоно</span>
@@ -135,7 +134,6 @@ const columns = [
     width: 100,
   },
 ];
-
 export default {
   name: "IndexPage",
   mixins: [status, global],
@@ -152,42 +150,37 @@ export default {
       week: ["пн", "вт", "ср", "чт", "пт", "сб"],
     };
   },
-  async mounted() {
-    if (
-      !Object.keys(this.$route.query).includes("page") ||
-      !Object.keys(this.$route.query).includes("per_page")
-    ) {
-      await this.$router.replace({
-        path: `/tariff`,
-        query: { page: this.params.page, per_page: this.params.pageSize },
-      });
-    }
-    this.__GET_TARIFF();
-    this.current = Number(this.$route.query.page);
-    this.params.pageSize = Number(this.$route.query.per_page);
+  mounted() {
+    this.getFirstData("/tariff", "__GET_TARIFF");
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_TARIFF(id);
+      this.__DELETE_GLOBAL(
+        id,
+        "fetchTariff/deleteTariff",
+        "Тариф был успешно удален",
+        "__GET_TARIFF"
+      );
     },
     async __GET_TARIFF() {
+      this.loading = true;
       const data = await this.$store.dispatch("fetchTariff/getTariff");
-      this.tariffs = data?.tariffs?.data;
+      this.loading = false;
+      this.tariffs = data?.tariffs?.data.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+        };
+      });
       this.totalPage = data?.tariffs?.total;
     },
-    async __DELETE_TARIFF(id) {
-      try {
-        this.loading = true;
-        await this.$store.dispatch("fetchTariff/deleteTariff", id);
-        this.loading = false;
-        this.notification("success", "success", "Тариф был успешно удален");
-        this.__GET_TARIFF();
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
+  },
+  watch: {
+    async current(val) {
+      this.changePagination("/tariff", "__GET_TARIFF");
     },
   },
   components: { TitleBlock, SearchInput },

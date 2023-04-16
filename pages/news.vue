@@ -49,7 +49,6 @@
             <span v-html="text.ru"></span>
           </span>
           <span slot="id" slot-scope="text">
-            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span
               class="action-btn"
               v-html="editIcon"
@@ -169,43 +168,36 @@ export default {
     };
   },
   async mounted() {
-    if (
-      !Object.keys(this.$route.query).includes("page") ||
-      !Object.keys(this.$route.query).includes("per_page")
-    ) {
-      await this.$router.replace({
-        path: `/news`,
-        query: { page: this.params.page, per_page: this.params.pageSize },
-      });
-    }
-    this.__GET_POSTS();
-    this.current = Number(this.$route.query.page);
-    this.params.pageSize = Number(this.$route.query.per_page);
+    this.getFirstData("/news", "__GET_POSTS");
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_POSTS(id);
+      this.__DELETE_GLOBAL(
+        id,
+        "fetchPosts/deletePosts",
+        "Услуга был успешно удален",
+        "__GET_POSTS"
+      );
     },
     async __GET_POSTS() {
       this.loading = true;
       const data = await this.$store.dispatch("fetchPosts/getPosts");
       this.loading = false;
-      this.posts = data?.posts?.data;
+      this.posts = data?.posts?.data.map((item) => {
+        return {
+          ...item,
+          key: item.id,
+        };
+      });
       this.totalPage = data?.posts?.total;
     },
-    async __DELETE_POSTS(id) {
-      try {
-        this.loading = true;
-        await this.$store.dispatch("fetchPosts/deletePosts", id);
-        this.loading = false;
-        this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_POSTS();
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
+  },
+  watch: {
+    async current(val) {
+      this.changePagination("/news", "__GET_POSTS");
     },
   },
   components: { TitleBlock, SearchInput },

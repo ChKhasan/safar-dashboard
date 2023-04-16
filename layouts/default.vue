@@ -139,6 +139,10 @@ export default {
       return this.$route.name;
     },
   },
+  mounted() {
+    console.log(this.$context);
+    console.log(this.$nuxt);
+  },
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
@@ -146,8 +150,21 @@ export default {
     onBreakpoint(broken) {
       console.log(broken);
     },
+    success() {
+      this.$message.success("You are online");
+    },
+    error() {
+      this.$message.error("You are offline");
+    },
   },
-
+  watch: {
+    "$nuxt.isOffline"(val) {
+      val && this.error();
+    },
+    "$nuxt.isOnline"(val) {
+      val && this.success();
+    },
+  },
   components: { TitleBlock },
 };
 </script>

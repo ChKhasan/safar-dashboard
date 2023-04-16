@@ -17,28 +17,19 @@
           <input type="password" class="input" />
         </div>
       </div>
-      <div class="login_btn d-flex justify-content-center" @click="$router.push('/')">
-        Continue
-      </div>
+      <div class="login_btn d-flex justify-content-center" @click="login">Continue</div>
     </div>
   </div>
 </template>
 <script>
 export default {
-  // middleware: "auth",
   layout: "empty",
-
+  middleware: "login",
   methods: {
     login() {
-      // this.$auth.loginWith("local", {
-      //   data: {
-      //     nbm: "+998910028174",
-      //     password: "mypass1234",
-      //   },
-      // });
-      this.$router.push("/catalog/products");
-      // localStorage.setItem("Auth", "token");
-      // this.$router.push("/catalog/products");
+      this.$store.commit("logIn");
+      this.$router.push('/')
+      console.log("lohin");
     },
   },
 };

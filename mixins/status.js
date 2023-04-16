@@ -19,6 +19,8 @@ export default {
             "Нет результатов запроса для модели"
           );
           break;
+        default:
+          this.notification("error", "Error", "Нет результатов запроса");
       }
     },
     notification(type, message, desc) {
