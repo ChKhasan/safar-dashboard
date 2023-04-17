@@ -41,7 +41,6 @@
             </span>
           </span>
           <span slot="id" slot-scope="text">
-            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span
               class="action-btn"
               v-html="editIcon"

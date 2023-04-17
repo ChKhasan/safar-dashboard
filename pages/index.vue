@@ -32,15 +32,15 @@
           :data-source="services"
           :loading="loading"
         >
-          <span slot="banner" slot-scope="text">
-            <img v-if="text != null" class="table-image" :src="text[0]" />
+          <span slot="sm_banner" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text" />
             <img
               v-else
               class="table-image"
               src="../assets/images/photo_2023-03-04_13-28-58.jpg"
             />
           </span>
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span slot="name" slot-scope="text" v-html="text?.ru"></span>
           <span slot="guarantee" slot-scope="text" v-html="text?.ru"></span>
           <span slot="package_options" slot-scope="text">
@@ -57,14 +57,12 @@
               @click="$router.push(`/edit_park_services/${text}`)"
             >
             </span>
-            <a-popconfirm
-              title="Are you sure delete this row?"
-              ok-text="Yes"
-              cancel-text="No"
-              @confirm="deleteAction(text)"
+            <span
+              class="action-btn"
+              v-html="eyeIcon"
+              @click="$router.push(`/edit_park_services/${text}`)"
             >
-              <span class="action-btn" v-html="deleteIcon"> </span>
-            </a-popconfirm>
+            </span>
           </span>
         </a-table>
       </div>
@@ -78,7 +76,7 @@ import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 const columns = [
   {
-    title: "ID",
+    title: "№",
     key: "indexId",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "indexId" },
@@ -88,10 +86,10 @@ const columns = [
   },
   {
     title: "Name",
-    dataIndex: "banner",
-    key: "banner",
+    dataIndex: "sm_banner",
+    key: "sm_banner",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "banner" },
+    scopedSlots: { customRender: "sm_banner" },
     className: "column-name",
     width: 60,
     align: "left",
@@ -162,23 +160,12 @@ export default {
       this.loading = true;
       const data = await this.$store.dispatch("fetchServices/getServices");
       this.loading = false;
-      this.services = data?.services.map((item) => {
+      this.services = data?.services.map((item, index) => {
         return {
           ...item,
-          key: item.id,
+          key: index + 1,
         };
       });
-    },
-    async __DELETE_SERVICES(id) {
-      try {
-        this.loading = true;
-        await this.$store.dispatch("fetchServices/deleteServices", id);
-        this.loading = false;
-        this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_SERVICES();
-      } catch (e) {
-        this.statusFunc(e.response);
-      }
     },
   },
   components: { TitleBlock, SearchInput },

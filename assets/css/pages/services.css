@@ -40,11 +40,14 @@
 }
 .grid-with-btn {
   display: grid;
-  grid-template-columns: 1fr 1fr 30px;
+  grid-template-columns: 1fr 30px;
   grid-gap: 24px;
 }
 .statistic-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 12px;
+}
+.btn_group .add-btn {
+  margin-right: 16px;
 }

@@ -444,18 +444,64 @@ export default {
       previewVisible: false,
       previewImage: "",
       editorOption: {
+        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
             [
               {
+                font: [],
+              },
+              {
                 size: [],
               },
             ],
             ["bold", "italic", "underline", "strike"],
-
-            ["image"],
-            ["code-block"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
           ],
         },
       },
@@ -658,13 +704,7 @@ export default {
         });
       }
       this.form.schedule = [...this.form.schedule];
-      // this.count ++
-      // this.data = this.data
-      // console.log(this.count);
-    },
-    onChange(value, dateString) {
-      console.log("Selected Time: ", value);
-      console.log("Formatted Selected Time: ", dateString);
+
     },
     onSubmit() {
       const data = {
@@ -698,7 +738,6 @@ export default {
           }),
       };
       const { fileListStat, ...rest } = data;
-      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.__POST_TARIFF(rest);
@@ -710,10 +749,8 @@ export default {
     async __POST_TARIFF(data) {
       try {
         await this.$store.dispatch("fetchTariff/postTariff", data);
-        console.log("asdasd");
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push("/");
-        console.log("data");
       } catch (e) {
         this.statusFunc(e.response);
       }
@@ -755,9 +792,6 @@ export default {
     onChangeTime(e, index, name, ind) {
       let val = moment(e).format("hh:mm");
       this.form.schedule[index][ind][name] = val;
-    },
-    onOk(value) {
-      console.log("onOk: ", value);
     },
     handleCancel() {
       this.previewVisible = false;
@@ -809,7 +843,6 @@ export default {
         this.form.min_clients = "";
         this.form.max_clients = "";
       }
-      console.log(val);
     },
   },
   components: { TitleBlock, FormTitle },

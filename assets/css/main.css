@@ -51,3 +51,6 @@ ul {
 .ant-notification {
   z-index: 2001 !important;
 }
+.btn-primary:focus {
+  box-shadow: none;
+}

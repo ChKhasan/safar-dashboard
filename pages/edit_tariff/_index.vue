@@ -442,30 +442,67 @@ export default {
     return {
       top: 10,
       moment,
-      fileList: [
-        {
-          uid: "-1",
-          name: "image.png",
-          status: "done",
-          url:
-            "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-        },
-      ],
       previewVisible: false,
       previewImage: "",
       editorOption: {
+        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
             [
               {
+                font: [],
+              },
+              {
                 size: [],
               },
             ],
             ["bold", "italic", "underline", "strike"],
-
-            ["image"],
-            ["code-block"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
           ],
         },
       },
@@ -630,13 +667,6 @@ export default {
         });
       }
       this.form.schedule = [...this.form.schedule];
-      // this.count ++
-      // this.data = this.data
-      // console.log(this.count);
-    },
-    onChange(value, dateString) {
-      console.log("Selected Time: ", value);
-      console.log("Formatted Selected Time: ", dateString);
     },
     onSubmit() {
       const data = {
@@ -668,7 +698,6 @@ export default {
             return rest;
           }),
       };
-      console.log(data);
       const { fileListStat, ...rest } = data;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
@@ -729,7 +758,7 @@ export default {
         "fetchTariff/getTariffById",
         this.$route.params.index
       );
-      this.form = data?.tariff;
+      this.form = { ...this.form, ...data?.tariff };
       this.form.schedule = data?.tariff.schedule.map((item) => {
         if (item == null) {
           return [
@@ -789,8 +818,6 @@ export default {
         };
       });
       this.form.files = data?.tariff.galleries.map((item) => item.sm_file);
-      console.log(this.form);
-
       const statLength = this.form.statistics.length;
       for (var i = 0; i < 3 - statLength; i++) {
         this.form.statistics.push({
@@ -815,9 +842,11 @@ export default {
           status: "done",
           oldImg: true,
           url: item?.sm_file,
+          response: {
+            path: item.file,
+          },
         };
       });
-      console.log(this.form.fileListStat);
     },
     async __EDIT_TARIFF(data) {
       try {
@@ -844,9 +873,6 @@ export default {
       let val = moment(e).format("hh:mm");
       this.form.schedule[index][ind][name] = val;
     },
-    onOk(value) {
-      console.log("onOk: ", value);
-    },
     handleCancel() {
       this.previewVisible = false;
     },
@@ -867,15 +893,11 @@ export default {
       }
     },
     handleChangeStat({ fileList }) {
-      console.log(fileList);
-      this.fileList = fileList;
       this.form.fileListStat = fileList;
-      console.log(this.form.fileListStat);
-
       if (fileList[0]?.response?.path) {
         this.form.files = fileList.map((item) => item?.response?.path);
-      } else if (fileList.length == 0) {
-        this.form.files = [];
+      } else if (fileList.length == 0 || this.form.files > fileList.length) {
+        this.form.files = fileList.map((item) => item?.response?.path);
       }
     },
   },
@@ -901,7 +923,6 @@ export default {
     //     this.form.min_clients = "";
     //     this.form.max_clients = "";
     //   }
-    //   console.log(val);
     // },
   },
   components: { TitleBlock, FormTitle },

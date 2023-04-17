@@ -40,7 +40,12 @@
               <a-menu-item
                 :key="items.key"
                 v-for="items in menu.menuItems"
-                :class="{ 'is-active': items.to == $route.path }"
+                :class="{
+                  'is-active':
+                    items.to == $route.path ||
+                    items.add == $route.name ||
+                    items.edit == $route.name,
+                }"
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
@@ -78,29 +83,32 @@ export default {
               key: "1",
               name: "Услуги",
               to: "/",
+              add: "add_park_services",
+              edit: "edit_park_services",
             },
             {
               key: "2",
-              name: "Тариф",
-              to: "/tariff",
+              name: "Новости",
+              to: "/news",
+              add: "add_news",
+              edit: "edit_news",
             },
             {
               key: "3",
-              name: "Новости",
-              to: "/news",
+              name: "Галереи",
+              to: "/galleries",
+              add: "add_galleries",
+              edit: "edit_galleries",
             },
             {
               key: "4",
-              name: "Галереи",
-              to: "/galleries",
+              name: "F.A.Q",
+              to: "/faqs",
+              add: "add_faqs",
+              edit: "edit_faqs",
             },
             {
               key: "5",
-              name: "F.A.Q",
-              to: "/faqs",
-            },
-            {
-              key: "6",
               name: "Заявки",
               to: "/applications",
             },
@@ -139,16 +147,10 @@ export default {
       return this.$route.name;
     },
   },
-  mounted() {
-    console.log(this.$context);
-    console.log(this.$nuxt);
-  },
+
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
-    },
-    onBreakpoint(broken) {
-      console.log(broken);
     },
     success() {
       this.$message.success("You are online");

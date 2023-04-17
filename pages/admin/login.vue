@@ -29,7 +29,6 @@ export default {
     login() {
       this.$store.commit("logIn");
       this.$router.push('/')
-      console.log("lohin");
     },
   },
 };

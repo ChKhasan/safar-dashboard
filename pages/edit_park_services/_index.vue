@@ -1,6 +1,38 @@
 <template>
   <div class="">
     <TitleBlock title="Xizmatlar">
+      <div class="d-flex justify-content-between btn_group">
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          :type="
+            $route.hash == '#total_info' || $route.hash == '' ? 'primary' : 'default'
+          "
+          @click="$router.push({ hash: 'total_info' })"
+        >
+          Общие данные
+        </a-button>
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          :type="$route.hash == '#sessions_tariffs' ? 'primary' : 'default'"
+          @click="$router.push({ hash: 'sessions_tariffs' })"
+        >
+          Сеансы и тарифы
+        </a-button>
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          :type="$route.hash == '#faq' ? 'primary' : 'default'"
+          @click="$router.push({ hash: 'faq' })"
+        >
+          FAQ
+        </a-button>
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          :type="$route.hash == '#reviews' ? 'primary' : 'default'"
+          @click="$router.push({ hash: 'reviews' })"
+        >
+          Отзывы
+        </a-button>
+      </div>
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -25,8 +57,11 @@
       layout="vertical"
       :wrapper-col="wrapperCol"
     >
-      <div class="services-grid">
-        <div class="container_xl app-container mt-4 d-flex flex-column">
+      <div class="services-grid pb-5 mt-5">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -110,7 +145,10 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container d-flex flex-column">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -177,7 +215,7 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container">
+        <div class="container_xl app-container" v-if="$route.hash == '#sessions_tariffs'">
           <div class="card_block px-4 py-4 mt-0">
             <div class="tariff-card-grid">
               <TariffCard />
@@ -189,7 +227,10 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container d-flex flex-column">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '#sessions_tariffs'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -241,7 +282,10 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container d-flex flex-column">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '#faq'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -286,7 +330,10 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container d-flex flex-column">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -331,7 +378,10 @@
             </div>
           </div>
         </div>
-        <div class="container_xl app-container d-flex flex-column">
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '#reviews'"
+        >
           <div class="form_tab">
             <div>
               <span
@@ -410,6 +460,15 @@
             </div>
           </div>
         </div>
+        <div class="container_xl d-flex justify-content-end">
+          <a-button
+            class="add-btn add-header-btn btn-primary d-flex align-items-center"
+            type="danger"
+            @click="deleteService"
+          >
+            Delete service
+          </a-button>
+        </div>
       </div>
     </a-form-model>
   </div>
@@ -462,18 +521,64 @@ export default {
         },
       ],
       editorOption: {
+        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
             [
               {
+                font: [],
+              },
+              {
                 size: [],
               },
             ],
             ["bold", "italic", "underline", "strike"],
-
-            ["image"],
-            ["code-block"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
           ],
         },
       },
@@ -673,6 +778,18 @@ export default {
         this.statusFunc(e.response);
       }
     },
+    deleteService() {
+      this.__DELETE_SERVICES(this.$route.params.index);
+    },
+    async __DELETE_SERVICES(id) {
+      try {
+        await this.$store.dispatch("fetchServices/deleteServices", id);
+        this.$router.push("/");
+        this.notification("success", "success", "Услуга был успешно удален");
+      } catch (e) {
+        this.statusFunc(e.response);
+      }
+    },
     async __GET_SERVICES_BY_ID() {
       const data = await this.$store.dispatch(
         "fetchServices/getServicesById",
@@ -742,7 +859,7 @@ export default {
               name: "image.png",
               status: "done",
               oldImg: true,
-              url: this.form.for_card,
+              url: this.form.sm_for_card,
             },
           ]
         : [];
@@ -753,7 +870,7 @@ export default {
               name: "image.png",
               status: "done",
               oldImg: true,
-              url: this.form.banner,
+              url: this.form.sm_banner,
             },
           ]
         : [];
@@ -893,47 +1010,6 @@ export default {
 };
 </script>
 <style lang="css">
-.services-grid {
-  display: grid;
-  grid-gap: 24px;
-  grid-template-columns: 1fr;
-}
-
-.grid-with-img {
-  display: grid;
-  grid-template-columns: auto 273px;
-  grid-gap: 24px;
-}
-.grid-with-img .clearfix {
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-}
-.grid-with-img .ant-upload-list-picture-card-container,
-.grid-with-img .ant-upload-list-picture-card .ant-upload-list-item,
-.grid-with-img .ant-upload.ant-upload-select-picture-card {
-  width: 100%;
-  height: 273px;
-}
-.faqs-grid {
-  margin-bottom: 24px;
-}
-.faqs-grid:last-child {
-  margin-bottom: 0;
-}
-.grid-with-btn {
-  display: grid;
-  grid-template-columns: 1fr 30px;
-  grid-gap: 24px;
-}
-.statistic-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 12px;
-}
-.tariff-card-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 20px;
-}
+@import "../../assets/css/pages/services.css";
+@import "../../assets/css/pages/tariff.css";
 </style>

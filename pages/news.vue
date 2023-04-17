@@ -41,7 +41,7 @@
               src="../assets/images/photo_2023-03-04_13-28-58.jpg"
             />
           </span>
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
           <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
@@ -100,7 +100,7 @@ import status from "../mixins/status";
 import global from "../mixins/global";
 const columns = [
   {
-    title: "ID",
+    title: "№",
     key: "indexId",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "indexId" },
@@ -186,10 +186,10 @@ export default {
       this.loading = true;
       const data = await this.$store.dispatch("fetchPosts/getPosts");
       this.loading = false;
-      this.posts = data?.posts?.data.map((item) => {
+      this.posts = data?.posts?.data.map((item,index) => {
         return {
           ...item,
-          key: item.id,
+          key: index + 1,
         };
       });
       this.totalPage = data?.posts?.total;

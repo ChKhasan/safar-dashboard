@@ -4,32 +4,17 @@
       <div class="d-flex justify-content-between btn_group">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          :type="
-            $route.hash == '#total_info' || $route.hash == '' ? 'primary' : 'default'
-          "
-          @click="$router.push({ hash: 'total_info' })"
+          type="primary"
         >
           Общие данные
         </a-button>
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          :type="$route.hash == '#sessions_tariffs' ? 'primary' : 'default'"
-          @click="$router.push({ hash: 'sessions_tariffs' })"
-        >
+        <a-button class="add-btn add-header-btn btn-primary d-flex align-items-center">
           Сеансы и тарифы
         </a-button>
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          :type="$route.hash == '#faq' ? 'primary' : 'default'"
-          @click="$router.push({ hash: 'faq' })"
-        >
+        <a-button class="add-btn add-header-btn btn-primary d-flex align-items-center">
           FAQ
         </a-button>
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          :type="$route.hash == '#reviews' ? 'primary' : 'default'"
-          @click="$router.push({ hash: 'reviews' })"
-        >
+        <a-button class="add-btn add-header-btn btn-primary d-flex align-items-center">
           Отзывы
         </a-button>
       </div>
@@ -57,11 +42,8 @@
       layout="vertical"
       :wrapper-col="wrapperCol"
     >
-      <div class="services-grid pb-5 pt-5">
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '' || $route.hash == '#total_info'"
-        >
+      <div class="services-grid">
+        <div class="container_xl app-container mt-4 d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -145,10 +127,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#total_info'"
-        >
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -215,10 +194,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#sessions_tariffs'"
-        >
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -266,10 +242,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#faq'"
-        >
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -314,10 +287,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '' || $route.hash == '#total_info'"
-        >
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -362,10 +332,7 @@
             </div>
           </div>
         </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#reviews'"
-        >
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -439,12 +406,12 @@
 </template>
 
 <script>
-import TitleBlock from "../components/Title-block.vue";
+import TitleBlock from "../../components/Title-block.vue";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import FormTitle from "../components/Form-title.vue";
-import status from "../mixins/status";
+import FormTitle from "../../components/Form-title.vue";
+import status from "../../mixins/status";
 
 function getBase64(file) {
   return new Promise((resolve, reject) => {
@@ -461,11 +428,11 @@ export default {
     return {
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      xIcon: require("../assets/svg/x.svg?raw"),
-      plusIcon: require("../assets/svg/plus.svg?raw"),
-      infoIcon: require("../assets/svg/info.svg?raw"),
-      editIcon: require("../assets/svg/edit.svg?raw"),
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
+      xIcon: require("../../assets/svg/x.svg?raw"),
+      plusIcon: require("../../assets/svg/plus.svg?raw"),
+      infoIcon: require("../../assets/svg/info.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
       formTab: {
         name: "ru",
         guarantee: "ru",
@@ -485,64 +452,18 @@ export default {
         },
       ],
       editorOption: {
-        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
             [
               {
-                font: [],
-              },
-              {
                 size: [],
               },
             ],
             ["bold", "italic", "underline", "strike"],
-            [
-              {
-                color: [],
-              },
-              {
-                background: [],
-              },
-            ],
-            [
-              {
-                script: "super",
-              },
-              {
-                script: "sub",
-              },
-            ],
-            [
-              {
-                header: [false, 1, 2, 3, 4, 5, 6],
-              },
-              "blockquote",
-              "code-block",
-            ],
-            [
-              {
-                list: "ordered",
-              },
-              {
-                list: "bullet",
-              },
-              {
-                indent: "-1",
-              },
-              {
-                indent: "+1",
-              },
-            ],
-            [
-              "direction",
-              {
-                align: [],
-              },
-            ],
-            ["link", "image", "video"],
-            ["clean"],
+
+            ["image"],
+            ["code-block"],
           ],
         },
       },
@@ -729,7 +650,6 @@ export default {
         }
       });
     },
-    changeHash() {},
     async __POST_SERVICES(data) {
       try {
         await this.$store.dispatch("fetchServices/postServices", data);
@@ -858,5 +778,6 @@ export default {
 };
 </script>
 <style lang="css">
-@import "../assets/css/pages/services.css";
+@import "../../assets/css/pages/services.css";
+
 </style>

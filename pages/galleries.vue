@@ -40,7 +40,7 @@
               src="../assets/images/photo_2023-03-04_13-28-58.jpg"
             />
           </span>
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span slot="name" slot-scope="text">{{ text?.ru }}</span>
           <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
           <span slot="desc" slot-scope="text">
@@ -189,7 +189,7 @@ function getBase64(file) {
 }
 const columns = [
   {
-    title: "ID",
+    title: "№",
     key: "indexId",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "indexId" },
@@ -337,10 +337,10 @@ export default {
       this.loading = true;
       const data = await this.$store.dispatch("fetchGalleries/getGalleries");
       this.loading = false;
-      this.galleries = data?.galleries?.data.map((item) => {
+      this.galleries = data?.galleries?.data.map((item, index) => {
         return {
           ...item,
-          key: item.id,
+          key: index + 1,
         };
       });
       this.totalPage = data?.galleries?.total;
@@ -372,22 +372,7 @@ export default {
         const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
         this.visible = true;
         this.form = data?.gallery;
-        // this.fileList = data?.gallery.sm_files.map((item, index) => {
-        //   data?.gallery.files.forEach((elem, ind) => {
-        //     if (index == ind) {
-        //       return {
-        //         uid: `-${index}`,
-        //         name: "image.png",
-        //         status: "done",
-        //         oldImg: true,
-        //         url: item,
-        //         response: {
-        //           path: elem,
-        //         },
-        //       };
-        //     }
-        //   });
-        // });
+        this.fileList = [];
         data?.gallery.sm_files.forEach((item, index) => {
           data?.gallery.files.forEach((elem, ind) => {
             if (index == ind) {
@@ -404,11 +389,8 @@ export default {
             }
           });
         });
-        console.log(this.fileList);
-        // this.form.files = data?.gallery.sm_files;
       } catch (e) {
-        console.log(e);
-        // this.statusFunc(e.response);
+        this.statusFunc(e.response);
       }
     },
     emptyData() {
@@ -459,8 +441,6 @@ export default {
         this.form.files = fileList.map((item) => item?.response?.path);
         this.loadingBtn = false;
       }
-      console.log(fileList);
-      console.log(this.form.files);
     },
   },
   watch: {

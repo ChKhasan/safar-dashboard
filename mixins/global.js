@@ -79,7 +79,6 @@ export default {
       try {
         await this.$store.dispatch(link, id);
         this.notification("success", "success", message);
-        console.log(data);
         this[data]();
       } catch (e) {
         this.statusFunc(e.response);

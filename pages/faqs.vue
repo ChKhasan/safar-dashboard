@@ -36,7 +36,7 @@
             <span>{{ text?.ru }}</span>
           </span>
           <span slot="answer" slot-scope="text" v-html="text?.ru"></span>
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
@@ -161,7 +161,7 @@ function getBase64(file) {
 }
 const columns = [
   {
-    title: "ID",
+    title: "№",
     key: "indexId",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "indexId" },
@@ -305,10 +305,10 @@ export default {
       this.loading = true;
       const data = await this.$store.dispatch("fetchFaqs/getFaqs");
       this.loading = false;
-      this.faqs = data?.faqs?.data.map((item) => {
+      this.faqs = data?.faqs?.data.map((item, index) => {
         return {
           ...item,
-          key: item.id,
+          key: index + 1,
         };
       });
       this.totalPage = data?.faqs?.total;
@@ -339,9 +339,8 @@ export default {
       try {
         // const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
         const data = await this.$store.dispatch("fetchFaqs/getFaqs");
-        // console.log(data);
         this.visible = true;
-        this.form = data?.faqs.find((item) => item.id == id);
+        this.form = data?.faqs?.data.find((item) => item.id == id);
       } catch (e) {
         this.statusFunc(e.response);
       }

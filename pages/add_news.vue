@@ -113,22 +113,85 @@ export default {
   mixins: [status],
   data() {
     return {
+      // editorOption: {
+      //   theme: "snow",
+      //   modules: {
+      //     toolbar: [
+      //       [
+      //         {
+      //           size: [],
+      //         },
+      //       ],
+      //       ["bold", "italic", "underline", "strike"],
+
+      //       ["image"],
+      //       ["code-block"],
+      //     ],
+      //   },
+      // },
       editorOption: {
+        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
             [
               {
+                font: [],
+              },
+              {
                 size: [],
               },
             ],
             ["bold", "italic", "underline", "strike"],
-
-            ["image"],
-            ["code-block"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
           ],
         },
       },
+
       formTab: "ru",
       formTabData: [
         {
@@ -190,8 +253,6 @@ export default {
         this.notification("success", "success", "Пост успешно добавлен");
         this.$router.push("/news");
       } catch (e) {
-        console.log(e);
-
         this.statusFunc(e.response);
       }
     },
