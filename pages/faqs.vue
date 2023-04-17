@@ -339,7 +339,7 @@ export default {
       try {
         // const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
         const data = await this.$store.dispatch("fetchFaqs/getFaqs");
-
+        // console.log(data);
         this.visible = true;
         this.form = data?.faqs.find((item) => item.id == id);
       } catch (e) {

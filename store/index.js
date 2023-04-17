@@ -1,5 +1,5 @@
 export const state = () => ({
-  authenticated: false,
+  authenticated: true,
 });
 export const mutations = {
   logIn(state) {

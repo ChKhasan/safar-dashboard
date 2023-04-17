@@ -190,6 +190,8 @@ export default {
         this.notification("success", "success", "Пост успешно добавлен");
         this.$router.push("/news");
       } catch (e) {
+        console.log(e);
+
         this.statusFunc(e.response);
       }
     },

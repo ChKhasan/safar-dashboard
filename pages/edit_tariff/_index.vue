@@ -169,7 +169,6 @@
                   v-model="form.max_clients"
                   :disabled="form.type == 'tariff'"
                   placeholder="Maximal"
-
                 />
               </a-form-model-item>
             </div>
@@ -642,7 +641,6 @@ export default {
     onSubmit() {
       const data = {
         ...this.form,
-        service_id: this.$route.params.index,
         tab_start_text: this.form.type != "tariff" ? null : this.form.tab_start_text,
         prices: this.form.prices.map((item) => {
           return {
@@ -772,8 +770,54 @@ export default {
           }),
         };
       });
-      this.form.fileListStat = []
+      this.form.statistics = data?.tariff.statistics.map((item, index) => {
+        return {
+          ...item,
+          indexId: item.id,
+          img: item?.sm_img ? item?.sm_img : "",
+          statisticFile: item?.sm_img
+            ? [
+                {
+                  uid: "-1",
+                  name: "image.png",
+                  status: "done",
+                  oldImg: true,
+                  url: item?.sm_img,
+                },
+              ]
+            : [],
+        };
+      });
+      this.form.files = data?.tariff.galleries.map((item) => item.sm_file);
       console.log(this.form);
+
+      const statLength = this.form.statistics.length;
+      for (var i = 0; i < 3 - statLength; i++) {
+        this.form.statistics.push({
+          indexId: this.form.statistics.length + i + 1,
+          id: 0,
+          name: {
+            ru: "",
+            uz: "",
+          },
+          number: {
+            ru: "",
+            uz: "",
+          },
+          img: "",
+          statisticFile: [],
+        });
+      }
+      this.form.fileListStat = data?.tariff.galleries.map((item, index) => {
+        return {
+          uid: `-${index + 1}`,
+          name: "image.png",
+          status: "done",
+          oldImg: true,
+          url: item?.sm_file,
+        };
+      });
+      console.log(this.form.fileListStat);
     },
     async __EDIT_TARIFF(data) {
       try {
@@ -823,7 +867,11 @@ export default {
       }
     },
     handleChangeStat({ fileList }) {
+      console.log(fileList);
+      this.fileList = fileList;
       this.form.fileListStat = fileList;
+      console.log(this.form.fileListStat);
+
       if (fileList[0]?.response?.path) {
         this.form.files = fileList.map((item) => item?.response?.path);
       } else if (fileList.length == 0) {

@@ -32,6 +32,14 @@
           :data-source="services"
           :loading="loading"
         >
+          <span slot="banner" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text[0]" />
+            <img
+              v-else
+              class="table-image"
+              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
+            />
+          </span>
           <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
           <span slot="name" slot-scope="text" v-html="text?.ru"></span>
           <span slot="guarantee" slot-scope="text" v-html="text?.ru"></span>
@@ -43,7 +51,6 @@
             ></span>
           </span>
           <span slot="id" slot-scope="text">
-            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span
               class="action-btn"
               v-html="editIcon"
@@ -81,12 +88,24 @@ const columns = [
   },
   {
     title: "Name",
+    dataIndex: "banner",
+    key: "banner",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "banner" },
+    className: "column-name",
+    width: 60,
+    align: "left",
+    colSpan: 2,
+  },
+  {
+    title: "Name",
     dataIndex: "name",
     key: "name",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
     width: 200,
+    colSpan: 0,
   },
   {
     title: "xizmatlarimiz",

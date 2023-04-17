@@ -204,6 +204,7 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "sm_files" },
     className: "column-name",
+    width: 60,
     align: "left",
     colSpan: 2,
   },
@@ -371,18 +372,43 @@ export default {
         const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
         this.visible = true;
         this.form = data?.gallery;
-        this.fileList = data?.gallery.sm_files.map((item, index) => {
-          return {
-            uid: `-${index}`,
-            name: "image.png",
-            status: "done",
-            oldImg: true,
-            url: item,
-          };
+        // this.fileList = data?.gallery.sm_files.map((item, index) => {
+        //   data?.gallery.files.forEach((elem, ind) => {
+        //     if (index == ind) {
+        //       return {
+        //         uid: `-${index}`,
+        //         name: "image.png",
+        //         status: "done",
+        //         oldImg: true,
+        //         url: item,
+        //         response: {
+        //           path: elem,
+        //         },
+        //       };
+        //     }
+        //   });
+        // });
+        data?.gallery.sm_files.forEach((item, index) => {
+          data?.gallery.files.forEach((elem, ind) => {
+            if (index == ind) {
+              this.fileList.push({
+                uid: `-${index}`,
+                name: "image.png",
+                status: "done",
+                oldImg: true,
+                url: item,
+                response: {
+                  path: elem,
+                },
+              });
+            }
+          });
         });
-        this.form.files = data?.gallery.sm_files;
+        console.log(this.fileList);
+        // this.form.files = data?.gallery.sm_files;
       } catch (e) {
-        this.statusFunc(e.response);
+        console.log(e);
+        // this.statusFunc(e.response);
       }
     },
     emptyData() {
@@ -429,9 +455,12 @@ export default {
       if (fileList[0]?.response?.path) {
         this.form.files = fileList.map((item) => item?.response?.path);
         this.loadingBtn = false;
-      } else if (fileList.length == 0) {
+      } else if (fileList.length == 0 || this.form.files > fileList.length) {
+        this.form.files = fileList.map((item) => item?.response?.path);
         this.loadingBtn = false;
       }
+      console.log(fileList);
+      console.log(this.form.files);
     },
   },
   watch: {

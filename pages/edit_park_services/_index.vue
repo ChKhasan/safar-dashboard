@@ -60,6 +60,54 @@
                 placeholder="Group name"
               />
             </a-form-model-item>
+            <div class="service-upload-container">
+              <a-form-model-item class="form-item mb-3 mt-3" label="Banner">
+                <div class="service-upload">
+                  <a-upload
+                    action="https://api.safarpark.uz/api/files/upload"
+                    list-type="picture-card"
+                    :file-list="fileBanner"
+                    @preview="handlePreview"
+                    @change="($event) => handleChangeServiceUpload($event, 'banner')"
+                  >
+                    <div v-if="fileBanner.length < 1">
+                      <a-icon type="plus" />
+                      <div class="ant-upload-text">Upload</div>
+                    </div>
+                  </a-upload>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3 mt-3" label="Image">
+                <div class="service-upload">
+                  <a-upload
+                    action="https://api.safarpark.uz/api/files/upload"
+                    list-type="picture-card"
+                    :file-list="fileForCard"
+                    @preview="handlePreview"
+                    @change="($event) => handleChangeServiceUpload($event, 'for_card')"
+                  >
+                    <div v-if="fileForCard.length < 1">
+                      <a-icon type="plus" />
+                      <div class="ant-upload-text">Upload</div>
+                    </div>
+                  </a-upload>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
+              </a-form-model-item>
+            </div>
           </div>
         </div>
         <div class="container_xl app-container d-flex flex-column">
@@ -266,7 +314,7 @@
               <div
                 @click="deletePackageOption(option.indexId)"
                 class="variant-btn variant-btn-delete mt-3"
-                style="position: absolute; right: 5px; top: -10px; z-index: 100"
+                style="position: absolute; right: 5px; top: -10px; z-index: 9"
                 v-html="xIcon"
               ></div>
               <a-form-model-item class="form-item mb-0 mt-0">
@@ -429,6 +477,8 @@ export default {
           ],
         },
       },
+      fileBanner: [],
+      fileForCard: [],
       form: {
         name: {
           ru: "",
@@ -442,6 +492,8 @@ export default {
           ru: "",
           uz: "",
         },
+        banner: null,
+        for_card: null,
         statistics: [
           {
             indexId: 1,
@@ -683,7 +735,30 @@ export default {
           };
         }),
       };
-      for (var i = 0; i < 3 - this.form.statistics.length; i++) {
+      this.fileForCard = this.form.for_card
+        ? [
+            {
+              uid: "-1",
+              name: "image.png",
+              status: "done",
+              oldImg: true,
+              url: this.form.for_card,
+            },
+          ]
+        : [];
+      this.fileBanner = this.form.banner
+        ? [
+            {
+              uid: "-1",
+              name: "image.png",
+              status: "done",
+              oldImg: true,
+              url: this.form.banner,
+            },
+          ]
+        : [];
+      const statLength = this.form.statistics.length;
+      for (var i = 0; i < 3 - statLength; i++) {
         this.form.statistics.push({
           indexId: this.form.statistics.length + i + 1,
           id: 0,
@@ -799,6 +874,14 @@ export default {
       const stat = this.form.statistics.find((item) => item.indexId == id);
       stat.statisticFile = fileList;
       if (fileList[0]?.response?.path) stat.img = fileList[0]?.response?.path;
+    },
+    handleChangeServiceUpload({ fileList }, name) {
+      name == "banner" ? (this.fileBanner = fileList) : (this.fileForCard = fileList);
+      if (fileList[0]?.response?.path) {
+        this.form[name] = fileList[0]?.response?.path;
+      } else if (fileList.length == 0) {
+        this.form[name] = null;
+      }
     },
   },
   async mounted() {
