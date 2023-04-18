@@ -60,7 +60,7 @@
             <span
               class="action-btn"
               v-html="eyeIcon"
-              @click="$router.push(`/edit_park_services/${text}`)"
+              @click="$router.push(`/show_park_services/${text}`)"
             >
             </span>
           </span>
@@ -152,9 +152,6 @@ export default {
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
-    },
-    deleteAction(id) {
-      this.__DELETE_SERVICES(id);
     },
     async __GET_SERVICES() {
       this.loading = true;

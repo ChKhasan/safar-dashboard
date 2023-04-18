@@ -47,7 +47,7 @@ export default {
       document.body.scrollTop = 0;
       document.documentElement.scrollTop = 0;
     },
-    async changePagination(url, dataFunc) {
+    async changePagination(val, url, dataFunc) {
       if (this.$route.query.page != val) {
         await this.$router.replace({
           path: url,
@@ -81,7 +81,8 @@ export default {
         this.notification("success", "success", message);
         this[data]();
       } catch (e) {
-        this.statusFunc(e.response);
+        console.log(e)
+        // this.statusFunc(e.response);
       }
     },
   },

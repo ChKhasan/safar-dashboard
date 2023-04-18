@@ -20,12 +20,14 @@ import {
   FormModel,
   notification,
   message,
+  InputNumber
 } from "ant-design-vue";
 
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;
 
 Vue.use(TimePicker);
+Vue.use(InputNumber);
 Vue.use(Select);
 Vue.use(FormModel);
 Vue.use(Layout);

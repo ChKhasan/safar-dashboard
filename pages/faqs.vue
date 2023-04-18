@@ -303,15 +303,21 @@ export default {
     },
     async __GET_FAQS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchFaqs/getFaqs");
+      const data = await this.$store.dispatch("fetchFaqs/getFaqs", {
+        ...this.$route.query,
+      });
       this.loading = false;
+      const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
       this.faqs = data?.faqs?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + 1 + pageIndex,
         };
       });
       this.totalPage = data?.faqs?.total;
+    },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page;
     },
     addFaqs() {
       this.title = "Добавить";
@@ -327,7 +333,6 @@ export default {
       try {
         await this.$store.dispatch("fetchFaqs/postFaqs", data);
         this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/faqs");
         this.handleOk();
         this.emptyData();
         this.__GET_FAQS();
@@ -375,7 +380,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination("/faqs", "__GET_FAQS");
+      this.changePagination(val, "/faqs", "__GET_FAQS");
     },
   },
   components: { TitleBlock, SearchInput },

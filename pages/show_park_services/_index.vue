@@ -43,10 +43,15 @@
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="onSubmit"
+          @click="
+            $router.push({
+              name: `edit_park_services`,
+              hash: $route.hash,
+            })
+          "
         >
           <span class="svg-icon"> </span>
-          Сохранять
+          Редактировать
         </a-button>
       </div>
     </TitleBlock>
@@ -81,7 +86,11 @@
             v-if="formTab.name == item.index"
           >
             <a-form-model-item class="form-item mb-3" label="Xizmat nomi">
-              <a-input v-model="form.name[item.index]" placeholder="Group name" />
+              <a-input
+                v-model="form.name[item.index]"
+                placeholder="Group name"
+                disabled
+              />
             </a-form-model-item>
 
             <a-form-model-item
@@ -92,6 +101,7 @@
                 v-model="form.desc[item.index]"
                 class="product-editor mt-1"
                 :options="editorOption"
+                disabled
                 placeholder="Group name"
               />
             </a-form-model-item>
@@ -102,6 +112,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileBanner"
+                    :disabled="true"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'banner')"
                   >
@@ -125,6 +136,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileForCard"
+                    :disabled="true"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'for_card')"
                   >
@@ -171,6 +183,7 @@
               <quill-editor
                 v-model="form.guarantee[item.index]"
                 class="product-editor mt-1"
+                disabled
                 :options="editorOption"
               />
             </a-form-model-item>
@@ -180,6 +193,7 @@
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
+                    :disabled="true"
                     :file-list="statistic.statisticFile"
                     @preview="handlePreview"
                     @change="($event) => handleChangeStatistic($event, statistic.indexId)"
@@ -201,12 +215,14 @@
                   <a-form-model-item class="form-item mb-3">
                     <a-input
                       v-model="statistic.name[item.index]"
+                      disabled
                       placeholder="Statistika soni"
                     />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3">
                     <a-input
                       v-model="statistic.number[item.index]"
+                      disabled
                       placeholder="Statistika nomi"
                     />
                   </a-form-model-item>
@@ -263,6 +279,7 @@
                   <a-input
                     v-model="service.name[item.index]"
                     placeholder="Service name"
+                    disabled
                   />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
@@ -270,19 +287,20 @@
                     :max-length="8"
                     v-model="service.price"
                     placeholder="Service price"
+                    disabled
                   />
                 </a-form-model-item>
               </div>
-              <div
+              <!-- <div
                 class="variant-btn variant-btn-delete mt-3 mx-2"
                 v-html="xIcon"
                 @click="deleteServices(service.indexId)"
-              ></div>
+              ></div> -->
             </div>
-            <div class="create-inner-variant mt-0" @click="addServices">
+            <!-- <div class="create-inner-variant mt-0" @click="addServices">
               <span v-html="plusIcon"> </span>
               Qo’shish
-            </div>
+            </div> -->
           </div>
         </div>
         <div
@@ -311,26 +329,31 @@
             <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
               <div class="d-flex align-items-center">
                 <a-form-model-item class="form-item w-100" label="Savol yozish">
-                  <a-input v-model="faq.question[item.index]" placeholder="Question" />
+                  <a-input
+                    v-model="faq.question[item.index]"
+                    placeholder="Question"
+                    disabled
+                  />
                 </a-form-model-item>
-                <div
+                <!-- <div
                   @click="deleteFaqs(faq.indexId)"
                   class="variant-btn variant-btn-delete mt-3 mx-2"
                   v-html="xIcon"
-                ></div>
+                ></div> -->
               </div>
               <a-form-model-item class="form-item mb-0" label="Javob yozish">
                 <quill-editor
                   class="product-editor mt-1"
+                  disabled
                   :options="editorOption"
                   v-model="faq.answer[item.index]"
                 />
               </a-form-model-item>
             </div>
-            <div class="create-inner-variant" @click="addFaqs">
+            <!-- <div class="create-inner-variant" @click="addFaqs">
               <span v-html="plusIcon"> </span>
               Qo’shish
-            </div>
+            </div> -->
           </div>
         </div>
         <div
@@ -361,24 +384,25 @@
               v-for="option in form.package_options"
               :key="option.indexId"
             >
-              <div
+              <!-- <div
                 @click="deletePackageOption(option.indexId)"
                 class="variant-btn variant-btn-delete mt-3"
                 style="position: absolute; right: 5px; top: -10px; z-index: 9"
                 v-html="xIcon"
-              ></div>
+              ></div> -->
               <a-form-model-item class="form-item mb-0 mt-0">
                 <quill-editor
                   class="product-editor mt-0 padding-editor"
                   :options="editorOption"
+                  disabled
                   v-model="option.desc[item.index]"
                 />
               </a-form-model-item>
             </span>
-            <div class="create-inner-variant" @click="addPackageOption">
+            <!-- <div class="create-inner-variant" @click="addPackageOption">
               <span v-html="plusIcon"> </span>
               Qo’shish
-            </div>
+            </div> -->
           </div>
         </div>
         <div
@@ -414,7 +438,11 @@
               <div>
                 <div class="grid-with-btn">
                   <a-form-model-item class="form-item mb-3" label="Foydalanuvchi">
-                    <a-input v-model="feedback.name[item.index]" placeholder="User" />
+                    <a-input
+                      v-model="feedback.name[item.index]"
+                      disabled
+                      placeholder="User"
+                    />
                   </a-form-model-item>
                   <!-- <a-form-model-item class="form-item mb-3" label="Brend">
                     <a-input
@@ -422,17 +450,18 @@
                       placeholder="Brand"
                     />
                   </a-form-model-item> -->
-                  <div class="d-flex align-items-center">
+                  <!-- <div class="d-flex align-items-center">
                     <div
                       @click="deleteFeedbacks(feedback.indexId)"
                       class="variant-btn variant-btn-delete mt-3"
                       v-html="xIcon"
                     ></div>
-                  </div>
+                  </div> -->
                 </div>
                 <a-form-model-item class="form-item mb-0 mt-0" label="Matni">
                   <a-input
                     type="textarea"
+                    disabled
                     v-model="feedback.feedback[item.index]"
                     rows="6"
                     placeholder="Xabar yozing"
@@ -443,6 +472,7 @@
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
+                  :disabled="true"
                   :file-list="feedback.feedbacksFile"
                   @preview="handlePreview"
                   @change="($event) => handleChangeComment($event, feedback.indexId)"
@@ -457,10 +487,10 @@
                 </a-modal>
               </div>
             </div>
-            <div class="create-inner-variant" @click="addFeedbacks">
+            <!-- <div class="create-inner-variant" @click="addFeedbacks">
               <span v-html="plusIcon"> </span>
               Qo’shish
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="container_xl d-flex justify-content-end">
@@ -761,24 +791,9 @@ export default {
           return rest;
         }),
       };
-      const {
-        lg_banner,
-        sm_banner,
-        md_banner,
-        lg_for_card,
-        md_for_card,
-        sm_for_card,
-        created_at,
-        id,
-        updated_at,
-        slug,
-        for_search,
-        ...dataRest
-      } = data;
-
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__EDIT_SERVICES(dataRest);
+          this.__EDIT_SERVICES(data);
         } else {
           return false;
         }
@@ -910,90 +925,6 @@ export default {
         });
       }
     },
-    deleteFaqs(indexId) {
-      if (this.form.faqs.length > 1)
-        this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
-    },
-    deleteFeedbacks(indexId) {
-      if (this.form.feedbacks.length > 1)
-        this.form.feedbacks = this.form.feedbacks.filter(
-          (item) => item.indexId != indexId
-        );
-    },
-    deleteServices(indexId) {
-      if (this.form.additional_services.length > 1)
-        this.form.additional_services = this.form.additional_services.filter(
-          (item) => item.indexId != indexId
-        );
-    },
-    deletePackageOption(indexId) {
-      if (this.form.package_options.length > 1)
-        this.form.package_options = this.form.package_options.filter(
-          (item) => item.indexId != indexId
-        );
-    },
-    addPackageOption() {
-      this.form.package_options.push({
-        desc: {
-          ru: "",
-          uz: "",
-        },
-        id: 0,
-        indexId: Math.max(...this.form.package_options.map((o) => o.indexId)) + 1,
-      });
-    },
-    addFaqs() {
-      this.form.faqs.push({
-        question: {
-          ru: "",
-          uz: "",
-        },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        id: 0,
-        indexId: Math.max(...this.form.faqs.map((o) => o.indexId)) + 1,
-      });
-    },
-    addFeedbacks() {
-      this.form.feedbacks.push({
-        name: {
-          ru: "",
-          uz: "",
-        },
-        feedback: {
-          ru: "",
-          uz: "",
-        },
-        logo: "",
-        feedbacksFile: [],
-        id: 0,
-        indexId: Math.max(...this.form.feedbacks.map((o) => o.indexId)) + 1,
-      });
-    },
-    addServices() {
-      this.form.additional_services.push({
-        name: {
-          ru: "",
-          uz: "",
-        },
-        price: 0,
-        id: 0,
-        indexId: Math.max(...this.form.additional_services.map((o) => o.indexId)) + 1,
-      });
-    },
-    addGroup() {
-      this.$router.push(`/add_tariff/${this.$route.params.index}`);
-      localStorage.setItem(
-        "serive_params",
-        JSON.stringify({
-          name: this.$route.name,
-          params: this.$route.params,
-          hash: this.$route.hash,
-        })
-      );
-    },
     handleCancel() {
       this.previewVisible = false;
     },
@@ -1025,6 +956,17 @@ export default {
       } else if (fileList.length == 0) {
         this.form[name] = null;
       }
+    },
+    addGroup() {
+      this.$router.push(`/add_tariff/${this.$route.params.index}`);
+      localStorage.setItem(
+        "serive_params",
+        JSON.stringify({
+          name: this.$route.name,
+          params: this.$route.params,
+          hash: this.$route.hash,
+        })
+      );
     },
     reloadTariff() {
       this.__GET_SERVICES_BY_ID();

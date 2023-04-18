@@ -11,7 +11,13 @@
         <div class="d-flex">
           <div
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-            @click="$router.push('/add_park_services')"
+            @click="
+              $router.push({
+                name: 'edit_park_services',
+                params: { index: service_id },
+                hash: '#sessions_tariffs',
+              })
+            "
           >
             Отмена
           </div>
@@ -21,7 +27,7 @@
             @click="onSubmit"
           >
             <span class="svg-icon"> </span>
-            Добавить
+            Сохранять
           </a-button>
         </div>
       </TitleBlock>
@@ -758,6 +764,7 @@ export default {
         "fetchTariff/getTariffById",
         this.$route.params.index
       );
+      this.service_id = data?.tariff.service_id;
       this.form = { ...this.form, ...data?.tariff };
       this.form.schedule = data?.tariff.schedule.map((item) => {
         if (item == null) {
@@ -817,7 +824,7 @@ export default {
             : [],
         };
       });
-      this.form.files = data?.tariff.galleries.map((item) => item.sm_file);
+      this.form.files = data?.tariff.galleries.map((item) => item.file);
       const statLength = this.form.statistics.length;
       for (var i = 0; i < 3 - statLength; i++) {
         this.form.statistics.push({
@@ -855,7 +862,11 @@ export default {
           data: data,
         });
         this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/");
+        this.$router.push({
+          name: "edit_park_services",
+          params: { index: this.service_id },
+          hash: "#sessions_tariffs",
+        });
       } catch (e) {
         this.statusFunc(e.response);
       }
@@ -889,7 +900,7 @@ export default {
       if (fileList[0]?.response?.path) {
         stat.img = fileList[0]?.response?.path;
       } else if (fileList.length == 0) {
-        stat.img = [];
+        stat.img = "";
       }
     },
     handleChangeStat({ fileList }) {

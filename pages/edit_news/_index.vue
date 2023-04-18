@@ -14,7 +14,7 @@
           @click="onSubmit"
         >
           <span class="svg-icon"> </span>
-          Добавить
+          Сохранять
         </a-button>
       </div>
     </TitleBlock>

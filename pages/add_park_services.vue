@@ -143,6 +143,26 @@
                 </div>
               </a-form-model-item>
             </div>
+            <a-form-model-item class="form-item mb-3 mt-3" label="Galleries">
+              <div class="service-galleries">
+                <a-upload
+                  action="https://api.safarpark.uz/api/files/upload"
+                  list-type="picture-card"
+                  :multiple="true"
+                  :file-list="fileGalleries"
+                  @preview="handlePreview"
+                  @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
+                >
+                  <div v-if="fileGalleries.length < 1">
+                    <a-icon type="plus" />
+                    <div class="ant-upload-text">Upload</div>
+                  </div>
+                </a-upload>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </a-modal>
+              </div>
+            </a-form-model-item>
           </div>
         </div>
         <div
@@ -251,7 +271,12 @@
                   />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
-                  <a-input v-model="service.price" placeholder="Service price" />
+                  <a-input
+                    :max-length="8"
+                    :value="service.price"
+                    v-model="service.price"
+                    placeholder="Service price"
+                  />
                 </a-form-model-item>
               </div>
               <div
@@ -350,7 +375,7 @@
               ></div>
               <a-form-model-item class="form-item mb-0 mt-0">
                 <quill-editor
-                  class="product-editor mt-0"
+                  class="product-editor mt-0 padding-editor"
                   :options="editorOption"
                   v-model="option.desc[item.index]"
                 />
@@ -548,6 +573,7 @@ export default {
       },
       fileBanner: [],
       fileForCard: [],
+      fileGalleries: [],
       form: {
         name: {
           ru: "",
@@ -563,6 +589,7 @@ export default {
         },
         banner: null,
         for_card: null,
+        galleries: [],
         statistics: [
           {
             indexId: 1,
@@ -721,6 +748,8 @@ export default {
           return rest;
         }),
       };
+      console.log(data);
+      console.log(this.fileGalleries);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           this.__POST_SERVICES(data);
@@ -848,6 +877,14 @@ export default {
         this.form[name] = fileList[0]?.response?.path;
       } else if (fileList.length == 0) {
         this.form[name] = null;
+      }
+    },
+    handleChangeGalleriesUpload({ fileList }) {
+      this.fileGalleries = fileList;
+      if (fileList[0]?.response?.path) {
+        this.form.galleries = fileList.map((item) => item?.response?.path);
+      } else if (fileList.length == 0 || this.form.galleries > fileList.length) {
+        this.form.galleries = fileList.map((item) => item?.response?.path);
       }
     },
   },

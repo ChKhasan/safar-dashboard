@@ -122,3 +122,8 @@
   text-align: right;
   color: #020105;
 }
+.tariff-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+}

@@ -2,22 +2,22 @@
   <div class="seans-card">
     <div class="seans-card-header d-flex justify-content-between">
       <div class="d-flex">
-        <h5>Полёт в группе</h5>
-        <span>(4-6 человек + пилот)</span>
+        <h5>{{ tariff?.name?.ru }}</h5>
+        <span>{{tariff?.subtitle?.ru}}</span>
       </div>
       <div class="column-btns">
         <span>
           <span
             class="action-btn"
-            @click="$router.push(`/catalog/edit_products/${text}`)"
+            @click="$router.push(`/edit_tariff/${tariff?.id}`)"
             v-html="editIcon"
           >
           </span>
           <a-popconfirm
-            title="Are you sure delete this product?"
+            title="Are you sure delete this tariff?"
             ok-text="Yes"
             cancel-text="No"
-            @confirm="deletePoduct(text)"
+            @confirm="deletePoduct(tariff?.id)"
           >
             <span class="action-btn" v-html="deleteIcon"> </span>
           </a-popconfirm>
@@ -25,7 +25,9 @@
       </div>
     </div>
     <div class="seans-card-body">
-      <span>Minimum: 1, Maximum: 8</span>
+      <span v-if="tariff.type !== 'tariff'"
+        >Minimum: {{ tariff.min_clients }}, Maximum: {{ tariff.max_clients }}</span
+      >
       <!-- <p>Доступно мест: <span>12</span></p> -->
     </div>
     <!-- <div class="seans-card-footer d-flex justify-content-between">
@@ -35,12 +37,35 @@
   </div>
 </template>
 <script>
+import global from "../../mixins/global";
 export default {
+  props: {
+    tariff: {
+      type: Object,
+    },
+    reloadTariff: {
+      type: Function,
+    },
+  },
+  mixins: [global],
   data() {
     return {
       editIcon: require("../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../assets/svg/delete.svg?raw"),
     };
+  },
+  methods: {
+    async deletePoduct(id) {
+      await this.__DELETE_GLOBAL(
+        id,
+        "fetchTariff/deleteTariff",
+        "Тариф был успешно удален",
+        "__GET_TARIFF"
+      );
+      if (this.reloadTariff) {
+        this.reloadTariff();
+      }
+    },
   },
 };
 </script>

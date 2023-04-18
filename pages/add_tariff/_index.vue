@@ -11,7 +11,7 @@
         <div class="d-flex">
           <div
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-            @click="$router.push('/add_park_services')"
+            @click="$router.push(routerInfo)"
           >
             Отмена
           </div>
@@ -686,6 +686,10 @@ export default {
       },
     };
   },
+  mounted() {
+    this.routerInfo = JSON.parse(localStorage.getItem("serive_params"));
+    console.log(this.$router);
+  },
   methods: {
     onChangeDay(e, index) {
       if (e.target.checked) {
@@ -704,7 +708,6 @@ export default {
         });
       }
       this.form.schedule = [...this.form.schedule];
-
     },
     onSubmit() {
       const data = {
@@ -750,7 +753,7 @@ export default {
       try {
         await this.$store.dispatch("fetchTariff/postTariff", data);
         this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/");
+        this.$router.push(this.routerInfo);
       } catch (e) {
         this.statusFunc(e.response);
       }
@@ -816,8 +819,9 @@ export default {
       this.form.fileListStat = fileList;
       if (fileList[0]?.response?.path) {
         this.form.files = fileList.map((item) => item?.response?.path);
-      } else if (fileList.length == 0) {
-        this.form.files = [];
+      } else if (fileList.length == 0 || this.form.files > fileList.length) {
+        this.form.files = fileList.map((item) => item?.response?.path);
+        this.loadingBtn = false;
       }
     },
   },

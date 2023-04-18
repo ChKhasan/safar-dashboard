@@ -204,7 +204,6 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "sm_files" },
     className: "column-name",
-    width: 60,
     align: "left",
     colSpan: 2,
   },
@@ -320,6 +319,7 @@ export default {
         }
       });
     },
+
     editAction(id) {
       this.title = "Изменить";
       this.editId = id;
@@ -445,7 +445,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination("/galleries", "__GET_GALLERIES");
+      this.changePagination(val, "/galleries", "__GET_GALLERIES");
     },
   },
   components: { TitleBlock, SearchInput },

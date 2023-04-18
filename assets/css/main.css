@@ -54,3 +54,7 @@ ul {
 .btn-primary:focus {
   box-shadow: none;
 }
+.ant-select-dropdown {
+  z-index: 2000 !important;
+
+}
