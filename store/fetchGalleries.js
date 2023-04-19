@@ -4,7 +4,7 @@ export const actions = {
       const res = await this.$axios.$get(`/galleries`, { params: payload });
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async getAllGalleries() {
@@ -16,7 +16,7 @@ export const actions = {
       const res = await this.$axios.$get(`/galleries/${id}`);
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async postGalleries({}, data) {

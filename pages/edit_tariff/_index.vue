@@ -868,7 +868,7 @@ export default {
           hash: "#sessions_tariffs",
         });
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     deletePrice(parentId, id) {

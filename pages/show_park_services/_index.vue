@@ -809,7 +809,7 @@ export default {
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push("/");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     deleteService() {
@@ -821,7 +821,7 @@ export default {
         this.$router.push("/");
         this.notification("success", "success", "Услуга был успешно удален");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     async __GET_SERVICES_BY_ID() {

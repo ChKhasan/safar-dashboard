@@ -763,7 +763,7 @@ export default {
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push(this.routerInfo);
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     addTimePicker(id) {

@@ -8,7 +8,7 @@ export const actions = {
       const res = await this.$axios.$get(`/faqs/${id}`);
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async postFaqs({}, data) {

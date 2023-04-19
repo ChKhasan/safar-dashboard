@@ -81,8 +81,37 @@ export default {
         this.notification("success", "success", message);
         this[data]();
       } catch (e) {
-        console.log(e)
+        console.log("eror", e.response);
         this.statusFunc(e.response);
+      }
+    },
+    notification(type, message, desc) {
+      this.$notification[type]({
+        message: message,
+        description: desc,
+      });
+    },
+    statusFunc(res) {
+      switch (res.status) {
+        case 422:
+          this.notification(
+            "error",
+            "Error",
+            "Указанные данные недействительны."
+          );
+          break;
+        case 500:
+          this.notification("error", "Error", "Cервер не работает");
+          break;
+        case 404:
+          this.notification(
+            "error",
+            "Error",
+            "Нет результатов запроса для модели"
+          );
+          break;
+        default:
+          this.notification("error", "Error", "Нет результатов запроса");
       }
     },
   },

@@ -157,7 +157,7 @@ export default {
         this.notification("success", "success", "Услуга был успешно удален");
         this.__GET_POSTS();
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
   },

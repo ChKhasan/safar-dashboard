@@ -656,7 +656,7 @@ export default {
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push("/");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     async __GET_SERVICES() {

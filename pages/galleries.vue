@@ -347,7 +347,6 @@ export default {
     },
     addGalleries() {
       this.title = "Добавить";
-      this.emptyData();
       this.fileList = [];
       this.editId = null;
       this.visible = true;
@@ -361,10 +360,9 @@ export default {
         this.notification("success", "success", "Услуга успешно добавлен");
         this.$router.push("/galleries");
         this.handleOk();
-        this.emptyData();
         this.__GET_GALLERIES();
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     async __GET_GALLERIES_BY_ID(id) {
@@ -390,7 +388,7 @@ export default {
           });
         });
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     emptyData() {
@@ -418,7 +416,7 @@ export default {
         this.notification("success", "success", "Пост успешно изменена");
         this.$router.push("/galleries");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     handleCancel() {
@@ -446,6 +444,11 @@ export default {
   watch: {
     async current(val) {
       this.changePagination(val, "/galleries", "__GET_GALLERIES");
+    },
+    visible(val) {
+      if (val == false) {
+        this.emptyData();
+      }
     },
   },
   components: { TitleBlock, SearchInput },

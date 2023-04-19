@@ -60,7 +60,7 @@
           >
             <a-select-option
               v-for="item in pageSizes"
-              :key="item.value"
+              :key="item?.value"
               :label="item.label"
               :value="item.value"
               >{{ item.label }}
@@ -78,7 +78,7 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '5px' }"
+      :dialog-style="{ top: '50px' }"
       :title="title"
       :closable="false"
       width="720px"
@@ -151,14 +151,6 @@ import global from "../mixins/global";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
 const columns = [
   {
     title: "№",
@@ -311,43 +303,42 @@ export default {
       this.faqs = data?.faqs?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1 + pageIndex,
+          key: index + pageIndex,
         };
       });
       this.totalPage = data?.faqs?.total;
     },
     indexPage(current_page, per_page) {
-      return (current_page * 1 - 1) * per_page;
+      return (current_page * 1 - 1) * per_page + 1;
     },
     addFaqs() {
       this.title = "Добавить";
-      this.emptyData();
+
       this.fileList = [];
       this.editId = null;
       this.visible = true;
     },
     handleOk() {
       this.visible = false;
+      console.log(this.form);
     },
     async __POST_FAQS(data) {
       try {
         await this.$store.dispatch("fetchFaqs/postFaqs", data);
         this.notification("success", "success", "Услуга успешно добавлен");
         this.handleOk();
-        this.emptyData();
         this.__GET_FAQS();
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     async __GET_FAQS_BY_ID(id) {
       try {
-        // const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
-        const data = await this.$store.dispatch("fetchFaqs/getFaqs");
+        const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
         this.visible = true;
-        this.form = data?.faqs?.data.find((item) => item.id == id);
+        this.form = data?.faq;
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     emptyData() {
@@ -374,13 +365,18 @@ export default {
         this.notification("success", "success", "Пост успешно изменена");
         this.$router.push("/faqs");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
   },
   watch: {
     async current(val) {
       this.changePagination(val, "/faqs", "__GET_FAQS");
+    },
+    visible(val) {
+      if (val == false) {
+        this.emptyData();
+      }
     },
   },
   components: { TitleBlock, SearchInput },

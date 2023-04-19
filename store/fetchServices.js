@@ -4,7 +4,7 @@ export const actions = {
       const res = await this.$axios.$get(`/services`, { params: payload });
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async getAllServices() {
@@ -16,7 +16,7 @@ export const actions = {
       const res = await this.$axios.$get(`/services/${id}`);
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async postServices({}, data) {

@@ -4,7 +4,7 @@ export const actions = {
       const res = await this.$axios.$get(`/tariffs`, { params: payload });
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async getAllTariff() {
@@ -16,7 +16,7 @@ export const actions = {
       const res = await this.$axios.$get(`/tariffs/${id}`);
       return res;
     } catch (e) {
-      return e.response;
+      return e;
     }
   },
   async postTariff({}, data) {

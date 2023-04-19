@@ -1,27 +1,36 @@
 export default {
   methods: {
     statusFunc(res) {
-      switch (res.status) {
-        case 422:
-          this.notification(
-            "error",
-            "Error",
-            "Указанные данные недействительны."
-          );
-          break;
-        case 500:
-          this.notification("error", "Error", "Cервер не работает");
-          break;
-        case 404:
-          this.notification(
-            "error",
-            "Error",
-            "Нет результатов запроса для модели"
-          );
-          break;
-        default:
-          this.notification("error", "Error", "Нет результатов запроса");
-      }
+      console.log(res);
+      // if (res.response) {
+      //   switch (res.response.status) {
+      //     case 422:
+      //       this.notification(
+      //         "error",
+      //         "Error",
+      //         "Указанные данные недействительны."
+      //       );
+      //       break;
+      //     case 500:
+      //       this.notification("error", "Error", "Cервер не работает");
+      //       break;
+      //     case 404:
+      //       this.notification(
+      //         "error",
+      //         "Error",
+      //         "Нет результатов запроса для модели"
+      //       );
+      //       break;
+      //     default:
+      //       this.notification("error", "Error", "Нет результатов запроса");
+      //   }
+      // } else {
+      //   this.notification(
+      //     "error",
+      //     "Error",
+      //     "Указанные данные недействительны."
+      //   );
+      // }
     },
     notification(type, message, desc) {
       this.$notification[type]({

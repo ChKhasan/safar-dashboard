@@ -250,7 +250,7 @@ export default {
           ];
         }
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     async __EDIT_CATEGORIES(res) {
@@ -262,7 +262,7 @@ export default {
         this.notification("success", "success", "Пост успешно изменена");
         this.$router.push("/news");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     handleChange({ fileList }) {

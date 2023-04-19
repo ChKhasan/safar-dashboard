@@ -10,7 +10,7 @@ export default {
       { hid: "description", name: "description", content: "" },
       { name: "format-detection", content: "telephone=no" },
     ],
-    link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }],
+    link: [{ rel: "icon", type: "image/jpg", href: "/safar-favicon.jpg" }],
   },
   ssr: false,
   css: ["ant-design-vue/dist/antd.css", "~/assets/css/main.css"],

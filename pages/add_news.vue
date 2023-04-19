@@ -253,7 +253,7 @@ export default {
         this.notification("success", "success", "Пост успешно добавлен");
         this.$router.push("/news");
       } catch (e) {
-        this.statusFunc(e.response);
+        this.statusFunc(e);
       }
     },
     handleChange({ fileList }) {
