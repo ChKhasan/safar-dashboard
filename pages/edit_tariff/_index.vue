@@ -312,10 +312,16 @@
                   </div>
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
-                      <a-input v-model="statistic.number[item.index]" />
+                      <a-input
+                        v-model="statistic.number[item.index]"
+                        placeholder="Количество статистики"
+                      />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-3">
-                      <a-input v-model="statistic.name[item.index]" />
+                      <a-input
+                        v-model="statistic.name[item.index]"
+                        placeholder="Название статистики"
+                      />
                     </a-form-model-item>
                   </div>
                 </div>
@@ -443,6 +449,9 @@ const data = [
 ];
 export default {
   name: "IndexPage",
+  head: {
+    title: "Тарифы",
+  },
   mixins: [status],
   data() {
     return {

@@ -436,6 +436,9 @@ const data = [
 export default {
   name: "IndexPage",
   mixins: [status],
+  head: {
+    title: "Тарифы",
+  },
   data() {
     return {
       top: 10,

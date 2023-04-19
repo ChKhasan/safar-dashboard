@@ -1,6 +1,6 @@
 export default {
   head: {
-    title: "safar-adminka",
+    title: "Safar Admin Panel",
     htmlAttrs: {
       lang: "en",
     },
@@ -20,9 +20,9 @@ export default {
     { src: "~plugins/quill-editor.js", ssr: false },
   ],
   loadingIndicator: {
-    name: 'chasing-dots',
-    color: '#1890ff',
-    background: 'white'
+    name: "chasing-dots",
+    color: "#1890ff",
+    background: "white",
   },
   axios: {
     credentials: false,

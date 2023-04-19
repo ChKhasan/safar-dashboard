@@ -135,6 +135,9 @@ const columns = [
 ];
 export default {
   name: "IndexPage",
+  head: {
+    title: "Тарифы",
+  },
   mixins: [status, global],
   data() {
     return {

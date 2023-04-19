@@ -32,11 +32,15 @@
           :data-source="faqs"
           :loading="loading"
         >
-          <span slot="question" slot-scope="text">
-            <span>{{ text?.ru }}</span>
-          </span>
-          <span slot="answer" slot-scope="text" v-html="text?.ru"></span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
+          <span
+            slot="answer"
+            slot-scope="text"
+            v-html="text?.ru ? text?.ru : '-----'"
+          ></span>
+          <span slot="question" slot-scope="text">
+            <span>{{ text?.ru ? text?.ru : "-----" }}</span>
+          </span>
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
@@ -193,6 +197,9 @@ const columns = [
 export default {
   name: "IndexPage",
   mixins: [status, global],
+  head: {
+    title: "F.A.Q",
+  },
   data() {
     return {
       editorOption: {

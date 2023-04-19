@@ -33,7 +33,7 @@
           :loading="loading"
         >
           <span slot="sm_files" slot-scope="text">
-            <img v-if="text != null" class="table-image" :src="text[0]" />
+            <img v-if="text.length > 0" class="table-image" :src="text[0]" />
             <img
               v-else
               class="table-image"
@@ -41,10 +41,12 @@
             />
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="name" slot-scope="text">{{ text?.ru ? text?.ru : "-----" }}</span>
+          <span slot="subtitle" slot-scope="text">{{
+            text?.ru ? text?.ru : "-----"
+          }}</span>
           <span slot="desc" slot-scope="text">
-            <span v-html="text.ru"></span>
+            <span v-html="text?.ru ? text?.ru : '-----'"></span>
           </span>
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
@@ -206,6 +208,7 @@ const columns = [
     className: "column-name",
     align: "left",
     colSpan: 2,
+    width: 60,
   },
   {
     dataIndex: "title",
@@ -236,6 +239,9 @@ const columns = [
 
 export default {
   name: "IndexPage",
+  head: {
+    title: "Галереи",
+  },
   mixins: [status, global],
   data() {
     return {
@@ -335,15 +341,24 @@ export default {
     },
     async __GET_GALLERIES() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchGalleries/getGalleries");
+      const data = await this.$store.dispatch("fetchGalleries/getGalleries", {
+        ...this.$route.query,
+      });
       this.loading = false;
+      const pageIndex = this.indexPage(
+        data?.galleries?.current_page,
+        data?.galleries?.per_page
+      );
       this.galleries = data?.galleries?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + pageIndex,
         };
       });
       this.totalPage = data?.galleries?.total;
+    },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
     },
     addGalleries() {
       this.title = "Добавить";

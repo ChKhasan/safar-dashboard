@@ -233,6 +233,7 @@
 .is-active {
   background: #2a2a3c !important;
   border-radius: 0.475rem !important;
+  pointer-events: none;
 }
 .is-active a {
   color: #fff !important;

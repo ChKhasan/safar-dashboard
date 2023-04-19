@@ -497,6 +497,9 @@ function getBase64(file) {
 }
 export default {
   name: "IndexPage",
+  head: {
+    title: "Услуги",
+  },
   mixins: [status],
   data() {
     return {

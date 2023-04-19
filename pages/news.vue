@@ -42,11 +42,12 @@
             />
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
+          <span slot="name" slot-scope="text">{{ text?.ru ? text?.ru : "-----" }}</span>
+          <span slot="subtitle" slot-scope="text">{{
+            text?.ru ? text?.ru : "-----"
+          }}</span>
           <span slot="desc" slot-scope="text">
-            <span v-html="text.ru"></span>
+            <span v-html="text.ru ? text.ru : '-----'"></span>
           </span>
           <span slot="id" slot-scope="text">
             <span
@@ -154,6 +155,9 @@ const columns = [
 
 export default {
   name: "IndexPage",
+  head: {
+    title: "Новости",
+  },
   mixins: [status, global],
   data() {
     return {
@@ -184,20 +188,26 @@ export default {
     },
     async __GET_POSTS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchPosts/getPosts");
+      const data = await this.$store.dispatch("fetchPosts/getPosts", {
+        ...this.$route.query,
+      });
       this.loading = false;
-      this.posts = data?.posts?.data.map((item,index) => {
+      const pageIndex = this.indexPage(data?.posts?.current_page, data?.posts?.per_page);
+      this.posts = data?.posts?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + pageIndex,
         };
       });
       this.totalPage = data?.posts?.total;
     },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
+    },
   },
   watch: {
     async current(val) {
-      this.changePagination(val,"/news", "__GET_POSTS");
+      this.changePagination(val, "/news", "__GET_POSTS");
     },
   },
   components: { TitleBlock, SearchInput },

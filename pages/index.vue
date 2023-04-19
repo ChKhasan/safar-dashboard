@@ -41,13 +41,21 @@
             />
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="name" slot-scope="text" v-html="text?.ru"></span>
-          <span slot="guarantee" slot-scope="text" v-html="text?.ru"></span>
+          <span
+            slot="name"
+            slot-scope="text"
+            v-html="text?.ru ? text?.ru : '-----'"
+          ></span>
+          <span
+            slot="guarantee"
+            slot-scope="text"
+            v-html="text?.ru ? text?.ru : '-----'"
+          ></span>
           <span slot="package_options" slot-scope="text">
             <span
               class="option-items"
               v-for="desc in text"
-              v-html="desc?.desc?.ru"
+              v-html="desc?.desc?.ru ? desc?.desc?.ru : '-----'"
             ></span>
           </span>
           <span slot="id" slot-scope="text">
@@ -85,7 +93,7 @@ const columns = [
     width: 50,
   },
   {
-    title: "Name",
+    title: "ИМЯ",
     dataIndex: "sm_banner",
     key: "sm_banner",
     slots: { title: "customTitle" },
@@ -106,14 +114,14 @@ const columns = [
     colSpan: 0,
   },
   {
-    title: "xizmatlarimiz",
+    title: "гарантия",
     dataIndex: "guarantee",
     key: "guarantee",
     className: "column-service",
     scopedSlots: { customRender: "guarantee" },
   },
   {
-    title: "Qo'shimcha xizmatlar",
+    title: "варианты пакетов",
     dataIndex: "package_options",
     key: "package_options",
     className: "column-subservice",
@@ -133,6 +141,9 @@ const columns = [
 export default {
   name: "IndexPage",
   middleware: "auth",
+  head: {
+    title: "Услуги",
+  },
   mixins: [status],
   data() {
     return {

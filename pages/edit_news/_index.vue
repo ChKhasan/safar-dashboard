@@ -4,7 +4,7 @@
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-          @click="$router.push('/')"
+          @click="$router.push('/news')"
         >
           Отмена
         </div>
@@ -111,6 +111,9 @@ function getBase64(file) {
 }
 export default {
   mixins: [status],
+  head: {
+    title: "Новости",
+  },
   data() {
     return {
       editorOption: {

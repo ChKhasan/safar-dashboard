@@ -120,6 +120,9 @@ const columns = [
 
 export default {
   name: "IndexPage",
+  head: {
+    title: "Applications",
+  },
   mixins: [status],
   data() {
     return {
