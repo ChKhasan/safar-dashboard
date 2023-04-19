@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleBlock title="Xizmatlar">
+    <TitleBlock title="Услуги " :breadbrumb="['Главный']" lastLink="Услуги">
       <div class="d-flex justify-content-between btn_group">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
@@ -238,6 +238,7 @@
                 v-for="tariff in form.tariffs"
                 :tariff="tariff"
                 :reloadTariff="reloadTariff"
+                :key="tariff.id"
               />
             </div>
             <div class="create-inner-variant" @click="addGroup">

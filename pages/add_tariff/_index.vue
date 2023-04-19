@@ -7,7 +7,7 @@
       layout="vertical"
       :wrapper-col="wrapperCol"
     >
-      <TitleBlock title="Xizmatlar">
+      <TitleBlock title="Тарифы" :breadbrumb="['Главный']" lastLink="Тарифы">
         <div class="d-flex">
           <div
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -25,8 +25,8 @@
           </a-button>
         </div>
       </TitleBlock>
-      <div class="services-grid">
-        <div class="container_xl app-container mt-4 d-flex flex-column">
+      <div class="services-grid pb-5 pt-5">
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span
@@ -152,6 +152,7 @@
                   type="number"
                   v-model="form.min_clients"
                   :disabled="form.min_clients == null"
+                  placeholder="Min clients"
                 />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Maximal mijoz">
@@ -159,6 +160,7 @@
                   type="number"
                   v-model="form.max_clients"
                   :disabled="form.max_clients == null"
+                  placeholder="Max clients"
                 />
               </a-form-model-item>
             </div>
@@ -296,10 +298,16 @@
                   </div>
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
-                      <a-input v-model="statistic.number[item.index]" />
+                      <a-input
+                        v-model="statistic.number[item.index]"
+                        placeholder="Количество статистики"
+                      />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-3">
-                      <a-input v-model="statistic.name[item.index]" />
+                      <a-input
+                        v-model="statistic.name[item.index]"
+                        placeholder="Название статистики"
+                      />
                     </a-form-model-item>
                   </div>
                 </div>

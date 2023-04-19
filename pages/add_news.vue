@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="posts">
-    <TitleBlock title="Новости">
+    <TitleBlock title="Новости" :breadbrumb="['Главный']" lastLink="Новости">
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -19,8 +19,8 @@
       </div>
     </TitleBlock>
     <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
-      <div>
-        <div class="container_xl app-container mt-4 d-flex flex-column mb-5">
+      <div class="pb-5 pt-5">
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span

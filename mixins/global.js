@@ -82,7 +82,7 @@ export default {
         this[data]();
       } catch (e) {
         console.log(e)
-        // this.statusFunc(e.response);
+        this.statusFunc(e.response);
       }
     },
   },

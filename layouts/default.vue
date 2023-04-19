@@ -76,7 +76,7 @@ export default {
       catalogIcon: require("../assets/svg/toolbar-catalog.svg?raw"),
       menuData: [
         {
-          title: "Каталог",
+          title: "Главный",
           sub: "1",
           menuItems: [
             {

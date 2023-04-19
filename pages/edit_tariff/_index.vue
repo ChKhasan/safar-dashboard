@@ -7,7 +7,7 @@
       layout="vertical"
       :wrapper-col="wrapperCol"
     >
-      <TitleBlock title="Xizmatlar">
+      <TitleBlock title="Тарифы" :breadbrumb="['Главный']" lastLink="Тарифы">
         <div class="d-flex">
           <div
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -31,8 +31,8 @@
           </a-button>
         </div>
       </TitleBlock>
-      <div class="services-grid">
-        <div class="container_xl app-container mt-4 d-flex flex-column">
+      <div class="services-grid pb-5 pt-5">
+        <div class="container_xl app-container d-flex flex-column">
           <div class="form_tab">
             <div>
               <span

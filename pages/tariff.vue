@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleBlock title="Тарифы">
+    <TitleBlock title="Тарифы" :breadbrumb="['Главный']" lastLink="Тарифы">
       <div class="d-flex"></div>
     </TitleBlock>
     <div class="container_xl app-container mt-4">

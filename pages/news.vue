@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleBlock title="Xizmatlar">
+    <TitleBlock title="Новости" :breadbrumb="['Главный']" lastLink="Новости">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
@@ -12,7 +12,7 @@
         </a-button>
       </div>
     </TitleBlock>
-    <div class="container_xl app-container mt-4">
+    <div class="container_xl app-container pb-5 pt-5">
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
@@ -197,7 +197,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination("/news", "__GET_POSTS");
+      this.changePagination(val,"/news", "__GET_POSTS");
     },
   },
   components: { TitleBlock, SearchInput },
