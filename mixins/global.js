@@ -79,9 +79,9 @@ export default {
       try {
         await this.$store.dispatch(link, id);
         this.notification("success", "success", message);
-        this[data]();
+        data && this[data]();
       } catch (e) {
-        console.log("eror", e.response);
+        console.log("eror", e);
         this.statusFunc(e.response);
       }
     },

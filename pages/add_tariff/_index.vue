@@ -147,23 +147,54 @@
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Minimal mijoz">
+              <span v-if="form.type == 'by_count'">
+                <a-form-model-item
+                  class="form-item mb-3"
+                  label="Minimal mijoz"
+                  prop="min_clients"
+                >
+                  <a-input
+                    type="number"
+                    v-model="form.min_clients"
+                    placeholder="Min clients"
+                  />
+                </a-form-model-item>
+              </span>
+
+              <a-form-model-item
+                class="form-item mb-3"
+                label="Minimal mijoz"
+                v-if="form.min_clients == null"
+              >
                 <a-input
                   type="number"
-                  v-model="form.min_clients"
                   :disabled="form.min_clients == null"
                   placeholder="Min clients"
                 />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Maximal mijoz">
+              <span v-if="form.type == 'by_count'">
+                <a-form-model-item
+                  class="form-item mb-3"
+                  label="Maximal mijoz"
+                  prop="max_clients"
+                >
+                  <a-input
+                    type="number"
+                    v-model="form.max_clients"
+                    :disabled="form.max_clients == null"
+                    placeholder="Max clients"
+                  />
+                </a-form-model-item>
+              </span>
+              <a-form-model-item class="form-item mb-3" label="Maximal mijoz" v-else>
                 <a-input
                   type="number"
-                  v-model="form.max_clients"
                   :disabled="form.max_clients == null"
                   placeholder="Max clients"
                 />
               </a-form-model-item>
             </div>
+
             <div class="px-4 from_hr_top pt-3">
               <a-form-model-item class="form-item mb-3" v-if="form.type == 'tariff'">
                 <a-input
@@ -434,7 +465,7 @@ const data = [
   },
   {
     key: "7",
-    name: "воскресенье",
+    name: "Воскресенье",
     time: 7,
     id: 7,
     address: "mavjud",
@@ -687,29 +718,13 @@ export default {
             { required: true, message: "Please input Activity name", trigger: "change" },
           ],
         },
-        region: [
-          { required: true, message: "Please select Activity zone", trigger: "change" },
-        ],
-        date1: [{ required: true, message: "Please pick a date", trigger: "change" }],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "Please select at least one activity type",
-            trigger: "change",
-          },
-        ],
-        resource: [
-          {
-            required: true,
-            message: "Please select activity resource",
-            trigger: "change",
-          },
-        ],
-        desc: [
-          { required: true, message: "Please input activity form", trigger: "blur" },
-        ],
       },
+      min_clients: [
+        { required: true, message: "This field is required", trigger: "blur" },
+      ],
+      max_clients: [
+        { required: true, message: "This field is required", trigger: "blur" },
+      ],
     };
   },
   mounted() {
@@ -766,10 +781,28 @@ export default {
             return rest;
           }),
       };
+      data.schedule = data.schedule.map((item) => {
+        if (item && item[0] == "") {
+          return [];
+        } else {
+          return item;
+        }
+      });
+      let priceRequired = [];
+      data.prices.forEach((item) => {
+        if (item.name == "" || item.prices[0] == "") {
+          priceRequired.push(item);
+        }
+      });
       const { fileListStat, ...rest } = data;
+
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__POST_TARIFF(rest);
+          if (priceRequired.length == 0) {
+            this.__POST_TARIFF(rest);
+          } else {
+            this.notification("error", "Tariff", "Price and price text required");
+          }
         } else {
           return false;
         }
@@ -866,10 +899,19 @@ export default {
           ],
         },
       ];
-      if (val == "tariff") {
+      if (val !== "by_count") {
         this.form.min_clients = null;
         this.form.max_clients = null;
       } else {
+        this.rules = {
+          ...this.rules,
+          min_clients: [
+            { required: true, message: "This field is required", trigger: "blur" },
+          ],
+          max_clients: [
+            { required: true, message: "This field is required", trigger: "blur" },
+          ],
+        };
         this.form.min_clients = "";
         this.form.max_clients = "";
       }

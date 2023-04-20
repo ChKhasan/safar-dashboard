@@ -165,7 +165,7 @@
                 <a-input
                   type="number"
                   v-model="form.min_clients"
-                  :disabled="form.type == 'tariff'"
+                  :disabled="form.min_clients == null"
                   placeholder="Minimal"
                 />
               </a-form-model-item>
@@ -173,7 +173,7 @@
                 <a-input
                   type="number"
                   v-model="form.max_clients"
-                  :disabled="form.type == 'tariff'"
+                  :disabled="form.max_clients == null"
                   placeholder="Maximal"
                 />
               </a-form-model-item>
@@ -446,6 +446,14 @@ const data = [
     address: "mavjud",
     tags: "mavjud",
   },
+  {
+    key: "7",
+    name: "Воскресенье",
+    time: 7,
+    id: 7,
+    address: "mavjud",
+    tags: "mavjud",
+  },
 ];
 export default {
   name: "IndexPage",
@@ -713,10 +721,33 @@ export default {
             return rest;
           }),
       };
+      data.schedule = data.schedule.map((item) => {
+        if (item && item[0] == "") {
+          return [];
+        } else {
+          return item;
+        }
+      });
+      let priceRequired = [];
+
+      data.prices.forEach((item) => {
+        if (
+          item.name == "" ||
+          item.name == null ||
+          item.prices[0] == "" ||
+          item.prices[0] == null
+        ) {
+          priceRequired.push(item);
+        }
+      });
       const { fileListStat, ...rest } = data;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__EDIT_TARIFF(rest);
+          if (priceRequired.length == 0) {
+            this.__EDIT_TARIFF(rest);
+          } else {
+            this.notification("error", "Tariff", "Price and price text required");
+          }
         } else {
           return false;
         }
@@ -742,6 +773,13 @@ export default {
           ],
         },
       ];
+      if (this.form.type !== "by_count") {
+        this.form.min_clients = null;
+        this.form.max_clients = null;
+      } else {
+        this.form.min_clients = "";
+        this.form.max_clients = "";
+      }
       if (this.form.type == "tariff") {
         this.form.tab_start_text = {
           ru: "",

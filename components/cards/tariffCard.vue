@@ -3,7 +3,7 @@
     <div class="seans-card-header d-flex justify-content-between">
       <div class="d-flex">
         <h5>{{ tariff?.name?.ru }}</h5>
-        <span>{{tariff?.subtitle?.ru}}</span>
+        <span>{{ tariff?.subtitle?.ru }}</span>
       </div>
       <div class="column-btns">
         <span>
@@ -59,8 +59,7 @@ export default {
       await this.__DELETE_GLOBAL(
         id,
         "fetchTariff/deleteTariff",
-        "Тариф был успешно удален",
-        "__GET_TARIFF"
+        "Тариф был успешно удален"
       );
       if (this.reloadTariff) {
         this.reloadTariff();

@@ -143,7 +143,7 @@
                 </div>
               </a-form-model-item>
             </div>
-            <a-form-model-item class="form-item mb-3 mt-3" label="Galleries">
+            <a-form-model-item class="form-item mb-3" label="Galleries">
               <div class="service-galleries">
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
