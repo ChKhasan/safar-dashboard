@@ -432,6 +432,14 @@ const data = [
     address: "mavjud",
     tags: "mavjud",
   },
+  {
+    key: "7",
+    name: "воскресенье",
+    time: 7,
+    id: 7,
+    address: "mavjud",
+    tags: "mavjud",
+  },
 ];
 export default {
   name: "IndexPage",
@@ -565,6 +573,13 @@ export default {
               start: "",
               end: "",
               disabled: false,
+            },
+          ],
+          [
+            {
+              start: "",
+              disabled: false,
+              end: "",
             },
           ],
           [
