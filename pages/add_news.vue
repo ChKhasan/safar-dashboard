@@ -195,7 +195,7 @@ export default {
           ru: [
             {
               required: true,
-              message: "Please input Activity name",
+              message: "This field is required",
               trigger: "change",
             },
           ],

@@ -169,25 +169,61 @@
                   v-model="form.type"
                   @change="changeTariff"
                 >
-                  <a-select-option v-for="(service, index) in services" :key="service.value">
+                  <a-select-option
+                    v-for="(service, index) in services"
+                    :key="service.value"
+                  >
                     {{ service.name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Minimal mijoz">
+              <span v-if="form.type == 'by_count'">
+                <a-form-model-item
+                  class="form-item inner mb-3"
+                  label="Minimal mijoz"
+                  prop="min_clients"
+                >
+                  <a-input
+                    type="number"
+                    v-model="form.min_clients"
+                    placeholder="Min clients"
+                  />
+                </a-form-model-item>
+              </span>
+              <a-form-model-item
+                class="form-item inner mb-3"
+                label="Minimal mijoz"
+                v-if="form.min_clients == null"
+              >
                 <a-input
                   type="number"
-                  v-model="form.min_clients"
                   :disabled="form.min_clients == null"
-                  placeholder="Minimal"
+                  placeholder="Min clients"
                 />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Maximal mijoz">
+              <span v-if="form.type == 'by_count'">
+                <a-form-model-item
+                  class="form-item inner mb-3"
+                  label="Maximal mijoz"
+                  prop="max_clients"
+                >
+                  <a-input
+                    type="number"
+                    v-model="form.max_clients"
+                    :disabled="form.max_clients == null"
+                    placeholder="Max clients"
+                  />
+                </a-form-model-item>
+              </span>
+              <a-form-model-item
+                class="form-item inner mb-3"
+                label="Maximal mijoz"
+                v-else
+              >
                 <a-input
                   type="number"
-                  v-model="form.max_clients"
                   :disabled="form.max_clients == null"
-                  placeholder="Maximal"
+                  placeholder="Max clients"
                 />
               </a-form-model-item>
             </div>
@@ -705,27 +741,11 @@ export default {
             { required: true, message: "Please input Activity name", trigger: "change" },
           ],
         },
-        region: [
-          { required: true, message: "Please select Activity zone", trigger: "change" },
+        min_clients: [
+          { required: true, message: "This field is required", trigger: "blur" },
         ],
-        date1: [{ required: true, message: "Please pick a date", trigger: "change" }],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "Please select at least one activity type",
-            trigger: "change",
-          },
-        ],
-        resource: [
-          {
-            required: true,
-            message: "Please select activity resource",
-            trigger: "change",
-          },
-        ],
-        desc: [
-          { required: true, message: "Please input activity form", trigger: "blur" },
+        max_clients: [
+          { required: true, message: "This field is required", trigger: "blur" },
         ],
       },
     };
@@ -889,6 +909,7 @@ export default {
         if (item == null) {
           return [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: true,
@@ -897,15 +918,17 @@ export default {
         } else if (item[0] == null) {
           return [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
             },
           ];
         } else {
-          return item.map((elem) => {
+          return item.map((elem, indexId) => {
             const time = elem.split("-");
             return {
+              id: indexId,
               start: time[0],
               end: time[1],
               disabled: false,
@@ -973,6 +996,7 @@ export default {
           },
         };
       });
+      console.log(this.form.schedule);
     },
     async __EDIT_TARIFF(data) {
       try {
@@ -998,10 +1022,6 @@ export default {
     deletePrices(id) {
       if (this.form.prices.length > 1)
         this.form.prices = this.form.prices.filter((item) => item.id != id);
-    },
-    onChangeTime(e, index, name, ind) {
-      let val = moment(e).format("hh:mm");
-      this.form.schedule[index][ind][name] = val;
     },
     handleCancel() {
       this.previewVisible = false;

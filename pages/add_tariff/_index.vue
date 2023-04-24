@@ -181,7 +181,6 @@
                   />
                 </a-form-model-item>
               </span>
-
               <a-form-model-item
                 class="form-item inner mb-3"
                 label="Minimal mijoz"
@@ -809,16 +808,16 @@ export default {
       rules: {
         name: {
           ru: [
-            { required: true, message: "Please input Activity name", trigger: "change" },
+            { required: true, message: "This field is required", trigger: "change" },
           ],
         },
+        min_clients: [
+          { required: true, message: "This field is required", trigger: "blur" },
+        ],
+        max_clients: [
+          { required: true, message: "This field is required", trigger: "blur" },
+        ],
       },
-      min_clients: [
-        { required: true, message: "This field is required", trigger: "blur" },
-      ],
-      max_clients: [
-        { required: true, message: "This field is required", trigger: "blur" },
-      ],
     };
   },
 
@@ -889,7 +888,6 @@ export default {
         }
       });
       const { fileListStat, ...rest } = data;
-      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           if (priceRequired.length == 0) {
@@ -929,7 +927,6 @@ export default {
     onChangeTime(e, index, name, ind) {
       let val = moment(e).format("hh:mm");
       this.form.schedule[index][ind][name] = val;
-      console.log(val);
     },
     addPrice(id) {
       const price = this.form.prices.find((item) => item.id == id);
