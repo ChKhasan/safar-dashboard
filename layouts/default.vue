@@ -147,7 +147,6 @@ export default {
       return this.$route.name;
     },
   },
-
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;

@@ -499,7 +499,7 @@ const columns = [
 const data = [
   {
     key: "1",
-    name: "Вторник",
+    name: "Воскресенье",
     time: 1,
     id: 1,
     address: "mavjud",
@@ -507,7 +507,7 @@ const data = [
   },
   {
     key: "2",
-    name: "Среда",
+    name: "Понедельник",
     time: 2,
     id: 2,
     address: "mavjud emas",
@@ -515,7 +515,7 @@ const data = [
   },
   {
     key: "3",
-    name: "Четверг",
+    name: "Вторник",
     time: 3,
     id: 3,
     address: "mavjud",
@@ -523,7 +523,7 @@ const data = [
   },
   {
     key: "4",
-    name: "Пятница",
+    name: "Среда",
     time: 4,
     id: 4,
     address: "mavjud",
@@ -531,7 +531,7 @@ const data = [
   },
   {
     key: "5",
-    name: "Суббота",
+    name: "Четверг",
     time: 5,
     id: 5,
     address: "mavjud",
@@ -539,7 +539,7 @@ const data = [
   },
   {
     key: "6",
-    name: "Воскресенье",
+    name: "Пятница",
     time: 6,
     id: 6,
     address: "mavjud",
@@ -547,7 +547,7 @@ const data = [
   },
   {
     key: "7",
-    name: "Понедельник",
+    name: "Суббота",
     time: 7,
     id: 7,
     address: "mavjud",
@@ -807,9 +807,7 @@ export default {
       columns,
       rules: {
         name: {
-          ru: [
-            { required: true, message: "This field is required", trigger: "change" },
-          ],
+          ru: [{ required: true, message: "This field is required", trigger: "change" }],
         },
         min_clients: [
           { required: true, message: "This field is required", trigger: "blur" },

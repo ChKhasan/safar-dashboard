@@ -495,7 +495,7 @@ const columns = [
 const data = [
   {
     key: "1",
-    name: "Понедельник",
+    name: "Воскресенье",
     time: 1,
     id: 1,
     address: "mavjud",
@@ -503,7 +503,7 @@ const data = [
   },
   {
     key: "2",
-    name: "Вторник",
+    name: "Понедельник",
     time: 2,
     id: 2,
     address: "mavjud emas",
@@ -511,7 +511,7 @@ const data = [
   },
   {
     key: "3",
-    name: "Среда",
+    name: "Вторник",
     time: 3,
     id: 3,
     address: "mavjud",
@@ -519,7 +519,7 @@ const data = [
   },
   {
     key: "4",
-    name: "Четверг",
+    name: "Среда",
     time: 4,
     id: 4,
     address: "mavjud",
@@ -527,7 +527,7 @@ const data = [
   },
   {
     key: "5",
-    name: "Пятница",
+    name: "Четверг",
     time: 5,
     id: 5,
     address: "mavjud",
@@ -535,7 +535,7 @@ const data = [
   },
   {
     key: "6",
-    name: "Суббота",
+    name: "Пятница",
     time: 6,
     id: 6,
     address: "mavjud",
@@ -543,7 +543,7 @@ const data = [
   },
   {
     key: "7",
-    name: "Воскресенье",
+    name: "Суббота",
     time: 7,
     id: 7,
     address: "mavjud",

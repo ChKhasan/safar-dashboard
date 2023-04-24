@@ -25,15 +25,10 @@
       </div>
     </div>
     <div class="seans-card-body">
-      <span v-if="tariff.type !== 'tariff'"
+      <span v-if="tariff.type == 'by_count'"
         >Minimum: {{ tariff.min_clients }}, Maximum: {{ tariff.max_clients }}</span
       >
-      <!-- <p>Доступно мест: <span>12</span></p> -->
     </div>
-    <!-- <div class="seans-card-footer d-flex justify-content-between">
-      <span><span v-html="infoIcon"></span> Информация</span>
-      <h6>1 500 000 сум</h6>
-    </div> -->
   </div>
 </template>
 <script>
