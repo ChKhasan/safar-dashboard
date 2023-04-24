@@ -153,7 +153,7 @@
                   @preview="handlePreview"
                   @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
                 >
-                  <div v-if="fileGalleries.length < 1">
+                  <div v-if="fileGalleries.length < 50">
                     <a-icon type="plus" />
                     <div class="ant-upload-text">Upload</div>
                   </div>

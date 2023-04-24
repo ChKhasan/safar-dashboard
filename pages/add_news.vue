@@ -41,7 +41,7 @@
               v-if="formTab == item.index"
             >
               <FormTitle title="Новости" />
-              <a-form-model-item class="form-item mb-3" label="Заголовок">
+              <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
                 <a-input
                   v-model="form.title[item.index]"
                   placeholder="Заголовок"

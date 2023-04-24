@@ -39,6 +39,7 @@
               </span>
             </div>
           </div>
+
           <div
             class="card_block px-4 py-4 border-left-radius"
             v-for="(item, index) in formTabData"
@@ -47,17 +48,20 @@
           >
             <div class="grid-2">
               <a-form-model-item
-                class="form-item mb-3 required"
+                class="form-item mb-3 required inner"
                 label="Xizmat nomi"
                 prop="name.ru"
               >
                 <a-input v-model="form.name[item.index]" placeholder="Group name" />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 required" label="Tarif text">
+              <a-form-model-item class="form-item mb-3 required inner" label="Tarif text">
                 <a-input v-model="form.subtitle[item.index]" placeholder="Group name" />
               </a-form-model-item>
             </div>
-            <a-form-model-item class="form-item mb-3" label="Sub title (tight title)">
+            <a-form-model-item
+              class="form-item mb-3 inner"
+              label="Sub title (tight title)"
+            >
               <quill-editor
                 class="product-editor"
                 :options="editorOption"
@@ -69,32 +73,45 @@
         <div class="container_xl app-container">
           <div class="card_block mt-4 service-table px-4 py-3">
             <a-table :columns="columns" :pagination="false" :data-source="data">
-              <span slot="customTitle"><a-icon type="smile-o" /> Name</span>a
               <span slot="time" slot-scope="text">
                 <div class="d-flex flex-wrap">
                   <span
-                    class="time_picker"
+                    class="time_picker position-relative"
                     style="margin-right: 16px"
                     v-for="(timePicker, ind) in form.schedule[text - 1]"
+                    :class="{ disabledTime: timePicker.disabled }"
                   >
-                    <a-time-picker
-                      style="margin-right: 6px"
-                      :default-value="
-                        moment(timePicker.start ? timePicker.start : '00:00', 'HH:mm')
-                      "
-                      format="HH:mm"
-                      :disabled="timePicker.disabled"
+                    <span
+                      @click="deleteTimePicker(text - 1, timePicker.id)"
+                      class="delete-time-picker"
+                      v-html="xIcon"
+                    ></span>
+                    <input
+                      v-model="timePicker.start"
+                      type="time"
+                      id="time-input"
+                      name="time"
+                      min="00:00"
+                      max="23:59"
                       :class="{ disabledTime: timePicker.disabled }"
-                      @change="($event) => onChangeTime($event, text - 1, 'start', ind)"
+                      :disabled="timePicker.disabled"
+                      pattern="[0-2][0-9]:[0-5][0-9]"
                     />
-                    <a-time-picker
-                      :default-value="
-                        moment(timePicker.end ? timePicker.end : '00:00', 'HH:mm')
-                      "
-                      format="HH:mm"
+                    <span
+                      class="d-flex align-items-center"
+                      style="margin-left: 3px; margin-right: 3px"
+                      >-</span
+                    >
+                    <input
+                      v-model="timePicker.end"
+                      type="time"
                       :class="{ disabledTime: timePicker.disabled }"
                       :disabled="timePicker.disabled"
-                      @change="($event) => onChangeTime($event, text - 1, 'end', ind)"
+                      id="time-input"
+                      name="time"
+                      min="00:00"
+                      max="23:59"
+                      pattern="[0-2][0-9]:[0-5][0-9]"
                     />
                   </span>
                   <div
@@ -132,6 +149,7 @@
               </span>
             </div>
           </div>
+
           <div
             class="card_block py-4 border-left-radius"
             v-for="(item, index2) in formTabData"
@@ -140,16 +158,19 @@
           >
             <span class="px-4"><FormTitle title="Narxni kiritish" /></span>
             <div class="grid-3 px-4">
-              <a-form-model-item class="form-item mb-3" label="Turi">
-                <a-select :default-value="services[0]" v-model="form.type">
-                  <a-select-option v-for="(service, index) in services" :key="service">
-                    {{ service }}
+              <a-form-model-item class="form-item inner mb-3" label="Turi">
+                <a-select :default-value="services[0].value" v-model="form.type">
+                  <a-select-option
+                    v-for="(service, index) in services"
+                    :key="service.value"
+                  >
+                    {{ service.name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
               <span v-if="form.type == 'by_count'">
                 <a-form-model-item
-                  class="form-item mb-3"
+                  class="form-item inner mb-3"
                   label="Minimal mijoz"
                   prop="min_clients"
                 >
@@ -162,7 +183,7 @@
               </span>
 
               <a-form-model-item
-                class="form-item mb-3"
+                class="form-item inner mb-3"
                 label="Minimal mijoz"
                 v-if="form.min_clients == null"
               >
@@ -174,7 +195,7 @@
               </a-form-model-item>
               <span v-if="form.type == 'by_count'">
                 <a-form-model-item
-                  class="form-item mb-3"
+                  class="form-item inner mb-3"
                   label="Maximal mijoz"
                   prop="max_clients"
                 >
@@ -186,7 +207,11 @@
                   />
                 </a-form-model-item>
               </span>
-              <a-form-model-item class="form-item mb-3" label="Maximal mijoz" v-else>
+              <a-form-model-item
+                class="form-item inner mb-3"
+                label="Maximal mijoz"
+                v-else
+              >
                 <a-input
                   type="number"
                   :disabled="form.max_clients == null"
@@ -196,7 +221,10 @@
             </div>
 
             <div class="px-4 from_hr_top pt-3">
-              <a-form-model-item class="form-item mb-3" v-if="form.type == 'tariff'">
+              <a-form-model-item
+                class="form-item inner mb-3"
+                v-if="form.type == 'tariff'"
+              >
                 <a-input
                   v-model="form.tab_start_text[item.index]"
                   placeholder="Введите параметр (текст)"
@@ -207,18 +235,44 @@
                 :key="price.id"
                 v-if="form.type !== 'multi'"
               >
-                <a-form-model-item class="form-item mb-3" v-if="form.type == 'multi'">
+                <a-form-model-item
+                  class="form-item inner mb-3"
+                  v-if="form.type == 'multi'"
+                >
                   <a-input v-model="price.name" placeholder="Введите параметр (текст)" />
                 </a-form-model-item>
                 <div class="grid-3-with-2delete">
-                  <a-form-model-item class="form-item mb-3">
+                  <a-form-model-item class="form-item inner mb-3">
                     <a-input
                       v-model="price.name"
                       placeholder="Введите параметр (текст)"
                     />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3">
-                    <a-input v-model="price.prices[0].name" placeholder="Введите сумму" />
+                  <a-form-model-item class="form-item inner mb-3">
+                    <a-input-number
+                      v-model="price.prices[0].name"
+                      :default-value="1000"
+                      :formatter="
+                        (value) => {
+                          if (Number(value)) {
+                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                          } else {
+                            var num = [];
+                            value.split('').forEach((item) => {
+                              if (Number(item) || item == 0) {
+                                num.push(item);
+                              }
+                            });
+                            return `${num.join('')}`.replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ' '
+                            );
+                          }
+                        }
+                      "
+                      placeholder="Введите сумму"
+                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                    />
                   </a-form-model-item>
 
                   <div class="d-flex align-items-center mb-2">
@@ -236,7 +290,7 @@
                 v-if="form.type == 'multi'"
               >
                 <div class="grid-2-with-2delete">
-                  <a-form-model-item class="form-item mb-3">
+                  <a-form-model-item class="form-item inner mb-3">
                     <a-input
                       v-model="price2.name"
                       placeholder="Введите параметр (текст)"
@@ -254,8 +308,31 @@
                   :key="pr.id"
                 >
                   <span class="index-block">{{ index1 + 1 }}</span>
-                  <a-form-model-item class="form-item mb-0">
-                    <a-input v-model="pr.name" placeholder="Введите сумму" />
+                  <a-form-model-item class="form-item inner mb-0">
+                    <a-input-number
+                      v-model="pr.name"
+                      :default-value="1000"
+                      :formatter="
+                        (value) => {
+                          if (Number(value)) {
+                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                          } else {
+                            var num = [];
+                            value.split('').forEach((item) => {
+                              if (Number(item) || item == 0) {
+                                num.push(item);
+                              }
+                            });
+                            return `${num.join('')}`.replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ' '
+                            );
+                          }
+                        }
+                      "
+                      placeholder="Введите сумму"
+                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                    />
                   </a-form-model-item>
                   <div class="d-flex align-items-center mb-2">
                     <div
@@ -294,6 +371,7 @@
               </span>
             </div>
           </div>
+
           <div
             class="card_block border-left-radius px-4 py-4 mt-0"
             v-for="(item, index) in formTabData"
@@ -301,7 +379,10 @@
             v-if="formTab.info == item.index"
           >
             <FormTitle title="Xizmatimiz haqida ma’lumotlar" />
-            <a-form-model-item class="form-item mb-0 pb-0" label="Statistika qo’shish">
+            <a-form-model-item
+              class="form-item inner mb-0 pb-0"
+              label="Statistika qo’shish"
+            >
               <div class="mt-3 statistic-grid">
                 <div v-for="statistic in form.statistics" class="d-flex">
                   <div class="clearfix">
@@ -328,13 +409,13 @@
                     </a-modal>
                   </div>
                   <div class="d-flex flex-column justify-content-between w-100">
-                    <a-form-model-item class="form-item mb-3">
+                    <a-form-model-item class="form-item inner mb-3">
                       <a-input
                         v-model="statistic.number[item.index]"
                         placeholder="Количество статистики"
                       />
                     </a-form-model-item>
-                    <a-form-model-item class="form-item mb-3">
+                    <a-form-model-item class="form-item inner mb-3">
                       <a-input
                         v-model="statistic.name[item.index]"
                         placeholder="Название статистики"
@@ -344,24 +425,26 @@
                 </div>
               </div>
             </a-form-model-item>
-            <div class="clearfix">
-              <a-upload
-                action="https://api.safarpark.uz/api/files/upload"
-                list-type="picture-card"
-                :file-list="form.fileListStat"
-                :multiple="true"
-                @preview="handlePreview"
-                @change="handleChangeStat"
-              >
-                <div v-if="form.fileListStat.length < 20">
-                  <a-icon type="plus" />
-                  <div class="ant-upload-text">Upload</div>
-                </div>
-              </a-upload>
-              <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                <img alt="example" style="width: 100%" :src="previewImage" />
-              </a-modal>
-            </div>
+            <a-form-model-item class="form-item inner mb-0 pb-0">
+              <div class="clearfix inner">
+                <a-upload
+                  action="https://api.safarpark.uz/api/files/upload"
+                  list-type="picture-card"
+                  :file-list="form.fileListStat"
+                  :multiple="true"
+                  @preview="handlePreview"
+                  @change="handleChangeStat"
+                >
+                  <div v-if="form.fileListStat.length < 20">
+                    <a-icon type="plus" />
+                    <div class="ant-upload-text">Upload</div>
+                  </div>
+                </a-upload>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </a-modal>
+              </div>
+            </a-form-model-item>
           </div>
         </div>
       </div>
@@ -417,7 +500,7 @@ const columns = [
 const data = [
   {
     key: "1",
-    name: "Понедельник",
+    name: "Вторник",
     time: 1,
     id: 1,
     address: "mavjud",
@@ -425,7 +508,7 @@ const data = [
   },
   {
     key: "2",
-    name: "Вторник",
+    name: "Среда",
     time: 2,
     id: 2,
     address: "mavjud emas",
@@ -433,7 +516,7 @@ const data = [
   },
   {
     key: "3",
-    name: "Среда",
+    name: "Четверг",
     time: 3,
     id: 3,
     address: "mavjud",
@@ -441,7 +524,7 @@ const data = [
   },
   {
     key: "4",
-    name: "Четверг",
+    name: "Пятница",
     time: 4,
     id: 4,
     address: "mavjud",
@@ -449,7 +532,7 @@ const data = [
   },
   {
     key: "5",
-    name: "Пятница",
+    name: "Суббота",
     time: 5,
     id: 5,
     address: "mavjud",
@@ -457,7 +540,7 @@ const data = [
   },
   {
     key: "6",
-    name: "Суббота",
+    name: "Воскресенье",
     time: 6,
     id: 6,
     address: "mavjud",
@@ -465,7 +548,7 @@ const data = [
   },
   {
     key: "7",
-    name: "Воскресенье",
+    name: "Понедельник",
     time: 7,
     id: 7,
     address: "mavjud",
@@ -555,8 +638,13 @@ export default {
           ],
         },
       },
-      services: ["tariff", "by_count", "multi"],
+      services: [
+        { name: "Tarif", value: "tariff" },
+        { name: "By count", value: "by_count" },
+        { name: "By count and tarif", value: "multi" },
+      ],
       count: 0,
+      value: "",
       form: {
         name: {
           ru: "",
@@ -573,6 +661,7 @@ export default {
         schedule: [
           [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
@@ -580,6 +669,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
@@ -587,6 +677,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
@@ -594,6 +685,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
@@ -601,6 +693,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               end: "",
               disabled: false,
@@ -608,6 +701,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               disabled: false,
               end: "",
@@ -615,6 +709,7 @@ export default {
           ],
           [
             {
+              id: 1,
               start: "",
               disabled: false,
               end: "",
@@ -688,7 +783,6 @@ export default {
         fileListStat: [],
       },
       bottom: 10,
-      value: "",
       wrapperCol: { span: 14 },
       xIcon: require("../../assets/svg/x.svg?raw"),
       plusIcon: require("../../assets/svg/plus.svg?raw"),
@@ -727,9 +821,9 @@ export default {
       ],
     };
   },
+
   mounted() {
     this.routerInfo = JSON.parse(localStorage.getItem("serive_params"));
-    console.log(this.$router);
   },
   methods: {
     onChangeDay(e, index) {
@@ -795,7 +889,7 @@ export default {
         }
       });
       const { fileListStat, ...rest } = data;
-
+      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           if (priceRequired.length == 0) {
@@ -819,9 +913,23 @@ export default {
     },
     addTimePicker(id) {
       this.form.schedule[id].push({
-        start: "00:00",
-        end: "00:00",
+        id: Math.max(...this.form.schedule[id].map((o) => o.id)) + 1,
+        start: "",
+        end: "",
       });
+    },
+    deleteTimePicker(arrayId, id) {
+      if (this.form.schedule[arrayId].length > 1) {
+        this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
+          (item) => item.id != id
+        );
+      }
+      this.form.schedule = [...this.form.schedule];
+    },
+    onChangeTime(e, index, name, ind) {
+      let val = moment(e).format("hh:mm");
+      this.form.schedule[index][ind][name] = val;
+      console.log(val);
     },
     addPrice(id) {
       const price = this.form.prices.find((item) => item.id == id);
@@ -851,10 +959,7 @@ export default {
       if (this.form.prices.length > 1)
         this.form.prices = this.form.prices.filter((item) => item.id != id);
     },
-    onChangeTime(e, index, name, ind) {
-      let val = moment(e).format("hh:mm");
-      this.form.schedule[index][ind][name] = val;
-    },
+
     handleCancel() {
       this.previewVisible = false;
     },

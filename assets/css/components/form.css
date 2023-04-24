@@ -29,6 +29,20 @@
   color: #181c32 !important;
   min-height: 42px !important;
 }
+.form-item .ant-input-number {
+  width: 100%;
+  background: #fff;
+  border: none;
+  font-family: "Inter", sans-serif;
+  font-weight: 400 !important;
+  font-size: 14.3px !important;
+  line-height: 21.5px !important;
+  color: #181c32 !important;
+  min-height: 42px !important;
+}
+.form-item .ant-input-number-focused {
+  box-shadow: none;
+}
 .form-item .ant-select-selection {
   display: flex;
   align-items: center;
@@ -233,7 +247,9 @@
   align-items: center;
   min-height: 43px;
   margin-bottom: 5px;
+  position: relative;
 }
+
 .time_picker .ant-time-picker {
   width: 40px;
 }
@@ -391,7 +407,80 @@
 }
 .disabledTime {
   pointer-events: none;
+  color: #c0c9da !important;
 }
 .disabledTime::after {
   color: #c0c9da;
+}
+
+input[type="time"] {
+  position: relative;
+  max-width: 35px;
+}
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+  position: absolute;
+  top: -5px;
+  left: -10px;
+  width: 100%;
+  height: 100%;
+}
+.without_ampm::-webkit-datetime-edit-ampm-field {
+  display: none;
+}
+input[type="time"]::-webkit-clear-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  margin: -10px;
+}
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+  position: absolute;
+  display: none;
+}
+input[type="time"]:focus {
+  outline: none;
+}
+.delete-time-picker {
+  position: absolute;
+  right: -3px;
+  top: -9px;
+  z-index: 5;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0;
+  transition: 0.2s ease-in-out;
+}
+.delete-time-picker svg path {
+  stroke: #fff;
+}
+.delete-time-picker svg {
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  background: red;
+}
+
+.time_picker:hover .delete-time-picker {
+  opacity: 1 !important;
+}
+.bounce-enter-active {
+  transition: 0.2s;
+}
+.bounce-enter-active .form-item {
+  animation: bounce-in 0.2s;
+}
+.bounce-leave-active .form-item {
+  animation: bounce-in 0.2s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.5);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

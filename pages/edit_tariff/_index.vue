@@ -81,27 +81,40 @@
                   <span
                     class="time_picker"
                     style="margin-right: 16px"
-                    v-if="form.schedule.length > 0"
                     v-for="(timePicker, ind) in form.schedule[text - 1]"
+                    :class="{ disabledTime: timePicker.disabled }"
                   >
-                    <a-time-picker
-                      style="margin-right: 6px"
-                      :default-value="
-                        moment(timePicker.start ? timePicker.start : '00:00', 'HH:mm')
-                      "
-                      format="HH:mm"
-                      :disabled="timePicker.disabled"
+                    <span
+                      @click="deleteTimePicker(text - 1, timePicker.id)"
+                      class="delete-time-picker"
+                      v-html="xIcon"
+                    ></span>
+                    <input
+                      v-model="timePicker.start"
+                      type="time"
+                      id="time-input"
+                      name="time"
+                      min="00:00"
+                      max="23:59"
                       :class="{ disabledTime: timePicker.disabled }"
-                      @change="($event) => onChangeTime($event, text - 1, 'start', ind)"
+                      :disabled="timePicker.disabled"
+                      pattern="[0-2][0-9]:[0-5][0-9]"
                     />
-                    <a-time-picker
-                      :default-value="
-                        moment(timePicker.end ? timePicker.end : '00:00', 'HH:mm')
-                      "
-                      format="HH:mm"
+                    <span
+                      class="d-flex align-items-center"
+                      style="margin-left: 3px; margin-right: 3px"
+                      >-</span
+                    >
+                    <input
+                      v-model="timePicker.end"
+                      type="time"
                       :class="{ disabledTime: timePicker.disabled }"
                       :disabled="timePicker.disabled"
-                      @change="($event) => onChangeTime($event, text - 1, 'end', ind)"
+                      id="time-input"
+                      name="time"
+                      min="00:00"
+                      max="23:59"
+                      pattern="[0-2][0-9]:[0-5][0-9]"
                     />
                   </span>
                   <div
@@ -152,12 +165,12 @@
             <div class="grid-3 px-4">
               <a-form-model-item class="form-item mb-3" label="Turi">
                 <a-select
-                  :default-value="services[0]"
+                  :default-value="services[0].value"
                   v-model="form.type"
                   @change="changeTariff"
                 >
-                  <a-select-option v-for="(service, index) in services" :key="service">
-                    {{ service }}
+                  <a-select-option v-for="(service, index) in services" :key="service.value">
+                    {{ service.name }}
                   </a-select-option>
                 </a-select>
               </a-form-model-item>
@@ -201,7 +214,30 @@
                     />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3">
-                    <a-input v-model="price.prices[0].name" placeholder="Введите сумму" />
+                    <a-input-number
+                      v-model="price.prices[0].name"
+                      :default-value="1000"
+                      :formatter="
+                        (value) => {
+                          if (Number(value)) {
+                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                          } else {
+                            var num = [];
+                            value.split('').forEach((item) => {
+                              if (Number(item) || item == 0) {
+                                num.push(item);
+                              }
+                            });
+                            return `${num.join('')}`.replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ' '
+                            );
+                          }
+                        }
+                      "
+                      placeholder="Введите сумму"
+                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                    />
                   </a-form-model-item>
 
                   <div class="d-flex align-items-center mb-2">
@@ -238,7 +274,30 @@
                 >
                   <span class="index-block">{{ index1 + 1 }}</span>
                   <a-form-model-item class="form-item mb-0">
-                    <a-input v-model="pr.name" placeholder="Введите сумму" />
+                    <a-input-number
+                      v-model="pr.name"
+                      :default-value="1000"
+                      :formatter="
+                        (value) => {
+                          if (Number(value)) {
+                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                          } else {
+                            var num = [];
+                            value.split('').forEach((item) => {
+                              if (Number(item) || item == 0) {
+                                num.push(item);
+                              }
+                            });
+                            return `${num.join('')}`.replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ' '
+                            );
+                          }
+                        }
+                      "
+                      placeholder="Введите сумму"
+                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                    />
                   </a-form-model-item>
                   <div class="d-flex align-items-center mb-2">
                     <div
@@ -529,7 +588,11 @@ export default {
           ],
         },
       },
-      services: ["tariff", "by_count", "multi"],
+      services: [
+        { name: "Tarif", value: "tariff" },
+        { name: "By count", value: "by_count" },
+        { name: "By count and tarif", value: "multi" },
+      ],
       count: 0,
       form: {
         name: {
@@ -756,9 +819,18 @@ export default {
 
     addTimePicker(id) {
       this.form.schedule[id].push({
-        start: "00:00",
-        end: "00:00",
+        id: Math.max(...this.form.schedule[id].map((o) => o.id)) + 1,
+        start: "",
+        end: "",
       });
+    },
+    deleteTimePicker(arrayId, id) {
+      if (this.form.schedule[arrayId].length > 1) {
+        this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
+          (item) => item.id != id
+        );
+      }
+      this.form.schedule = [...this.form.schedule];
     },
     changeTariff() {
       this.form.prices = [
