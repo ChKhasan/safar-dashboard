@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleBlock title="F.A.Q" :breadbrumb="['Главный']" lastLink="F.A.Q">
+    <TitleBlock title="Промо" :breadbrumb="['Главный']" lastLink="Промо">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
