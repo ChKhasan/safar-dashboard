@@ -88,7 +88,7 @@
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
             <a-form-model-item
               class="form-item mb-3"
-              :class="{'select-placeholder': form.service_id == null}"
+              :class="{ 'select-placeholder': form.service_id == null }"
               label="Услуга"
             >
               <a-select v-model="form.service_id" placeholder="Услуга">
@@ -170,14 +170,21 @@ const columns = [
     width: 50,
   },
   {
+    title: "Промо",
+    dataIndex: "promo",
+    key: "promo",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "promo" },
+    className: "column-name",
+  },
+  {
     title: "Услуга",
     dataIndex: "service",
     key: "service",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "service" },
-    className: "column-name",
+    className: "column-service",
     align: "left",
-    width: "45%",
   },
   {
     title: "Количество",
@@ -187,14 +194,7 @@ const columns = [
     scopedSlots: { customRender: "amount" },
     className: "column-service",
   },
-  {
-    title: "Промо",
-    dataIndex: "promo",
-    key: "promo",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "promo" },
-    className: "column-service",
-  },
+
   {
     title: "Дата",
     dataIndex: "date",
