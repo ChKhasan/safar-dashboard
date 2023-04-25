@@ -234,12 +234,12 @@
                 :key="price.id"
                 v-if="form.type !== 'multi'"
               >
-                <a-form-model-item
+                <!-- <a-form-model-item
                   class="form-item inner mb-3"
                   v-if="form.type == 'multi'"
                 >
                   <a-input v-model="price.name" placeholder="Введите параметр (текст)" />
-                </a-form-model-item>
+                </a-form-model-item> -->
                 <div class="grid-3-with-2delete">
                   <a-form-model-item class="form-item inner mb-3">
                     <a-input
@@ -249,7 +249,7 @@
                   </a-form-model-item>
                   <a-form-model-item class="form-item inner mb-3">
                     <a-input-number
-                      v-model="price.prices[0].name"
+                      v-model="price.price"
                       :default-value="1000"
                       :formatter="
                         (value) => {
@@ -283,7 +283,7 @@
                   </div>
                 </div>
               </div>
-              <div
+              <!-- <div
                 v-for="(price2, index) in form.prices"
                 :key="price2.id"
                 v-if="form.type == 'multi'"
@@ -348,7 +348,7 @@
                     ></div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <div class="create-inner-variant" @click="addPrices">
                 <span v-html="plusIcon"> </span>
                 Qo’shish
@@ -640,7 +640,7 @@ export default {
       services: [
         { name: "Tarif", value: "tariff" },
         { name: "By count", value: "by_count" },
-        { name: "By count and tarif", value: "multi" },
+        // { name: "By count and tarif", value: "multi" },
       ],
       count: 0,
       value: "",
@@ -727,12 +727,7 @@ export default {
           {
             id: 999,
             name: "",
-            prices: [
-              {
-                id: 99,
-                name: "",
-              },
-            ],
+            price: null,
           },
         ],
         statistics: [
@@ -846,12 +841,7 @@ export default {
         ...this.form,
         service_id: this.$route.params.index,
         tab_start_text: this.form.type != "tariff" ? null : this.form.tab_start_text,
-        prices: this.form.prices.map((item) => {
-          return {
-            name: item.name,
-            prices: item.prices.map((pr) => pr.name),
-          };
-        }),
+        prices: this.form.prices,
         schedule: this.form.schedule.map((item) => {
           if (item[0].disabled != true) {
             return item.map((time) => {
@@ -873,26 +863,25 @@ export default {
           }),
       };
       data.schedule = data.schedule.map((item) => {
-        if (item && item[0] == "") {
-          return [];
-        } else {
-          return item;
-        }
+        item && item[0] == "" ? [] : item;
       });
       let priceRequired = [];
       data.prices.forEach((item) => {
-        if (item.name == "" || item.prices[0] == "") {
+        if (
+          item.price == null ||
+          item.price == "" ||
+          item.name == null ||
+          item.name == ""
+        )
           priceRequired.push(item);
-        }
       });
       const { fileListStat, ...rest } = data;
+      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          if (priceRequired.length == 0) {
-            this.__POST_TARIFF(rest);
-          } else {
-            this.notification("error", "Tariff", "Price and price text required");
-          }
+          priceRequired.length == 0
+            ? this.__POST_TARIFF(rest)
+            : this.notification("error", "Tariff", "Price and price text is required");
         } else {
           return false;
         }
@@ -913,43 +902,39 @@ export default {
         start: "",
         end: "",
       });
+      this.data = [...this.data];
     },
     deleteTimePicker(arrayId, id) {
-      if (this.form.schedule[arrayId].length > 1) {
+      if (this.form.schedule[arrayId].length > 1)
         this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
           (item) => item.id != id
         );
-      }
+
       this.form.schedule = [...this.form.schedule];
     },
     onChangeTime(e, index, name, ind) {
       let val = moment(e).format("hh:mm");
       this.form.schedule[index][ind][name] = val;
     },
-    addPrice(id) {
-      const price = this.form.prices.find((item) => item.id == id);
-      price.prices.push({
-        name: "",
-        id: Math.max(...price.prices.map((o) => o.id)) + 1,
-      });
-    },
+    // addPrice(id) {
+    //   const price = this.form.prices.find((item) => item.id == id);
+    //   price.prices.push({
+    //     name: "",
+    //     id: Math.max(...price.prices.map((o) => o.id)) + 1,
+    //   });
+    // },
     addPrices() {
       this.form.prices.push({
         name: "",
-        prices: [
-          {
-            id: 99,
-            name: "",
-          },
-        ],
+        price: null,
         id: Math.max(...this.form.prices.map((o) => o.id)) + 1,
       });
     },
-    deletePrice(parentId, id) {
-      const parent = this.form.prices.find((item) => item.id == parentId);
-      if (parent.prices.length > 1)
-        parent.prices = parent.prices.filter((item) => item.id != id);
-    },
+    // deletePrice(parentId, id) {
+    //   const parent = this.form.prices.find((item) => item.id == parentId);
+    //   if (parent.prices.length > 1)
+    //     parent.price = parent.price.filter((item) => item.id != id);
+    // },
     deletePrices(id) {
       if (this.form.prices.length > 1)
         this.form.prices = this.form.prices.filter((item) => item.id != id);
@@ -991,12 +976,7 @@ export default {
         {
           id: 999,
           name: "",
-          prices: [
-            {
-              id: 99,
-              name: "",
-            },
-          ],
+          price: null,
         },
       ];
       if (val !== "by_count") {

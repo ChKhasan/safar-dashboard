@@ -239,9 +239,9 @@
                 :key="price.id"
                 v-if="form.type !== 'multi'"
               >
-                <a-form-model-item class="form-item mb-3" v-if="form.type == 'multi'">
+                <!-- <a-form-model-item class="form-item mb-3" v-if="form.type == 'multi'">
                   <a-input v-model="price.name" placeholder="Введите параметр (текст)" />
-                </a-form-model-item>
+                </a-form-model-item> -->
                 <div class="grid-3-with-2delete">
                   <a-form-model-item class="form-item mb-3">
                     <a-input
@@ -251,7 +251,7 @@
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3">
                     <a-input-number
-                      v-model="price.prices[0].name"
+                      v-model="price.price"
                       :default-value="1000"
                       :formatter="
                         (value) => {
@@ -285,7 +285,7 @@
                   </div>
                 </div>
               </div>
-              <div
+              <!-- <div
                 v-for="(price2, index) in form.prices"
                 :key="price2.id"
                 v-if="form.type == 'multi'"
@@ -350,7 +350,7 @@
                     ></div>
                   </div>
                 </div>
-              </div>
+              </div> -->
               <div class="create-inner-variant" @click="addPrices">
                 <span v-html="plusIcon"> </span>
                 Qo’shish
@@ -627,7 +627,7 @@ export default {
       services: [
         { name: "Tarif", value: "tariff" },
         { name: "By count", value: "by_count" },
-        { name: "By count and tarif", value: "multi" },
+        // { name: "By count and tarif", value: "multi" },
       ],
       count: 0,
       form: {
@@ -656,12 +656,7 @@ export default {
           {
             id: 999,
             name: "",
-            prices: [
-              {
-                id: 99,
-                name: "",
-              },
-            ],
+            price: null,
           },
         ],
         statistics: [
@@ -781,7 +776,7 @@ export default {
         prices: this.form.prices.map((item) => {
           return {
             name: item.name,
-            prices: item.prices.map((pr) => pr.name),
+            price: item.price,
           };
         }),
         schedule: this.form.schedule.map((item) => {
@@ -815,10 +810,10 @@ export default {
 
       data.prices.forEach((item) => {
         if (
+          item.price == "" ||
+          item.price == null ||
           item.name == "" ||
-          item.name == null ||
-          item.prices[0] == "" ||
-          item.prices[0] == null
+          item.name == null
         ) {
           priceRequired.push(item);
         }
@@ -857,12 +852,7 @@ export default {
         {
           id: 999,
           name: "",
-          prices: [
-            {
-              id: 99,
-              name: "",
-            },
-          ],
+          price: null,
         },
       ];
       if (this.form.type !== "by_count") {
@@ -879,22 +869,17 @@ export default {
         };
       }
     },
-    addPrice(id) {
-      const price = this.form.prices.find((item) => item.id == id);
-      price.prices.push({
-        name: "",
-        id: Math.max(...price.prices.map((o) => o.id)) + 1,
-      });
-    },
+    // addPrice(id) {
+    //   const price = this.form.prices.find((item) => item.id == id);
+    //   price.prices.push({
+    //     name: "",
+    //     id: Math.max(...price.prices.map((o) => o.id)) + 1,
+    //   });
+    // },
     addPrices() {
       this.form.prices.push({
         name: "",
-        prices: [
-          {
-            id: 99,
-            name: "",
-          },
-        ],
+        price: null,
         id: Math.max(...this.form.prices.map((o) => o.id)) + 1,
       });
     },
@@ -940,12 +925,7 @@ export default {
         return {
           id: 999 + index,
           name: item.name,
-          prices: item.prices.map((elem, ind) => {
-            return {
-              id: 99 + ind,
-              name: elem,
-            };
-          }),
+          price: item.price,
         };
       });
       this.form.statistics = data?.tariff.statistics.map((item, index) => {
@@ -996,7 +976,6 @@ export default {
           },
         };
       });
-      console.log(this.form.schedule);
     },
     async __EDIT_TARIFF(data) {
       try {
@@ -1014,11 +993,11 @@ export default {
         this.statusFunc(e);
       }
     },
-    deletePrice(parentId, id) {
-      const parent = this.form.prices.find((item) => item.id == parentId);
-      if (parent.prices.length > 1)
-        parent.prices = parent.prices.filter((item) => item.id != id);
-    },
+    // deletePrice(parentId, id) {
+    //   const parent = this.form.prices.find((item) => item.id == parentId);
+    //   if (parent.prices.length > 1)
+    //     parent.prices = parent.prices.filter((item) => item.id != id);
+    // },
     deletePrices(id) {
       if (this.form.prices.length > 1)
         this.form.prices = this.form.prices.filter((item) => item.id != id);
