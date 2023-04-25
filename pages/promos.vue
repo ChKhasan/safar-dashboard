@@ -1,13 +1,13 @@
 <template>
   <div class="">
-    <TitleBlock title="Галереи" :breadbrumb="['Главный']" lastLink="Галереи">
+    <TitleBlock title="F.A.Q" :breadbrumb="['Главный']" lastLink="F.A.Q">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="addGalleries"
+          @click="addPromos"
         >
-          <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+          <span class="svg-icon" v-html="addIcon"></span>
           Добавить
         </a-button>
       </div>
@@ -29,25 +29,14 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="galleries"
+          :data-source="promos"
           :loading="loading"
         >
-          <span slot="sm_files" slot-scope="text">
-            <img v-if="text.length > 0" class="table-image" :src="text[0]" />
-            <img
-              v-else
-              class="table-image"
-              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
-            />
-          </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="name" slot-scope="text">{{ text?.ru ? text?.ru : "-----" }}</span>
-          <span slot="subtitle" slot-scope="text">{{
-            text?.ru ? text?.ru : "-----"
+          <span slot="service" slot-scope="text">{{
+            text?.name?.ru ? text?.name?.ru : "-------"
           }}</span>
-          <span slot="desc" slot-scope="text">
-            <span v-html="text?.ru ? text?.ru : '-----'"></span>
-          </span>
+
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
@@ -66,13 +55,11 @@
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="
-              ($event) => changePageSizeGlobal($event, '/galleries', '__GET_GALLERIES')
-            "
+            @change="($event) => changePageSizeGlobal($event, '/faqs', '__GET_PROMOS')"
           >
             <a-select-option
               v-for="item in pageSizes"
-              :key="item.value"
+              :key="item?.value"
               :label="item.label"
               :value="item.value"
               >{{ item.label }}
@@ -90,14 +77,14 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '5px' }"
+      :dialog-style="{ top: '50px' }"
       :title="title"
       :closable="false"
       width="720px"
       @ok="handleOk"
     >
       <div class="d-flex flex-column">
-        <div class="form_tab mb-4 bottom_hr">
+        <!-- <div class="form_tab mb-4 bottom_hr">
           <span
             v-for="(item, index) in formTabData"
             :key="index"
@@ -106,48 +93,45 @@
           >
             {{ item.label }}
           </span>
-        </div>
-        <div
-          class="d-flex flex-column"
-          v-for="(item, index) in formTabData"
-          :key="index"
-          v-if="formTab == item.index"
-        >
-          <a-form-model
-            :model="form"
-            ref="ruleFormGalleries"
-            :rules="rules"
-            layout="vertical"
-          >
-            <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
-              <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+        </div> -->
+        <div class="d-flex flex-column">
+          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
+            <a-form-model-item class="form-item mb-3" label="Услуга">
+              <a-select v-model="form.service_id" placeholder="Услуга">
+                <a-select-option v-for="(service, index) in services" :key="service?.id">
+                  {{ service?.name?.ru }}
+                </a-select-option>
+              </a-select>
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Описание">
-              <quill-editor
-                class="product-editor mt-1"
-                v-model="form.desc[item.index]"
-                :options="editorOption"
+            <a-form-model-item class="form-item mb-3" label="Количество">
+              <a-input-number
+                v-model="form.amount"
+                :formatter="
+                  (value) => {
+                    if (Number(value)) {
+                      return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                    } else {
+                      var num = [];
+                      value.split('').forEach((item) => {
+                        if (Number(item) || item == 0) {
+                          num.push(item);
+                        }
+                      });
+                      return `${num.join('')}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                    }
+                  }
+                "
+                placeholder="Введите сумму"
+                :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
               />
             </a-form-model-item>
+            <a-form-model-item class="form-item mb-3" label="Дата">
+              <input type="date" class="w-100 promo-date" v-model="form.date" />
+            </a-form-model-item>
+            <a-form-model-item class="form-item mb-3" label="Промо">
+              <a-input v-model="form.promo" placeholder="Промо" />
+            </a-form-model-item>
           </a-form-model>
-          <div class="clearfix">
-            <a-upload
-              action="https://api.safarpark.uz/api/files/upload"
-              list-type="picture-card"
-              :file-list="fileList"
-              :multiple="true"
-              @preview="handlePreview"
-              @change="handleChange"
-            >
-              <div v-if="fileList.length < 8">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">Upload</div>
-              </div>
-            </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
-          </div>
         </div>
       </div>
       <template slot="footer">
@@ -161,10 +145,9 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
-            :loading="loadingBtn"
             @click="saveData"
           >
-            <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -181,14 +164,6 @@ import global from "../mixins/global";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
 const columns = [
   {
     title: "№",
@@ -200,31 +175,39 @@ const columns = [
     width: 50,
   },
   {
-    title: "заголовок",
-    dataIndex: "sm_files",
-    key: "sm_files",
+    title: "Услуга",
+    dataIndex: "service",
+    key: "service",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "sm_files" },
+    scopedSlots: { customRender: "service" },
     className: "column-name",
     align: "left",
-    colSpan: 2,
+    width: "45%",
   },
   {
-    dataIndex: "title",
-    key: "title",
+    title: "Количество",
+    dataIndex: "amount",
+    key: "amount",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "name" },
-    className: "column-name",
-    colSpan: 0,
+    scopedSlots: { customRender: "amount" },
+    className: "column-service",
   },
   {
-    title: "описание",
-    dataIndex: "desc",
-    key: "desc",
-    className: "column-subservice",
-    scopedSlots: { customRender: "desc" },
+    title: "Промо",
+    dataIndex: "promo",
+    key: "promo",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "promo" },
+    className: "column-service",
   },
-
+  {
+    title: "Дата",
+    dataIndex: "date",
+    key: "date",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "date" },
+    className: "column-service",
+  },
   {
     title: "Actions",
     className: "column-btns",
@@ -238,10 +221,10 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  head: {
-    title: "Галереи",
-  },
   mixins: [status, global],
+  head: {
+    title: "F.A.Q",
+  },
   data() {
     return {
       editorOption: {
@@ -264,7 +247,6 @@ export default {
       editId: null,
       formTab: "ru",
       visible: false,
-      loadingBtn: false,
       formTabData: [
         {
           label: "Русский",
@@ -281,183 +263,145 @@ export default {
       addIcon: require("../assets/svg/add-icon.svg?raw"),
       loading: false,
       search: "",
+      services: [],
       columns,
-      galleries: [],
-      previewVisible: false,
-      previewImage: "",
-      fileList: [],
-      rules: {
-        title: {
-          ru: [{ required: true, message: "This field is required", trigger: "change" }],
-        },
-      },
+      promos: [],
+      rules: {},
       form: {
-        title: {
-          ru: "",
-          uz: "",
-        },
-        desc: {
-          ru: "",
-          uz: "",
-        },
-        files: [],
+        service_id: null,
+        amount: null,
+        promo: "",
+        date: "",
       },
     };
   },
   async mounted() {
-    this.getFirstData("/galleries", "__GET_GALLERIES");
+    this.getFirstData("/promos", "__GET_PROMOS");
+    this.__GET_SERVICES();
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
     saveData() {
-      this.$refs["ruleFormGalleries"][0].validate((valid) => {
+      console.log(this.$refs);
+      console.log(this.form);
+      this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
           if (this.editId) {
-            this.__EDIT_GALLERIES(this.form);
+            this.__EDIT_PROMOS(this.form);
           } else {
-            this.__POST_GALLERIES(this.form);
+            this.__POST_PROMOS(this.form);
           }
         } else {
           return false;
         }
       });
     },
-
     editAction(id) {
       this.title = "Изменить";
       this.editId = id;
-      this.__GET_GALLERIES_BY_ID(id);
+      this.__GET_PROMOS_BY_ID(id);
     },
     deleteAction(id) {
       this.__DELETE_GLOBAL(
         id,
-        "fetchGalleries/deleteGalleries",
-        "Тариф был успешно удален",
-        "__GET_GALLERIES"
+        "fetchPromos/deletePromos",
+        "Услуга был успешно удален",
+        "__GET_PROMOS"
       );
     },
-    async __GET_GALLERIES() {
+    async __GET_PROMOS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchGalleries/getGalleries", {
+      const data = await this.$store.dispatch("fetchPromos/getPromos", {
         ...this.$route.query,
       });
       this.loading = false;
       const pageIndex = this.indexPage(
-        data?.galleries?.current_page,
-        data?.galleries?.per_page
+        data?.promos?.current_page,
+        data?.promos?.per_page
       );
-      this.galleries = data?.galleries?.data.map((item, index) => {
+      this.promos = data?.promos?.data.map((item, index) => {
         return {
           ...item,
           key: index + pageIndex,
         };
       });
-      this.totalPage = data?.galleries?.total;
+      this.totalPage = data?.promos?.total;
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
-    addGalleries() {
+    onChange(date, dateString) {
+      console.log(date, dateString);
+    },
+    addPromos() {
       this.title = "Добавить";
+
       this.fileList = [];
       this.editId = null;
       this.visible = true;
     },
     handleOk() {
       this.visible = false;
+      console.log(this.form);
     },
-    async __POST_GALLERIES(data) {
+    async __POST_PROMOS(data) {
       try {
-        await this.$store.dispatch("fetchGalleries/postGalleries", data);
+        await this.$store.dispatch("fetchPromos/postPromos", data);
         this.notification("success", "success", "Услуга успешно добавлен");
-        this.$router.push("/galleries");
         this.handleOk();
-        this.__GET_GALLERIES();
+        this.__GET_PROMOS();
       } catch (e) {
         this.statusFunc(e);
       }
     },
-    async __GET_GALLERIES_BY_ID(id) {
+    async __GET_PROMOS_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
+        const data = await this.$store.dispatch("fetchPromos/getPromosById", id);
         this.visible = true;
-        this.form = data?.gallery;
-        this.fileList = [];
-        data?.gallery.sm_files.forEach((item, index) => {
-          data?.gallery.files.forEach((elem, ind) => {
-            if (index == ind) {
-              this.fileList.push({
-                uid: `-${index}`,
-                name: "image.png",
-                status: "done",
-                oldImg: true,
-                url: item,
-                response: {
-                  path: elem,
-                },
-              });
-            }
-          });
-        });
+        this.form = data?.promo;
       } catch (e) {
         this.statusFunc(e);
       }
+    },
+    async __GET_SERVICES() {
+      this.loading = true;
+      const data = await this.$store.dispatch("fetchServices/getServices");
+      this.loading = false;
+      this.services = data?.services;
     },
     emptyData() {
       this.form = {
-        title: {
+        question: {
           ru: "",
           uz: "",
         },
-        desc: {
+        answer: {
           ru: "",
           uz: "",
         },
-        files: [],
+        service_id: null,
       };
     },
-    async __EDIT_GALLERIES(res) {
+    async __EDIT_PROMOS(res) {
       try {
-        await this.$store.dispatch("fetchGalleries/editGalleries", {
+        await this.$store.dispatch("fetchPromos/editPromos", {
           id: this.editId,
           data: res,
         });
         this.handleOk();
-
-        this.__GET_GALLERIES();
+        this.__GET_PROMOS();
         this.notification("success", "success", "Пост успешно изменена");
-        this.$router.push("/galleries");
+        this.$router.push("/promos");
       } catch (e) {
         this.statusFunc(e);
-      }
-    },
-    handleCancel() {
-      this.previewVisible = false;
-    },
-    async handlePreview(file) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-      }
-      this.previewImage = file.url || file.preview;
-      this.previewVisible = true;
-    },
-    handleChange({ fileList }) {
-      this.loadingBtn = true;
-      this.fileList = fileList;
-      if (fileList[0]?.response?.path) {
-        this.form.files = fileList.map((item) => item?.response?.path);
-        this.loadingBtn = false;
-      } else if (fileList.length == 0 || this.form.files > fileList.length) {
-        this.form.files = fileList.map((item) => item?.response?.path);
-        this.loadingBtn = false;
       }
     },
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/galleries", "__GET_GALLERIES");
+      this.changePagination(val, "/promos", "__GET_PROMOS");
     },
     visible(val) {
       if (val == false) {
@@ -476,5 +420,11 @@ export default {
 }
 .card_header {
   padding: 16.25px 0;
+}
+.ant-calendar-picker-container {
+  z-index: 2051;
+}
+.promo-date:focus {
+  outline: none;
 }
 </style>

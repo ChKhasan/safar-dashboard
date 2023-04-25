@@ -108,6 +108,11 @@ export default {
               edit: "edit_faqs",
             },
             {
+              key: "6",
+              name: "Промо",
+              to: "/promos",
+            },
+            {
               key: "5",
               name: "Заявки",
               to: "/applications",
