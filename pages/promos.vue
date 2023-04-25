@@ -86,7 +86,11 @@
       <div class="d-flex flex-column">
         <div class="d-flex flex-column">
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item class="form-item mb-3" label="Услуга">
+            <a-form-model-item
+              class="form-item mb-3"
+              :class="{'select-placeholder': form.service_id == null}"
+              label="Услуга"
+            >
               <a-select v-model="form.service_id" placeholder="Услуга">
                 <a-select-option v-for="(service, index) in services" :key="service?.id">
                   {{ service?.name?.ru }}
