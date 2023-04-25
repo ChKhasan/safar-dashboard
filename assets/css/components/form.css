@@ -9,6 +9,22 @@
   white-space: nowrap;
   padding-bottom: 0 !important;
 }
+.form-item .ant-select-selection--single .ant-select-selection__rendered {
+  width: 100%;
+  margin-left: 0;
+}
+.form-item
+  .ant-select-selection--single
+  .ant-select-selection__rendered
+  .ant-select-selection__placeholder {
+  display: block !important;
+  color: #a1a5bf;
+  font-family: "Inter", sans-serif;
+  font-weight: 400 !important;
+  font-size: 14.3px !important;
+  line-height: 21.5px !important;
+  min-height: 42px !important;
+}
 .form-item .ant-form-item-required::before {
   content: "*" !important;
   position: absolute !important;

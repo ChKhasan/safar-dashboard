@@ -103,6 +103,7 @@
                 </a-select-option>
               </a-select>
             </a-form-model-item>
+
             <a-form-model-item class="form-item mb-3" label="Количество">
               <a-input-number
                 v-model="form.amount"
@@ -307,7 +308,7 @@ export default {
       this.__DELETE_GLOBAL(
         id,
         "fetchPromos/deletePromos",
-        "Услуга был успешно удален",
+        "Промо успешно удален",
         "__GET_PROMOS"
       );
     },
