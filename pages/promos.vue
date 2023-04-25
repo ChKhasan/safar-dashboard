@@ -55,7 +55,7 @@
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="($event) => changePageSizeGlobal($event, '/faqs', '__GET_PROMOS')"
+            @change="($event) => changePageSizeGlobal($event, '/promos', '__GET_PROMOS')"
           >
             <a-select-option
               v-for="item in pageSizes"
@@ -84,16 +84,6 @@
       @ok="handleOk"
     >
       <div class="d-flex flex-column">
-        <!-- <div class="form_tab mb-4 bottom_hr">
-          <span
-            v-for="(item, index) in formTabData"
-            :key="index"
-            @click="formTab = item.index"
-            :class="{ 'avtive-formTab': formTab == item.index }"
-          >
-            {{ item.label }}
-          </span>
-        </div> -->
         <div class="d-flex flex-column">
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
             <a-form-model-item class="form-item mb-3" label="Услуга">
