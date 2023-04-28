@@ -31,6 +31,7 @@
             :class="{ 'menu-collabsed': collapsed }"
             :default-selected-keys="['1']"
             :default-open-keys="defaultOpens"
+            :open-keys.sync="openKeys"
           >
             <a-sub-menu :key="menu.sub" style="color: #9d9da6" v-for="menu in menuData">
               <span slot="title">
@@ -72,6 +73,7 @@ export default {
     return {
       collapsed: false,
       defaultOpens: ["1"],
+      openKeys: ["1"],
       logo: require("../assets/svg/logo-light.svg?raw"),
       catalogIcon: require("../assets/svg/toolbar-catalog.svg?raw"),
       menuData: [
@@ -204,25 +206,17 @@ export default {
   },
   mounted() {
     this.checkDefaultOpen();
-    console.log(this.defaultOpens);
-    this.defaultOpens = ["3"];
   },
-  asyncData({ isDev, route, store, env, params, query, req, res, redirect, error }) {
-    const defaultOpens = ["3"];
-    return {
-      defaultOpens,
-    };
-  },
+
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
     },
     checkDefaultOpen() {
-      console.log(this.$route);
       if (this.$route.name.includes("orders")) {
-        this.defaultOpens = ["3"];
+        this.openKeys = ["3"];
       } else {
-        this.defaultOpens = ["1"];
+        this.openKeys = ["1"];
       }
     },
     success() {
@@ -238,6 +232,9 @@ export default {
     },
     "$nuxt.isOnline"(val) {
       val && this.success();
+    },
+    routerName() {
+      this.checkDefaultOpen();
     },
   },
   components: { TitleBlock },

@@ -39,9 +39,9 @@
       </div>
     </div>
     <div class="container_xl app-container pb-5">
-      <div class="calendar-grid">
+      <div class="calendar-grid position-relative">
         <div>
-          <div class="card_block">
+          <div class="card_block date-sticky">
             <div class="calendar-date-box">
               <!-- c <input type="date" /> до
                 <input type="date" /> -->
@@ -50,11 +50,14 @@
                 type="primary"
                 class="d-flex calendar-btn align-items-center justify-content-center"
               >
-                <a-icon type="reload"
-              /></a-button>
+                <span v-html="eyeIcon"></span
+              ></a-button>
             </div>
           </div>
           <div class="calendar-days mt-3">
+            <CalendarCard />
+            <CalendarCard />
+            <CalendarCard />
             <CalendarCard />
             <CalendarCard />
             <CalendarCard />
@@ -67,14 +70,27 @@
             <CalendarOrderCard />
             <CalendarOrderCard />
             <CalendarOrderCard />
-            <a-button
-              class="add-btn add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
-              type="primary"
-              @click="$router.push('/orders/add_order')"
-            >
-              Добавить заказ
-            </a-button>
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
+            <CalendarOrderCard />
           </div>
+          <a-button
+            class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
+            type="primary"
+            @click="$router.push('/orders/add_order')"
+          >
+            Добавить заказ
+          </a-button>
         </div>
       </div>
     </div>
@@ -86,7 +102,7 @@ import CalendarOrderCard from "../../../components/cards/calendarOrderCard.vue";
 export default {
   data() {
     return {
-      eyeIcon: require("../../../assets/svg/Eye.svg?raw"),
+      eyeIcon: require("../../../assets/svg/check-circle.svg?raw"),
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
     };
@@ -101,4 +117,8 @@ export default {
 </script>
 <style lang="css">
 @import "../../../assets/css/pages/order.css";
+.date-sticky {
+  position: sticky;
+  top: 120px;
+}
 </style>

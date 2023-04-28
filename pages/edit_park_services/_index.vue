@@ -80,7 +80,11 @@
             :key="index"
             v-if="formTab.name == item.index"
           >
-            <a-form-model-item class="form-item mb-3" label="Xizmat nomi">
+            <a-form-model-item
+              class="form-item mb-3"
+              label="Xizmat nomi"
+              :prop="item.index == 'ru' ? 'name.ru' : ''"
+            >
               <a-input v-model="form.name[item.index]" placeholder="Group name" />
             </a-form-model-item>
 
@@ -725,7 +729,7 @@ export default {
               ru: [
                 {
                   required: true,
-                  message: "Please input Activity name",
+                  message: "This field is required",
                   trigger: "change",
                 },
               ],
@@ -733,32 +737,8 @@ export default {
           },
         ],
         name: {
-          ru: [
-            { required: true, message: "Please input Activity name", trigger: "change" },
-          ],
+          ru: [{ required: true, message: "This field is required", trigger: "change" }],
         },
-        region: [
-          { required: true, message: "Please select Activity zone", trigger: "change" },
-        ],
-        date1: [{ required: true, message: "Please pick a date", trigger: "change" }],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "Please select at least one activity type",
-            trigger: "change",
-          },
-        ],
-        resource: [
-          {
-            required: true,
-            message: "Please select activity resource",
-            trigger: "change",
-          },
-        ],
-        desc: [
-          { required: true, message: "Please input activity form", trigger: "blur" },
-        ],
       },
       previewVisible: false,
       previewImage: "",

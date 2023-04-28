@@ -4,27 +4,28 @@
 .main-table .ant-table-thead .column-btns,
 .main-table .ant-table-thead .column-subservice,
 .main-table .ant-table-thead .column-tags,
-.main-table .ant-table-thead .column-client {
+.main-table .ant-table-thead .column-client,
+.main-table .ant-table-thead .column-date {
   font-family: "TT Interfaces";
-  font-weight: 600 !important;
-  font-size: 11.7px;
   font-style: normal;
-  line-height: 18px;
-  text-transform: uppercase;
-  color: #6c7b9a !important;
   background-color: #fff;
+  font-weight: 600 !important;
+  color: #b5b5c3 !important;
+  font-size: 11.7px !important;
+  text-transform: uppercase;
+  letter-spacing: 1.3px;
 }
 
 .service-table .ant-table-thead .column-times,
 .service-table .ant-table-thead .column-additional {
-  font-size: 14px;
   font-family: "TT Interfaces";
-  font-weight: 500 !important;
   font-style: normal;
-  line-height: 18px;
-  color: #a1a5bf;
+  background-color: #fff;
+  font-weight: 600 !important;
+  color: #b5b5c3 !important;
+  font-size: 11.7px !important;
   text-transform: uppercase;
-  background-color: #fafbfc;
+  letter-spacing: 1.3px;
 }
 .service-table .ant-table-thead .column-name .ant-table-column-title {
   font-family: "Inter";
@@ -39,12 +40,20 @@
 .column-subservice,
 .column-client,
 .column-additional {
-  font-size: 14px;
+  font-size: 14.04px;
   font-family: "TT Interfaces";
   font-weight: 500 !important;
   font-style: normal;
   line-height: 18px;
-  color: #a1a5bf;
+  color: #b5b5c3 !important;
+}
+.column-date {
+  color: #3699ff !important;
+  font-size: 14.04px;
+  font-family: "TT Interfaces";
+  font-weight: 600 !important;
+  font-style: normal;
+  line-height: 18px;
 }
 .column-client {
   color: #3699ff;
@@ -73,15 +82,18 @@
   background: #e1f0ff;
 }
 .column-tags .tags-style {
-  line-height: 17px;
-  border-radius: 8px;
+  line-height: 0.6px;
+  border-radius: 5.46px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
   font-family: "TT Interfaces";
-  font-size: 12px;
+  font-size: 11.7px;
   font-weight: 500;
-  padding: 8px 24px;
+  padding: 0 9.75px;
 }
 .column-tags {
-  text-transform: uppercase;
+  text-transform: capitalize;
 }
 @media (max-width: 1440px) {
   .column-service,

@@ -2,7 +2,7 @@
   <div class="all-orders">
     <TitleBlock title="Новые заказы" :breadbrumb="['Заказы']" lastLink="Новые заказы">
     </TitleBlock>
-    <div class="container_xl app-container pb-5 pt-5">
+    <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
         <div class="order-links-grid">
           <nuxt-link
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
-      <div class="card_block main-table px-4 pb-4">
+      <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="order-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
@@ -95,6 +95,8 @@
           </span>
           <a slot="price" slot-scope="text">${{ text }}</a>
           <span slot="client" slot-scope="text" class="column-client">{{ text }}</span>
+          <span slot="dataAdd" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
+
           <span slot="customTitle"></span>
 
           <span
@@ -159,8 +161,8 @@ export default {
           key: "1",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -170,8 +172,8 @@ export default {
           key: "2",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -181,8 +183,8 @@ export default {
           key: "3",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -192,8 +194,8 @@ export default {
           key: "4",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -203,8 +205,8 @@ export default {
           key: "5",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -224,7 +226,7 @@ export default {
           title: "дата добавления",
           dataIndex: "dataAdd",
           scopedSlots: { customRender: "dataAdd" },
-          className: "column-name",
+          className: "column-date",
           key: "dataAdd",
         },
         {
@@ -335,4 +337,6 @@ export default {
   components: { TitleBlock, SearchInput },
 };
 </script>
-<style lang="scss"></style>
+<style lang="css">
+@import "../../assets/css/pages/order.css";
+</style>

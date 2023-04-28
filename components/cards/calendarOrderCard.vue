@@ -19,7 +19,7 @@
     <div class="calendar-order-card-right">
       <div class="column-btns">
         <span>
-          <span class="action-btn mx-4" v-html="eyeIcon"> </span>
+          <span class="action-btn mx-3" v-html="eyeIcon"> </span>
           <span class="action-btn" v-html="editIcon"> </span>
         </span>
       </div>

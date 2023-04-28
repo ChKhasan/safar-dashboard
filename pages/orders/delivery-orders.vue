@@ -2,7 +2,7 @@
   <div class="all-orders">
     <TitleBlock title="Измененные" :breadbrumb="['Заказы']" lastLink="Измененные">
     </TitleBlock>
-    <div class="container_xl app-container pb-5 pt-5">
+    <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
         <div class="order-links-grid">
           <nuxt-link
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
-      <div class="card_block main-table px-4 pb-4">
+      <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="order-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
@@ -333,4 +333,6 @@ export default {
   components: { TitleBlock, SearchInput },
 };
 </script>
-<style lang="scss"></style>
+<style lang="css">
+@import "../../assets/css/pages/order.css";
+</style>

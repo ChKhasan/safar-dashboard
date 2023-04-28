@@ -184,7 +184,7 @@ const columns = [
     className: "column-service",
   },
   {
-    title: "Actions",
+    title: "ДЕЙСТВИЯ",
     className: "column-btns",
     dataIndex: "id",
     key: "id",

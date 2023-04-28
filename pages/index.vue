@@ -128,7 +128,7 @@ const columns = [
     scopedSlots: { customRender: "package_options" },
   },
   {
-    title: "Actions",
+    title: "ДЕЙСТВИЯ",
     className: "column-btns",
     key: "id",
     dataIndex: "id",

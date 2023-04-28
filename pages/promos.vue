@@ -33,6 +33,7 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
+          <span slot="date" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
           <span slot="service" slot-scope="text">{{
             text?.name?.ru ? text?.name?.ru : "-------"
           }}</span>
@@ -192,7 +193,7 @@ const columns = [
     key: "amount",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "amount" },
-    className: "column-service",
+    className: "column-name",
   },
 
   {
@@ -201,10 +202,10 @@ const columns = [
     key: "date",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "date" },
-    className: "column-service",
+    className: "column-date",
   },
   {
-    title: "Actions",
+    title: "ДЕЙСТВИЯ",
     className: "column-btns",
     dataIndex: "id",
     key: "id",

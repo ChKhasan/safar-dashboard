@@ -2,7 +2,7 @@
   <div class="all-orders">
     <TitleBlock title="Все заказы" :breadbrumb="['Заказы']" lastLink="Все заказы">
     </TitleBlock>
-    <div class="container_xl app-container pb-5 pt-5">
+    <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
         <div class="order-links-grid">
           <nuxt-link
@@ -58,7 +58,7 @@
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
-      <div class="card_block main-table px-4 pb-4">
+      <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="order-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
@@ -95,6 +95,7 @@
           </span>
           <a slot="price" slot-scope="text">${{ text }}</a>
           <span slot="client" slot-scope="text" class="column-client">{{ text }}</span>
+          <span slot="dataAdd" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
           <span slot="customTitle"></span>
 
           <span
@@ -123,7 +124,7 @@
               v-html="editIcon"
             >
             </span>
-            <span class="action-btn" @click="tableActions(text)" v-html="deleteIcon">
+            <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
             </span>
           </span>
         </a-table>
@@ -159,8 +160,8 @@ export default {
           key: "1",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -170,8 +171,8 @@ export default {
           key: "2",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -181,8 +182,8 @@ export default {
           key: "3",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -192,8 +193,8 @@ export default {
           key: "4",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -203,8 +204,8 @@ export default {
           key: "5",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -224,7 +225,7 @@ export default {
           title: "дата добавления",
           dataIndex: "dataAdd",
           scopedSlots: { customRender: "dataAdd" },
-          className: "column-name",
+          className: "column-date",
           key: "dataAdd",
         },
         {
@@ -269,68 +270,36 @@ export default {
           align: "center",
         },
       ],
+      orders: [],
     };
-  },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0;
-    },
-
-    classObject(tag) {
-      return {
-        tag_success: tag == "Success",
-        tag_inProgress: tag == "in progress",
-      };
-    },
   },
   mounted() {
     if (this.data) {
       this.tableData = this.data;
     }
+    this.__GET_ORDERS();
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
-    changeStatus(val) {
-      // this.status = val;
-    },
-    handleTableChange(pagination, filters, sorter) {
-      console.log(filters);
-      this.tableData = this.data.map((item) => {
-        filters.tags.forEach((element) => {
-          if (item.tags == element);
-          return item;
-        });
-      });
-      console.log(this.tableData);
-    },
-
-    start() {
+    deleteAction(id) {},
+    async __GET_ORDERS() {
       this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        this.selectedRowKeys = [];
-      }, 1000);
-    },
-    tableActions(id) {
-      console.log(id);
-    },
-    onSelectChange(selectedRowKeys) {
-      console.log("selectedRowKeys changed: ", selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
-    },
-    handleSizeChange(val) {
-      console.log(`${val} items per page`);
-    },
-    handleCurrentChange(val) {
-      console.log(`current page: ${val}`);
-    },
-    handleCommand(command) {
-      this.pageSize = command;
+      const data = await this.$store.dispatch("fetchOrders/getOrders");
+      this.loading = false;
+      // this.orders = data?.orders?.data.map((item, index) => {
+      //   return {
+      //     ...item,
+      //     key: index + 1,
+      //   };
+      // });
+      console.log(data?.orders?.data);
     },
   },
   components: { TitleBlock, SearchInput },
 };
 </script>
-<style lang="scss"></style>
+<style lang="css">
+@import "../../assets/css/pages/order.css";
+</style>

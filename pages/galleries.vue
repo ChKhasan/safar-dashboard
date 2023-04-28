@@ -119,7 +119,11 @@
             :rules="rules"
             layout="vertical"
           >
-            <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
+            <a-form-model-item
+              class="form-item mb-3"
+              label="Заголовок"
+              :prop="item.index == 'ru' ? 'title.ru' : ''"
+            >
               <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
             </a-form-model-item>
             <a-form-model-item class="form-item mb-3" label="Описание">
@@ -226,7 +230,7 @@ const columns = [
   },
 
   {
-    title: "Actions",
+    title: "ДЕЙСТВИЯ",
     className: "column-btns",
     dataIndex: "id",
     key: "id",

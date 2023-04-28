@@ -1,7 +1,7 @@
 <template lang="html">
   <div class="all-orders">
     <TitleBlock title="Возврат" :breadbrumb="['Заказы']" lastLink="Возврат"> </TitleBlock>
-    <div class="container_xl app-container pb-5 pt-5">
+    <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
         <div class="order-links-grid">
           <nuxt-link
@@ -57,7 +57,7 @@
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
-      <div class="card_block main-table px-4 pb-4">
+      <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="order-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
@@ -122,7 +122,7 @@
               v-html="editIcon"
             >
             </span>
-            <span class="action-btn" @click="tableActions(text)" v-html="deleteIcon">
+            <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
             </span>
           </span>
         </a-table>
@@ -270,18 +270,6 @@ export default {
       ],
     };
   },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0;
-    },
-
-    classObject(tag) {
-      return {
-        tag_success: tag == "Success",
-        tag_inProgress: tag == "in progress",
-      };
-    },
-  },
   mounted() {
     if (this.data) {
       this.tableData = this.data;
@@ -291,45 +279,11 @@ export default {
     changeSearch(val) {
       this.search = val.target.value;
     },
-    changeStatus(val) {
-      // this.status = val;
-    },
-    handleTableChange(pagination, filters, sorter) {
-      console.log(filters);
-      this.tableData = this.data.map((item) => {
-        filters.tags.forEach((element) => {
-          if (item.tags == element);
-          return item;
-        });
-      });
-      console.log(this.tableData);
-    },
-
-    start() {
-      this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-        this.selectedRowKeys = [];
-      }, 1000);
-    },
-    tableActions(id) {
-      console.log(id);
-    },
-    onSelectChange(selectedRowKeys) {
-      console.log("selectedRowKeys changed: ", selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
-    },
-    handleSizeChange(val) {
-      console.log(`${val} items per page`);
-    },
-    handleCurrentChange(val) {
-      console.log(`current page: ${val}`);
-    },
-    handleCommand(command) {
-      this.pageSize = command;
-    },
+    deleteAction(id) {},
   },
   components: { TitleBlock, SearchInput, TitleBlock, SearchInput },
 };
 </script>
-<style lang="scss"></style>
+<style lang="css">
+@import "../../assets/css/pages/order.css";
+</style>
