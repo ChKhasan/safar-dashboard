@@ -2,14 +2,16 @@
 .main-table .ant-table-thead .column-service,
 .main-table .ant-table-thead .column-actions,
 .main-table .ant-table-thead .column-btns,
-.main-table .ant-table-thead .column-subservice {
+.main-table .ant-table-thead .column-subservice,
+.main-table .ant-table-thead .column-tags,
+.main-table .ant-table-thead .column-client {
   font-family: "TT Interfaces";
-  font-weight: 600;
+  font-weight: 600 !important;
   font-size: 11.7px;
   font-style: normal;
   line-height: 18px;
   text-transform: uppercase;
-  color: #6c7b9a;
+  color: #6c7b9a !important;
   background-color: #fff;
 }
 
@@ -35,6 +37,7 @@
 .column-service,
 .column-actions,
 .column-subservice,
+.column-client,
 .column-additional {
   font-size: 14px;
   font-family: "TT Interfaces";
@@ -43,11 +46,42 @@
   line-height: 18px;
   color: #a1a5bf;
 }
+.column-client {
+  color: #3699ff;
+  font-weight: 400 !important;
+}
 .column-name {
-  color: #181c32;
+  color: #181c32 !important;
   font-family: "TT Interfaces";
   font-size: 14.04px;
   font-weight: 700;
+}
+.tag_success {
+  background: #c9f7f5;
+  color: #18b3bd;
+}
+.tag_inProgress {
+  background: #fff4de;
+  color: #ffa909;
+}
+.tag_rejected {
+  background: #ffe2e5;
+  color: #f65160;
+}
+.tag_approved {
+  color: #3699ff;
+  background: #e1f0ff;
+}
+.column-tags .tags-style {
+  line-height: 17px;
+  border-radius: 8px;
+  font-family: "TT Interfaces";
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 24px;
+}
+.column-tags {
+  text-transform: uppercase;
 }
 @media (max-width: 1440px) {
   .column-service,
@@ -57,6 +91,7 @@
   }
   .column-name {
     font-size: 14.04px;
+    color: #181c32 !important;
   }
   .service-table .ant-table-thead .column-name .ant-table-column-title {
     font-size: 18px;
@@ -80,7 +115,7 @@
 }
 .column-btns span .action-btn {
   background: #f3f6f9;
-  border-radius: 5.46;
+  border-radius: 5.46px;
   width: 40px;
   height: 40px;
   display: inline-flex;

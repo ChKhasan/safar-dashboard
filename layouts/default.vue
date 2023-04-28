@@ -29,7 +29,7 @@
             mode="inline"
             style="background: #1e1e2d"
             :class="{ 'menu-collabsed': collapsed }"
-            :default-selected-keys="['3']"
+            :default-selected-keys="['1']"
             :default-open-keys="defaultOpens"
           >
             <a-sub-menu :key="menu.sub" style="color: #9d9da6" v-for="menu in menuData">
@@ -120,26 +120,76 @@ export default {
           ],
         },
         {
-          title: "Категории 2",
-          sub: "2",
+          title: "Заказы",
+          sub: "3",
           menuItems: [
             {
-              key: "4",
-              name: "Xizmatlar2",
-              to: "/",
-              path: "/",
+              name: "Все заказы (0)",
+              index: "31",
+              to: "/orders/all-orders",
+              path: "orders-all-orders",
+              disabled: false,
             },
             {
-              key: "5",
-              name: "Категории22",
-              to: "/",
-              path: "/",
+              name: "Новые заказы (0)",
+              index: "32",
+              to: "/orders/new-orders",
+              path: "orders-new-orders",
+
+              disabled: false,
             },
             {
-              key: "6",
-              name: "Категории22",
-              to: "/",
-              path: "/",
+              name: "Принятые заказы (0)",
+              index: "33",
+              to: "/orders/accepted-orders",
+              path: "orders-accepted-orders",
+
+              disabled: false,
+            },
+            {
+              name: "Ожидание (0)",
+              index: "34",
+              to: "/orders/ready-orders",
+              path: "orders-ready-orders",
+
+              disabled: false,
+            },
+            {
+              name: "Измененные (0)",
+              index: "35",
+              to: "/orders/delivery-orders",
+              path: "orders-delivery-orders",
+              disabled: false,
+            },
+            // {
+            //   name: "Возврат (0)",
+            //   index: "36",
+            //   to: "/orders/return-orders",
+            //   path: "orders-return-orders",
+
+            //   disabled: false,
+            // },
+            // {
+            //   name: "Доставленные (0)",
+            //   index: "37",
+            //   to: "/orders/delivered-orders",
+            //   path: "orders-delivered-orders",
+
+            //   disabled: false,
+            // },
+            {
+              name: "Отмененные (0)",
+              index: "38",
+              to: "/orders/canceled-orders",
+              path: "orders-canceled-orders",
+              disabled: false,
+            },
+            {
+              name: "Календарь",
+              index: "39",
+              to: "/orders/calendar/0",
+              path: "orders-calendar",
+              disabled: false,
             },
           ],
         },
@@ -152,9 +202,28 @@ export default {
       return this.$route.name;
     },
   },
+  mounted() {
+    this.checkDefaultOpen();
+    console.log(this.defaultOpens);
+    this.defaultOpens = ["3"];
+  },
+  asyncData({ isDev, route, store, env, params, query, req, res, redirect, error }) {
+    const defaultOpens = ["3"];
+    return {
+      defaultOpens,
+    };
+  },
   methods: {
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
+    },
+    checkDefaultOpen() {
+      console.log(this.$route);
+      if (this.$route.name.includes("orders")) {
+        this.defaultOpens = ["3"];
+      } else {
+        this.defaultOpens = ["1"];
+      }
     },
     success() {
       this.$message.success("You are online");
