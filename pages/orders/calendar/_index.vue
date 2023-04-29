@@ -45,7 +45,14 @@
             <div class="calendar-date-box">
               <!-- c <input type="date" /> до
                 <input type="date" /> -->
-              <a-range-picker @change="onChange" />
+              <a-range-picker
+                @change="onChange"
+                :default-value="[
+                  moment(today, dateFormat),
+                  moment(getLastWeeksDate, dateFormat),
+                ]"
+                :format="dateFormat"
+              />
               <a-button
                 type="primary"
                 class="d-flex calendar-btn align-items-center justify-content-center"
@@ -99,15 +106,25 @@
 <script>
 import CalendarCard from "../../../components/cards/calendarCard.vue";
 import CalendarOrderCard from "../../../components/cards/calendarOrderCard.vue";
+import moment from "moment";
 export default {
   data() {
     return {
       eyeIcon: require("../../../assets/svg/check-circle.svg?raw"),
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
+      today: new Date(),
+      dateFormat: "YYYY/MM/DD",
     };
   },
+  computed: {
+    getLastWeeksDate() {
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7);
+    },
+  },
   methods: {
+    moment,
     onChange(date, dateString) {
       console.log(date, dateString);
     },
