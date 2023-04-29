@@ -16,7 +16,9 @@
       </div>
     </div>
     <div class="bilet-card-body">
-      <div>Взрослый:</div>
+      <div class="bilet-card-services">
+        <span>Взрослый</span><span>Взрослый</span><span>Взрослый</span>
+      </div>
       <p>
         <span>2 x </span>
         1 500 000 сум

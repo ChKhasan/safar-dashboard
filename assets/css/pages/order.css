@@ -212,7 +212,7 @@
   border-bottom: 1px solid #ebebeb;
   display: flex;
 }
-.bilet-card-body div {
+.bilet-card-body .bilet-card-services span {
   font-family: "TT Interfaces";
   font-style: normal;
   font-weight: 500;
@@ -220,6 +220,16 @@
   line-height: 150%;
   color: #1878f3;
   margin-right: 16px;
+  position: relative;
+}
+.bilet-card-body .bilet-card-services span::after {
+  content: "-";
+  position: absolute;
+  right: -10px;
+}
+.bilet-card-body .bilet-card-services span:last-child:after {
+  content: ":";
+  position: absolute;
 }
 .bilet-card-body p {
   font-family: "TT Interfaces";
@@ -454,32 +464,52 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   line-height: 28px;
   color: #020105;
 }
-.calendar-order-card-left span {
+.calendar-order-card-left .calendar-order-card-services {
+  display: flex;
+  align-items: flex-end;
+}
+.calendar-order-card-left .calendar-order-card-services span {
   font-family: "TT Interfaces";
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
-  line-height: 28px;
-  color: #3c4bdc;
+  font-size: 16px;
+  line-height: 150%;
+  color: #1878f3;
   display: flex;
   margin-top: 8px;
+  position: relative;
+  margin-right: 20px;
 }
-.calendar-order-card-left span p {
+.calendar-order-card-left .calendar-order-card-services span:nth-last-child(2) {
+  margin-right: 5px;
+}
+.calendar-order-card-left .calendar-order-card-services span::after {
+  content: ">";
+  position: absolute;
+  right: -15px;
+  color: #000;
+}
+.calendar-order-card-left
+  .calendar-order-card-services
+  span:nth-last-child(2)::after {
+  display: none;
+}
+.calendar-order-card-left .calendar-order-card-services p {
   font-family: "TT Interfaces";
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
-  line-height: 26px;
-  color: #020105;
-  margin-left: 20px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #5d5d5f;
+  margin-left: 5px;
 }
 .calendar-order-card-center span {
-  font-family: "Inter";
+  font-family: "TT Interfaces";
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
-  line-height: 24px;
-  color: #181c32;
+  font-size: 16px;
+  line-height: 130%;
+  color: #9a999b;
   display: flex;
   align-items: center;
 }
@@ -493,13 +523,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-left: 24px;
 }
 .calendar-order-card-center h6 {
-  font-family: "Inter";
+  font-family: "TT Interfaces";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 18px;
-  line-height: 24px;
-  text-transform: capitalize;
-  color: #3699ff;
+  line-height: 22px;
+  color: #1878f3;
   margin-top: 5px;
 }
 .calendar-order-card-center h5 {
@@ -600,14 +629,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 16px;
     line-height: 20px;
   }
-  .calendar-order-card-left span {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 20px;
-  }
-  .calendar-order-card-left span p {
+  .calendar-order-card-left .calendar-order-card-services span {
     font-weight: 400;
     font-size: 14px;
+    line-height: 20px;
+  }
+  .calendar-order-card-left .calendar-order-card-services p {
+    font-weight: 400;
+    font-size: 13px;
     line-height: 18px;
     margin-left: 16px;
   }

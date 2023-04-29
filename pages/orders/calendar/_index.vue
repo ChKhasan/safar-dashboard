@@ -41,7 +41,7 @@
     <div class="container_xl app-container pb-5">
       <div class="calendar-grid position-relative">
         <div>
-          <div class="card_block date-sticky">
+          <div class="card_block">
             <div class="calendar-date-box">
               <!-- c <input type="date" /> до
                 <input type="date" /> -->

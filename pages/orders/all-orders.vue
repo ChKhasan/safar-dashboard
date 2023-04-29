@@ -115,12 +115,12 @@
             <span
               class="action-btn"
               v-html="eyeIcon"
-              @click="$router.push(`/edit_park_services/${text}`)"
+              @click="$router.push(`/orders/order/1`)"
             >
             </span>
             <span
               class="action-btn"
-              @click="$router.push('/orders/1232/edit')"
+              @click="$router.push('/orders/order/1')"
               v-html="editIcon"
             >
             </span>

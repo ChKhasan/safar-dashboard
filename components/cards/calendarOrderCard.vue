@@ -2,11 +2,14 @@
   <div class="calendar-order-card">
     <div class="calendar-order-card-left">
       <h6>Юный Стрелок</h6>
-      <span
-        >Юный Стрелок -> Взрослые
-        <p>2 x</p></span
-      >
-      
+      <div class="calendar-order-card-services">
+        <span>Юный Стрелок </span><span>Взрослые</span>
+        <p>2 x</p>
+      </div>
+      <div class="calendar-order-card-services">
+        <span>Юный Стрелок </span><span>Взрослые</span>
+        <p>2 x</p>
+      </div>
     </div>
     <div class="calendar-order-card-center">
       <span
