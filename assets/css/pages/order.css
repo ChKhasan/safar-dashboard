@@ -398,7 +398,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .calendar-day-card-body .calendar-day-card-body-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: 100px 3fr 45px;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
@@ -700,7 +701,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     font-size: 15px;
   }
   .calendar-day-card-body .calendar-day-card-body-list .day {
-    font-size: 15px;
+    font-size: 14px;
   }
   .calendar-day-card-body .calendar-day-card-body-list .day span {
     color: #1878f3;

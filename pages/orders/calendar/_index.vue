@@ -12,11 +12,19 @@
             Empty
           </a-button>
           <a-button
-            v-for="service in $store.state.services"
+            v-for="(service, index) in $store.state.services"
             v-else
             :key="service.id"
             class="add-btn add-header-btn btn-primary d-flex align-items-center"
-            :type="$route.params.index == service.id ? 'primary' : 'default'"
+            :type="
+              $route.params.index == 0
+                ? index == 0
+                  ? 'primary'
+                  : 'default'
+                : $route.params.index == service.id
+                ? 'primary'
+                : 'default'
+            "
             @click="$router.push(`/orders/calendar/${service.id}`)"
           >
             {{ service?.name?.ru }}
@@ -33,56 +41,61 @@
                 <input type="date" /> -->
               <a-range-picker
                 @change="onChange"
-                :default-value="[
-                  moment(today, dateFormat),
-                  moment(getLastWeeksDate, dateFormat),
-                ]"
                 :format="dateFormat"
+                v-model:value="calendarDate"
               />
               <a-button
                 type="primary"
                 class="d-flex calendar-btn align-items-center justify-content-center"
+                @click="getWidthCalendar"
               >
                 <span v-html="eyeIcon"></span
               ></a-button>
             </div>
           </div>
-
-          <div class="calendar-days mt-3" v-if="calendar.length > 0">
-            <CalendarCard />
-            <CalendarCard />
-            <CalendarCard />
-            <CalendarCard />
-            <CalendarCard />
-            <CalendarCard />
-            <CalendarCard />
-          </div>
-          <div class="calendar-days mt-3" v-else>
+          <div class="calendar-days mt-3" v-if="calendarLoading">
             <CalendarCardEmpty />
             <CalendarCardEmpty />
             <CalendarCardEmpty />
           </div>
+          <div class="calendar-days mt-3" v-if="calendar.length > 0 && !calendarLoading">
+            <span v-for="(day, index) in calendar" :key="index">
+              <div class="calendar-day-card">
+                <div class="calendar-day-card-header">
+                  <p>{{ day[0]?.date }}</p>
+                  <span>{{ weeks[moment(day[0]?.date,"YYYY-MM-DD").day()] }}</span>
+                </div>
+                <div class="calendar-day-card-body">
+                  <div
+                    class="calendar-day-card-body-list"
+                    v-for="(info, index) in day"
+                    @click="orders = {orders: info.orders,name: info?.tariff_name?.ru}"
+                    :key="index"
+                  >
+                    <div class="time">
+                      {{ info?.session ? info?.session : "----" }}
+                    </div>
+                    <div class="name">{{ info?.tariff_name?.ru }}</div>
+                    <div class="day">
+                      <span>{{ info?.booked }}/</span
+                      >{{ info?.max_clients ? info?.max_clients : '&#8734' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </span>
+          </div>
+          <div v-else class="calendar-empty"><a-empty /></div>
         </div>
         <div>
-          <div class="calendar-order-grid">
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
-            <CalendarOrderCard />
+          <div class="calendar-order-grid" v-if="orders?.orders?.length > 0">
+          <span  v-for="(order, index) in orders?.orders" :key="index">
+            <CalendarOrderCard
+              :order="{...order,name: orders?.name}"
+            />
+          </span>
           </div>
+          <div v-else class="calendar-empty"><a-empty /></div>
           <a-button
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
@@ -106,28 +119,57 @@ export default {
       eyeIcon: require("../../../assets/svg/check-circle.svg?raw"),
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
-      today: new Date(),
+      startDate: new Date(),
+      endDate: new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        new Date().getDate() + 14
+      ),
+      calendarDate: [],
       dateFormat: "DD/MM/YYYY",
       services: [],
       calendar: [],
+      orders: [],
       loading: false,
+      calendarLoading: false,
+      value: ["12/05/2023", "15/05/2023"],
+      weeks: [
+      'Понедельник',
+      'Вторник',
+         'Среда',
+       'Четверг',
+      'Пятница',
+        'Суббота',
+     'Воскресенье'
+    ]
     };
   },
   async mounted() {
-    const startDate = this.momentDate(new Date());
-    const endDate = this.momentDate(this.getLastWeeksDate);
-    console.log(startDate, endDate);
     if (
       !Object.keys(this.$route.query).includes("start_date") ||
       !Object.keys(this.$route.query).includes("end_date")
     ) {
+      const startDate = new Date();
+      const endDate = this.getLastWeeksDate;
+      this.calendarDate = [moment(startDate), moment(endDate)];
+      console.log(this.calendarDate);
       await this.$router.replace({
         path: `/orders/calendar/${this.$route.params.index}`,
-        query: { ...this.$route.query, start_date: startDate, end_date: endDate },
+        query: {
+          ...this.$route.query,
+          start_date: this.calendarDate[0].format("DD-MM-YYYY"),
+          end_date: this.calendarDate[1].format("DD-MM-YYYY"),
+        },
       });
     }
-    if (this.services.length == 0) this.__GET_SERVICES();
+    this.calendarDate = [
+      moment(this.$route.query.start_date, this.dateFormat),
+      moment(this.$route.query.end_date, this.dateFormat),
+    ];
+    this.__GET_SERVICES();
     this.__GET_CALENDAR();
+    // var dt = moment('15/05/2023', "YYYY-MM-DD HH:mm:ss");
+    console.log(this.weeks[moment('15/05/2023',"YYYY-MM-DD").format('dddd')]);
   },
   computed: {
     getLastWeeksDate() {
@@ -140,15 +182,28 @@ export default {
     momentDate: function (date) {
       return moment(date).format("DD-MM-YYYY");
     },
-    onChange(date, dateString) {
-      console.log(date, dateString);
+    async onChange(date, dateString) {
+      this.calendarDate = date;
+    },
+    async getWidthCalendar() {
+      await this.$router.replace({
+        path: `/orders/calendar/${this.$route.params.index}`,
+        query: {
+          ...this.$route.query,
+          start_date: this.calendarDate[0].format("DD-MM-YYYY"),
+          end_date: this.calendarDate[1].format("DD-MM-YYYY"),
+        },
+      });
+      this.__GET_CALENDAR();
     },
     async __GET_CALENDAR() {
+      this.calendarLoading = true;
       const data = await this.$store.dispatch("fetchOrders/getCalendar", {
         query: this.$route.query,
         id: this.$route.params.index,
       });
-      console.log(data);
+      this.calendarLoading = false;
+      this.calendar = data?.days;
     },
     async __GET_SERVICES() {
       const data = await this.$store.dispatch("fetchServices/getServices");
@@ -164,5 +219,15 @@ export default {
 .date-sticky {
   position: sticky;
   top: 120px;
+}
+.calendar-empty {
+  margin-top: 16px;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #fff;
 }
 </style>

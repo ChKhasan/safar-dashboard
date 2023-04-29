@@ -1,22 +1,18 @@
 <template lang="html">
   <div class="calendar-order-card">
     <div class="calendar-order-card-left">
-      <h6>Юный Стрелок</h6>
-      <div class="calendar-order-card-services">
-        <span>Юный Стрелок </span><span>Взрослые</span>
-        <p>2 x</p>
-      </div>
-      <div class="calendar-order-card-services">
-        <span>Юный Стрелок </span><span>Взрослые</span>
-        <p>2 x</p>
+      <h6>{{ order?.name }}</h6>
+      <div class="calendar-order-card-services" v-for="service in order?.data">
+        <span>{{ service?.name }}</span>
+        <p>{{ service?.count }} x</p>
       </div>
     </div>
     <div class="calendar-order-card-center">
       <span
         >№ bileta
-        <p>213214</p>
+        <p>{{ order?.id }}</p>
       </span>
-      <h6>Ikromov Asadulla</h6>
+      <h6>{{ order?.general_order?.client?.name }}</h6>
       <!-- <h5>Ручной бронь</h5> -->
     </div>
     <div class="calendar-order-card-right">
@@ -31,6 +27,7 @@
 </template>
 <script>
 export default {
+  props: ["order"],
   data() {
     return {
       eyeIcon: require("../../assets/svg/Eye.svg?raw"),
