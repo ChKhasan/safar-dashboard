@@ -1,5 +1,6 @@
 export const state = () => ({
   authenticated: true,
+  services: [],
 });
 export const mutations = {
   logIn(state) {
@@ -7,5 +8,8 @@ export const mutations = {
   },
   logOut(state) {
     state.authenticated = false;
+  },
+  services(state, payload) {
+    state.services = payload;
   },
 };

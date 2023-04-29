@@ -22,12 +22,14 @@ import {
   notification,
   message,
   InputNumber,
+  Skeleton,
 } from "ant-design-vue";
 
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;
 
 Vue.use(DatePicker);
+Vue.use(Skeleton);
 Vue.use(TimePicker);
 Vue.use(InputNumber);
 Vue.use(Select);

@@ -99,6 +99,8 @@
           </span>
           <a slot="price" slot-scope="text">${{ text }}</a>
           <span slot="client" slot-scope="text" class="column-client">{{ text }}</span>
+          <span slot="dataAdd" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
+
           <span slot="customTitle"></span>
 
           <span
@@ -164,8 +166,8 @@ export default {
           key: "1",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -175,8 +177,8 @@ export default {
           key: "2",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -186,8 +188,8 @@ export default {
           key: "3",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -197,8 +199,8 @@ export default {
           key: "4",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -208,8 +210,8 @@ export default {
           key: "5",
           orderId: "#123",
           client: "A nam .column-name .column-name",
-          dataAdd: "22.22.2022",
-          dataEdit: "22.22.2022",
+          dataAdd: "22-22-2022",
+          dataEdit: "22-22-2022",
           price: "23423432",
           statusSum: "status",
           tags: "Success",
@@ -229,7 +231,7 @@ export default {
           title: "дата добавления",
           dataIndex: "dataAdd",
           scopedSlots: { customRender: "dataAdd" },
-          className: "column-name",
+          className: "column-date",
           key: "dataAdd",
         },
         {

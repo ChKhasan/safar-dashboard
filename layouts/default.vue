@@ -35,7 +35,7 @@
           >
             <a-sub-menu :key="menu.sub" style="color: #9d9da6" v-for="menu in menuData">
               <span slot="title">
-                <span v-html="catalogIcon"></span
+                <span v-html="menu.icon"></span
                 ><span v-if="!collapsed">{{ menu.title }}</span></span
               >
               <a-menu-item
@@ -45,12 +45,13 @@
                   'is-active':
                     items.to == $route.path ||
                     items.add == $route.name ||
-                    items.edit == $route.name,
+                    items.edit == $route.name ||
+                    items.path == $route.name, 
                 }"
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
-                <nuxt-link :to="items.to"> {{ items.name }}</nuxt-link>
+                <nuxt-link :to="items.to">{{ items.name }}</nuxt-link>
               </a-menu-item>
             </a-sub-menu>
           </a-menu>
@@ -75,11 +76,11 @@ export default {
       defaultOpens: ["1"],
       openKeys: ["1"],
       logo: require("../assets/svg/logo-light.svg?raw"),
-      catalogIcon: require("../assets/svg/toolbar-catalog.svg?raw"),
       menuData: [
         {
           title: "Главный",
           sub: "1",
+          icon: require("../assets/svg/toolbar-catalog.svg?raw"),
           menuItems: [
             {
               key: "1",
@@ -124,6 +125,7 @@ export default {
         {
           title: "Заказы",
           sub: "3",
+          icon: require("../assets/svg/orderIcon.svg?raw"),
           menuItems: [
             {
               name: "Все заказы (0)",
