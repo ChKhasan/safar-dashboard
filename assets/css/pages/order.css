@@ -26,7 +26,7 @@
   font-size: 14px !important;
 }
 .calendar-order-btn {
-  height: 50px;
+  min-height: 50px;
   font-size: 18px !important;
 }
 .order-list-header-grid {
@@ -441,7 +441,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .calendar-day-card-body .no-place {
   background: #fdf0f0;
-  pointer-events: none;
 }
 .calendar-day-card-body .no-place .time,
 .calendar-day-card-body .no-place .name,
@@ -542,9 +541,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-top: 5px;
 }
 .calendar-order-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 22px;
+  display: flex;
+  flex-direction: column;
+  /* grid-template-columns: 1fr; */
+  gap: 22px;
 }
 .order-client-tariffs {
   border-top: 1px solid #d6dee9;
@@ -614,7 +614,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 20px;
   }
   .calendar-order-btn {
-    height: 45px;
+    min-height: 45px;
     font-size: 14px !important;
   }
   .calendar-grid {

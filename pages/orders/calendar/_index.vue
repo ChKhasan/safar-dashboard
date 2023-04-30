@@ -34,8 +34,8 @@
     </div>
     <div class="container_xl app-container pb-5">
       <div class="calendar-grid position-relative">
-        <div>
-          <div class="card_block">
+      
+        <div class="card_block">
             <div class="calendar-date-box">
               <!-- c <input type="date" /> до
                 <input type="date" /> -->
@@ -53,6 +53,27 @@
               ></a-button>
             </div>
           </div>
+          <span></span>
+          </div>
+      <div class="calendar-grid position-relative">
+        <div>
+          <!-- <div class="card_block">
+            <div class="calendar-date-box">
+
+              <a-range-picker
+                @change="onChange"
+                :format="dateFormat"
+                v-model:value="calendarDate"
+              />
+              <a-button
+                type="primary"
+                class="d-flex calendar-btn align-items-center justify-content-center"
+                @click="getWidthCalendar"
+              >
+                <span v-html="eyeIcon"></span
+              ></a-button>
+            </div>
+          </div> -->
           <div class="calendar-days mt-3" v-if="calendarLoading">
             <CalendarCardEmpty />
             <CalendarCardEmpty />
@@ -69,7 +90,8 @@
                   <div
                     class="calendar-day-card-body-list"
                     v-for="(info, index) in day"
-                    @click="orders = {orders: info.orders,name: info?.tariff_name?.ru}"
+                    :class="{'no-place': info?.max_clients ? info?.max_clients <= info?.booked:false }"
+                    @click="orders = {orders: info.orders,name: info?.tariff_name?.ru,close: info?.max_clients ? info?.max_clients > info?.booked:true}"
                     :key="index"
                   >
                     <div class="time">
@@ -88,21 +110,30 @@
           <div v-else class="calendar-empty"><a-empty /></div>
         </div>
         <div>
+
+          <Transition name="bounce">
+
           <div class="calendar-order-grid" v-if="orders?.orders?.length > 0">
           <span  v-for="(order, index) in orders?.orders" :key="index">
             <CalendarOrderCard
               :order="{...order,name: orders?.name}"
             />
           </span>
-          </div>
-          <div v-else class="calendar-empty"><a-empty /></div>
           <a-button
+          v-if="orders?.close"
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
             @click="$router.push('/orders/add_order')"
           >
             Добавить заказ
           </a-button>
+          </div>
+        </Transition>
+        <Transition name="bounce">
+          <div v-if="orders?.orders?.length == 0" class="calendar-empty"><a-empty /></div>
+        </Transition>
+
+        
         </div>
       </div>
     </div>
@@ -114,8 +145,10 @@ import CalendarCardEmpty from "../../../components/cards/calendarCardEmpty.vue";
 import CalendarOrderCard from "../../../components/cards/calendarOrderCard.vue";
 import moment from "moment";
 export default {
+  transitions: 'home',
   data() {
     return {
+      show: false,
       eyeIcon: require("../../../assets/svg/check-circle.svg?raw"),
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
@@ -129,7 +162,8 @@ export default {
       dateFormat: "DD/MM/YYYY",
       services: [],
       calendar: [],
-      orders: [],
+      orders: {
+        name: '',orders: []},
       loading: false,
       calendarLoading: false,
       value: ["12/05/2023", "15/05/2023"],
@@ -229,5 +263,23 @@ export default {
   justify-content: center;
   border-radius: 8px;
   background: #fff;
+}
+
+.bounce-enter-active {
+  animation: bounce-in 0.2s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.2s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.8);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
