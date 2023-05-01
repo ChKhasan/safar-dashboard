@@ -1,7 +1,21 @@
 <template lang="html">
   <div class="posts">
     <TitleBlock title="Заказ №565" :breadbrumb="['Заказы']" lastLink="Заказ №565">
-      <div class="d-flex"></div>
+      <div class="d-flex">
+        <div
+          class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+          @click="$router.go(-1)"
+        >
+          Отмена
+        </div>
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          type="primary"
+        >
+          <span class="svg-icon"> </span>
+          Добавить
+        </a-button>
+      </div>
     </TitleBlock>
     <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
       <div class="pb-5 pt-5">

@@ -113,12 +113,12 @@
             <span
               class="action-btn"
               v-html="eyeIcon"
-              @click="$router.push(`/edit_park_services/${text}`)"
+              @click="$router.push(`/orders/order/1`)"
             >
             </span>
             <span
               class="action-btn"
-              @click="$router.push('/orders/1232/edit')"
+              @click="$router.push(`/orders/order/1`)"
               v-html="editIcon"
             >
             </span>
@@ -133,6 +133,7 @@
 <script>
 import SearchInput from "../../components/form/Search-input.vue";
 import TitleBlock from "../../components/Title-block.vue";
+import orderColumns from "../../mixins/orderColumns";
 const provinceData = ["Zhejiang", "Jiangsu"];
 const cityData = {
   Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
@@ -140,6 +141,7 @@ const cityData = {
 };
 export default {
   layout: "toolbar",
+  mixins: [orderColumns],
   data() {
     return {
       provinceData,
@@ -208,64 +210,6 @@ export default {
           statusSum: "status",
           tags: "Success",
           btns: "id",
-        },
-      ],
-      columns: [
-        {
-          title: "Заказ ID",
-          dataIndex: "orderId",
-          key: "orderId",
-          slots: { title: "customTitle" },
-          scopedSlots: { customRender: "orderId" },
-          className: "column-service",
-        },
-        {
-          title: "дата добавления",
-          dataIndex: "dataAdd",
-          scopedSlots: { customRender: "dataAdd" },
-          className: "column-name",
-          key: "dataAdd",
-        },
-        {
-          title: "Услуга",
-          dataIndex: "dataEdit",
-          scopedSlots: { customRender: "dataEdit" },
-          className: "column-name",
-          key: "dataEdit",
-        },
-        {
-          title: "сумма",
-          dataIndex: "price",
-          scopedSlots: { customRender: "price" },
-          className: "column-name",
-          key: "price",
-        },
-        {
-          title: "Клиент",
-          dataIndex: "client",
-          slots: { title: "customTitle" },
-          scopedSlots: { customRender: "client" },
-          className: "column-name",
-          key: "client",
-          align: "left",
-          width: "20%",
-        },
-
-        {
-          title: "статус",
-          dataIndex: "tags",
-          scopedSlots: { customRender: "tags" },
-          className: "column-tags",
-          key: "tags",
-        },
-        {
-          title: "ДЕЙСТВИЯ",
-          key: "btns",
-          dataIndex: "btns",
-          scopedSlots: { customRender: "btns" },
-          className: "column-btns",
-          width: "120px",
-          align: "center",
         },
       ],
     };
