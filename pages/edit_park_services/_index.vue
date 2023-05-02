@@ -241,6 +241,7 @@
         </div>
         <div class="container_xl app-container" v-if="$route.hash == '#sessions_tariffs'">
           <div class="card_block px-4 py-4 mt-0">
+            <FormTitle title="Тарифы" />
             <div class="tariff-card-grid">
               <TariffCard
                 v-for="tariff in form.tariffs"
@@ -284,13 +285,21 @@
               :key="service.indexId"
             >
               <div class="grid-2 mb-4 w-100">
-                <a-form-model-item class="form-item mb-0" label="Qo’shimcha xizmatlar">
+                <a-form-model-item
+                  class="form-item mb-0"
+                  label="Qo’shimcha xizmatlar"
+                  :class="{ 'has-error': !service.name.ru }"
+                >
                   <a-input
                     v-model="service.name[item.index]"
                     placeholder="Service name"
                   />
                 </a-form-model-item>
-                <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
+                <a-form-model-item
+                  class="form-item mb-0"
+                  label="Xizmatlar narxi"
+                  :class="{ 'has-error': !service.price }"
+                >
                   <a-input
                     :max-length="8"
                     v-model="service.price"
@@ -783,10 +792,16 @@ export default {
         gallery,
         ...dataRest
       } = data;
-
+      let addServiceRequired = [];
+      dataRest.additional_services.forEach((item) => {
+        if (!item.price || !item.name.ru)
+          addServiceRequired.push(item);
+      });
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__EDIT_SERVICES(dataRest);
+          addServiceRequired.length == 0
+            ? this.__EDIT_SERVICES(dataRest)
+            : this.$router.push({ hash: "sessions_tariffs" });
         } else {
           return false;
         }

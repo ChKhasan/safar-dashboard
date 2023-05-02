@@ -26,6 +26,7 @@
     </span>
     <input
       type="text"
+      v-model="value"
       :placeholder="placeholder"
       @input="($event) => $emit('changeSearch', $event)"
     />
@@ -34,6 +35,23 @@
 <script>
 export default {
   props: ["placeholder"],
+  data() {
+    return {
+      value: "",
+    };
+  },
+  computed: {
+    routerName() {
+      return Object.keys(this.$route.query).length;
+    },
+  },
+  watch: {
+    routerName(newVal, lastVal) {
+      if (newVal < lastVal && this.value.length > 0) {
+        this.value = "";
+      }
+    },
+  },
 };
 </script>
 <style lang=""></style>

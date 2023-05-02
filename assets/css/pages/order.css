@@ -211,6 +211,7 @@
   padding: 0 24px 20px 24px;
   border-bottom: 1px solid #ebebeb;
   display: flex;
+  gap: 16px;
 }
 .bilet-card-body .bilet-card-services span {
   font-family: "TT Interfaces";

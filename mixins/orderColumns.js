@@ -4,18 +4,14 @@ export default {
       columns: [
         {
           title: "Заказ ID",
-          dataIndex: "orderId",
-          key: "orderId",
           slots: { title: "customTitle" },
           scopedSlots: { customRender: "orderId" },
           className: "column-service",
         },
         {
           title: "дата добавления",
-          dataIndex: "dataAdd",
           scopedSlots: { customRender: "dataAdd" },
           className: "column-date",
-          key: "dataAdd",
         },
         {
           title: "Услуга",
@@ -26,10 +22,10 @@ export default {
         },
         {
           title: "сумма",
-          dataIndex: "price",
-          scopedSlots: { customRender: "price" },
+          dataIndex: "amount",
+          scopedSlots: { customRender: "amount" },
           className: "column-name",
-          key: "price",
+          key: "amount",
         },
         {
           title: "Клиент",
@@ -44,18 +40,18 @@ export default {
 
         {
           title: "статус",
-          dataIndex: "tags",
-          scopedSlots: { customRender: "tags" },
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" },
           className: "column-tags",
-          key: "tags",
+          key: "status",
         },
         {
           title: "ДЕЙСТВИЯ",
-          key: "btns",
-          dataIndex: "btns",
+          key: "id",
+          dataIndex: "id",
           scopedSlots: { customRender: "btns" },
           className: "column-btns",
-          width: "150px",
+          width: "100px",
           align: "center",
         },
       ],

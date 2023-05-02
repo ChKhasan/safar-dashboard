@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="all-orders">
-    <TitleBlock title="Измененные" :breadbrumb="['Заказы']" lastLink="Измененные">
+    <TitleBlock title="Все заказы" :breadbrumb="['Заказы']" lastLink="Все заказы">
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
@@ -30,17 +30,17 @@
           </nuxt-link>
           <nuxt-link
             class="order-links"
-            :class="{ 'active-orders': $route.path == '/orders/ready-orders' }"
-            to="/orders/ready-orders"
+            :class="{ 'active-orders': $route.path == '/orders/expectation-orders' }"
+            to="/orders/expectation-orders"
           >
             <span class="order-blue"></span> Ожидание (0)
           </nuxt-link>
           <nuxt-link
             class="order-links"
             :class="{
-              'active-orders': $route.path == '/orders/delivery-orders',
+              'active-orders': $route.path == '/orders/changed-orders',
             }"
-            to="/orders/delivery-orders"
+            to="/orders/changed-orders"
           >
             <span class="order-yellow"></span> Измененные (0)
           </nuxt-link>
@@ -72,6 +72,7 @@
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
+              @click="clearQuery"
               style="height: 38px"
             >
               <a-icon type="reload"
@@ -86,31 +87,36 @@
         </div>
         <a-table
           :columns="columns"
-          :data-source="tableData"
+          :data-source="orders"
           :pagination="false"
           align="center"
         >
           <span to="/orders/1232/details" slot="client" slot-scope="text" align="center">
             {{ text }}
           </span>
-          <a slot="price" slot-scope="text">${{ text }}</a>
-          <span slot="client" slot-scope="text" class="column-client">{{ text }}</span>
-          <span slot="dataAdd" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
-
+          <a slot="amount" slot-scope="text">${{ text }}</a>
+          <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="client" slot-scope="text" class="column-client">{{
+            text?.name
+          }}</span>
+          <span slot="dataAdd" slot-scope="text">{{
+            moment(text?.created_at).format("DD/MM/YYYY")
+          }}</span>
           <span slot="customTitle"></span>
 
           <span
-            slot="tags"
+            slot="status"
             slot-scope="tags"
             class="tags-style"
             :class="{
-              tag_success: tags == 'Success',
-              tag_inProgress: tags == 'in progress',
-              tag_approved: tags == 'Approved',
-              tag_rejected: tags == 'rejected',
+              tag_success: tags == 'new',
+              tag_inProgress: tags == 'in_process',
+              tag_approved: tags == 'accepted',
+              tag_rejected: tags == 'canceled',
             }"
           >
-            {{ tags }}
+            <!-- 'new', 'canceled', 'accepted', 'in_process' -->
+            {{ status[tags] }}
           </span>
           <span slot="btns" slot-scope="text">
             <span
@@ -121,7 +127,7 @@
             </span>
             <span
               class="action-btn"
-              @click="$router.push(`/orders/order/1`)"
+              @click="$router.push('/orders/order/1')"
               v-html="editIcon"
             >
             </span>
@@ -129,6 +135,32 @@
             </span>
           </span>
         </a-table>
+        <div class="d-flex justify-content-between mt-4">
+          <a-select
+            v-model="params.pageSize"
+            class="table-page-size"
+            style="width: 120px"
+            @change="
+              ($event) =>
+                changePageSizeGlobal($event, '/orders/all-orders', '__GET_ORDERS')
+            "
+          >
+            <a-select-option
+              v-for="item in pageSizes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              >{{ item.label }}
+            </a-select-option>
+          </a-select>
+          <a-pagination
+            class="table-pagination"
+            :simple="false"
+            v-model.number="current"
+            :total="totalPage"
+            :page-size.sync="params.pageSize"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -137,6 +169,8 @@
 import SearchInput from "../../components/form/Search-input.vue";
 import TitleBlock from "../../components/Title-block.vue";
 import orderColumns from "../../mixins/orderColumns";
+import moment from "moment";
+import global from "../../mixins/global";
 const provinceData = ["Zhejiang", "Jiangsu"];
 const cityData = {
   Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
@@ -144,7 +178,7 @@ const cityData = {
 };
 export default {
   layout: "toolbar",
-  mixins: [orderColumns],
+  mixins: [orderColumns, global],
   data() {
     return {
       provinceData,
@@ -155,96 +189,64 @@ export default {
       eyeIcon: require("../../assets/svg/Eye.svg?raw"),
       editIcon: require("../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../assets/svg/delete.svg?raw"),
-      tableData: [],
-      selectedRowKeys: [], // Check here to configure the default column
       loading: false,
-      data: [
-        {
-          key: "1",
-          orderId: "#123",
-          client: "A nam .column-name .column-name",
-          dataAdd: "22-22-2022",
-          dataEdit: "22-22-2022",
-          price: "23423432",
-          statusSum: "status",
-          tags: "Success",
-          btns: "id",
-        },
-        {
-          key: "2",
-          orderId: "#123",
-          client: "A nam .column-name .column-name",
-          dataAdd: "22-22-2022",
-          dataEdit: "22-22-2022",
-          price: "23423432",
-          statusSum: "status",
-          tags: "Success",
-          btns: "id",
-        },
-        {
-          key: "3",
-          orderId: "#123",
-          client: "A nam .column-name .column-name",
-          dataAdd: "22-22-2022",
-          dataEdit: "22-22-2022",
-          price: "23423432",
-          statusSum: "status",
-          tags: "Success",
-          btns: "id",
-        },
-        {
-          key: "4",
-          orderId: "#123",
-          client: "A nam .column-name .column-name",
-          dataAdd: "22-22-2022",
-          dataEdit: "22-22-2022",
-          price: "23423432",
-          statusSum: "status",
-          tags: "Success",
-          btns: "id",
-        },
-        {
-          key: "5",
-          orderId: "#123",
-          client: "A nam .column-name .column-name",
-          dataAdd: "22-22-2022",
-          dataEdit: "22-22-2022",
-          price: "23423432",
-          statusSum: "status",
-          tags: "Success",
-          btns: "id",
-        },
-      ],
+      orders: [],
+      status: {
+        new: "Новые",
+        in_process: "Ожидание",
+        accepted: "Принятые",
+        canceled: "Отмененные",
+      },
     };
   },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0;
-    },
-
-    classObject(tag) {
-      return {
-        tag_success: tag == "Success",
-        tag_inProgress: tag == "in progress",
-      };
-    },
-  },
   mounted() {
-    if (this.data) {
-      this.tableData = this.data;
-    }
+    this.getFirstData("/orders/all-orders", "__GET_ORDERS");
   },
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
     },
-    changeStatus(val) {
-      // this.status = val;
+    moment,
+    deleteAction(id) {},
+    async clearQuery(val) {
+      const query = { ...this.$route.query, page: 1 };
+      this.current = 1;
+      delete query.search;
+      if (this.$route.query?.search) {
+        await this.$router.replace({
+          path: "/orders/all-orders",
+          query: { ...query },
+        });
+        this.__GET_ORDERS();
+      }
     },
-    deleteAction() {
-
-    }
-     
+    async changeSearch(val) {
+      this.searchVal = val.target.value;
+      if (val.target.value.length > 2) {
+        if (this.$route.query?.search != val.target.value)
+          await this.$router.replace({
+            path: "/orders/all-orders",
+            query: { ...this.$route.query, search: val.target.value },
+          });
+        if (val.target.value == this.$route.query.search) this.__GET_ORDERS();
+      } else if (val.target.value.length == 0) {
+        this.clearQuery(val);
+      }
+    },
+    async __GET_ORDERS() {
+      this.loading = true;
+      const data = await this.$store.dispatch("fetchOrders/getOrders", {
+        ...this.$route.query,
+      });
+      this.loading = false;
+      this.orders = data?.orders?.data.map((item, index) => {
+        return {
+          ...item,
+          key: index + 1,
+        };
+      });
+      this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
+    },
   },
   components: { TitleBlock, SearchInput },
 };

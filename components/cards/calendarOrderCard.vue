@@ -18,8 +18,18 @@
     <div class="calendar-order-card-right">
       <div class="column-btns">
         <span>
-          <span class="action-btn mx-3" v-html="eyeIcon"> </span>
-          <span class="action-btn" v-html="editIcon"> </span>
+          <span
+            class="action-btn mx-3"
+            v-html="eyeIcon"
+            @click="$router.push(`/orders/order/${order.general_order_id}`)"
+          >
+          </span>
+          <span
+            class="action-btn"
+            v-html="editIcon"
+            @click="$router.push(`/orders/order/${order.general_order_id}`)"
+          >
+          </span>
         </span>
       </div>
     </div>

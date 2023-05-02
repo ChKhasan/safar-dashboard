@@ -271,13 +271,23 @@
               :key="service.indexId"
             >
               <div class="grid-2 mb-4 w-100">
-                <a-form-model-item class="form-item mb-0" label="Qo’shimcha xizmatlar">
+                <a-form-model-item
+                  class="form-item mb-0"
+                  label="Qo’shimcha xizmatlar"
+                  :class="{ 'has-error': !service.name.ru }"
+                  :rules="[{ required: true, message: 'Please select your gender!' }]"
+                >
                   <a-input
                     v-model="service.name[item.index]"
                     placeholder="Service name"
+                    :rules="[{ required: true, message: 'Please select your gender!' }]"
                   />
                 </a-form-model-item>
-                <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
+                <a-form-model-item
+                  class="form-item mb-0"
+                  label="Xizmatlar narxi"
+                  :class="{ 'has-error': !service.price }"
+                >
                   <a-input
                     :max-length="8"
                     :value="service.price"
@@ -693,6 +703,19 @@ export default {
         ],
       },
       rules: {
+        additional_services: [
+          {
+            name: {
+              ru: [
+                {
+                  required: true,
+                  message: "This field is required",
+                  trigger: "change",
+                },
+              ],
+            },
+          },
+        ],
         feedbacks: [
           {
             name: {
@@ -709,22 +732,11 @@ export default {
         name: {
           ru: [{ required: true, message: "This field is required", trigger: "change" }],
         },
-        region: [
-          { required: true, message: "This field is required", trigger: "change" },
-        ],
-        date1: [{ required: true, message: "Please pick a date", trigger: "change" }],
         type: [
           {
             type: "array",
             required: true,
             message: "Please select at least one activity type",
-            trigger: "change",
-          },
-        ],
-        resource: [
-          {
-            required: true,
-            message: "Please select activity resource",
             trigger: "change",
           },
         ],
@@ -761,11 +773,16 @@ export default {
           return rest;
         }),
       };
-      console.log(data);
-      console.log(this.fileGalleries);
+      let addServiceRequired = [];
+      data.additional_services.forEach((item) => {
+        if (!item.price || !item.name.ru) addServiceRequired.push(item);
+      });
+      console.log(data.additional_services);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__POST_SERVICES(data);
+          addServiceRequired.length == 0
+            ? this.__POST_SERVICES(data)
+            : this.$router.push({ hash: "sessions_tariffs" });
         } else {
           return false;
         }

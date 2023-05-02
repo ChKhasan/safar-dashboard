@@ -46,12 +46,12 @@
                     items.to == $route.path ||
                     items.add == $route.name ||
                     items.edit == $route.name ||
-                    items.path == $route.name, 
+                    items.path == $route.name,
                 }"
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
-                <nuxt-link :to="items.to">{{ items.name }}</nuxt-link>
+                <nuxt-link :to="items.to">{{ ordersCount(items) }} </nuxt-link>
               </a-menu-item>
             </a-sub-menu>
           </a-menu>
@@ -128,61 +128,42 @@ export default {
           icon: require("../assets/svg/orderIcon.svg?raw"),
           menuItems: [
             {
-              name: "Все заказы (0)",
+              name: "Все заказы",
               index: "31",
               to: "/orders/all-orders",
               path: "orders-all-orders",
               disabled: false,
             },
             {
-              name: "Новые заказы (0)",
+              name: "Новые заказы",
               index: "32",
               to: "/orders/new-orders",
               path: "orders-new-orders",
-
               disabled: false,
             },
             {
-              name: "Принятые заказы (0)",
+              name: "Принятые заказы",
               index: "33",
               to: "/orders/accepted-orders",
               path: "orders-accepted-orders",
-
               disabled: false,
             },
             {
-              name: "Ожидание (0)",
+              name: "Ожидание",
               index: "34",
-              to: "/orders/ready-orders",
-              path: "orders-ready-orders",
-
+              to: "/orders/expectation-orders",
+              path: "orders-expectation-orders",
               disabled: false,
             },
             {
-              name: "Измененные (0)",
+              name: "Измененные",
               index: "35",
-              to: "/orders/delivery-orders",
-              path: "orders-delivery-orders",
+              to: "/orders/changed-orders",
+              path: "orders-changed-orders",
               disabled: false,
             },
-            // {
-            //   name: "Возврат (0)",
-            //   index: "36",
-            //   to: "/orders/return-orders",
-            //   path: "orders-return-orders",
-
-            //   disabled: false,
-            // },
-            // {
-            //   name: "Доставленные (0)",
-            //   index: "37",
-            //   to: "/orders/delivered-orders",
-            //   path: "orders-delivered-orders",
-
-            //   disabled: false,
-            // },
             {
-              name: "Отмененные (0)",
+              name: "Отмененные",
               index: "38",
               to: "/orders/canceled-orders",
               path: "orders-canceled-orders",
@@ -207,6 +188,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch("getOrders");
     this.checkDefaultOpen();
   },
 
@@ -219,6 +201,16 @@ export default {
         this.openKeys = ["3"];
       } else {
         this.openKeys = ["1"];
+      }
+    },
+    ordersCount(item) {
+      switch (item.index) {
+        case "31":
+          return `${item.name} (${this.$store.state.orders.new})`;
+        case "32":
+          return `${item.name} (9)`;
+        default:
+          return item.name;
       }
     },
     success() {

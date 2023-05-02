@@ -26,16 +26,49 @@
                 <FormTitle title="Данные заказа" />
                 <div class="order-grid-2">
                   <a-form-model-item class="form-item mb-0" label="Дата заказы">
-                    <a-input placeholder="Дата заказы" />
+                    <a-input
+                      placeholder="Дата заказы"
+                      v-model="order.created_at"
+                      disabled
+                    />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="№ заказы">
-                    <a-input placeholder="№ заказы" />
+                    <a-input placeholder="№ заказы" v-model="order.id" disabled />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="Сумма">
-                    <a-input placeholder="Сумма" />
+                    <a-input-number
+                      disabled
+                      style="background: #f5f5f5"
+                      placeholder="Сумма"
+                      v-model="order.amount"
+                      :formatter="
+                        (value) => {
+                          if (Number(value)) {
+                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                          } else {
+                            var num = [];
+                            value.split('').forEach((item) => {
+                              if (Number(item) || item == 0) {
+                                num.push(item);
+                              }
+                            });
+                            return `${num.join('')}`.replace(
+                              /\B(?=(\d{3})+(?!\d))/g,
+                              ' '
+                            );
+                          }
+                        }
+                      "
+                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                    />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3" label="Способ оплаты">
-                    <a-input placeholder="Способ оплаты" />
+                    <a-input
+                      style="text-transform: capitalize"
+                      placeholder="Способ оплаты"
+                      v-model="order.payment_method"
+                      disabled
+                    />
                   </a-form-model-item>
                 </div>
               </div>
@@ -43,13 +76,30 @@
                 <FormTitle title="Клиент" />
                 <div class="order-client-grid-3">
                   <a-form-model-item class="form-item mb-0" label="ID Клиент">
-                    <a-input placeholder="ID" />
+                    <a-input placeholder="ID" v-model="order.client.id" disabled />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="Номер клиента">
-                    <a-input placeholder="Номер клиента" />
+                    <a-input
+                      placeholder="Номер клиента"
+                      v-model="order.client.name"
+                      disabled
+                    />
                   </a-form-model-item>
+                  {{ order.client.phone_number }}
                   <a-form-model-item class="form-item mb-0" label="Имя Клиента">
-                    <a-input placeholder="Имя Клиента" />
+                    <!-- <a-input
+                      placeholder="Имя Клиента"
+                      v-model="order.client.phone_number"
+                      disabled
+                    /> -->
+                    <the-mask
+                      class="w-100"
+                      type="text"
+                      placeholder="(___) ___-____"
+                      :mask="['+ (998) ###-##-##', '+ (998) ###-##-##']"
+                      v-model="order.client.phone_number"
+                      label-position="top"
+                    />
                   </a-form-model-item>
                 </div>
               </div>
@@ -57,20 +107,22 @@
                 <FormTitle title="Билеты" />
               </div>
               <div class="order-bilets">
-                <BiletCard />
-                <BiletCard />
-                <BiletCard />
-                <BiletCard />
+                <BiletCard
+                  v-for="orderIn in order.orders"
+                  :key="orderIn.id"
+                  :orderIn="orderIn"
+                  :isPaid="order.is_paid"
+                />
               </div>
             </div>
             <div>
               <div class="card_block main-table px-4 py-4">
                 <FormTitle title="Параметры" />
 
-                <a-form-model-item class="form-item mb-3" label="№ заказы">
-                  <a-select v-model="secondCity">
-                    <a-select-option v-for="city in cities" :key="city">
-                      {{ city }}
+                <a-form-model-item class="form-item mb-3" label="Статус">
+                  <a-select v-model="statusValue" placeholder="Tags Mode">
+                    <a-select-option v-for="elem in statusData" :key="elem.value">
+                      {{ elem.label }}
                     </a-select-option>
                   </a-select>
                 </a-form-model-item>
@@ -82,10 +134,14 @@
                   Изменить статус
                 </a-button>
                 <a-form-model-item class="form-item mb-3 mt-3" label="Принял оператор">
-                  <a-input v-model="form.telegram" placeholder="Принял оператор" />
+                  <a-input
+                    v-model="form.telegram"
+                    placeholder="Принял оператор"
+                    disabled
+                  />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-3" label="Дата принайте">
-                  <a-input v-model="form.facebook" placeholder="Дата принайте" />
+                  <a-input v-model="form.facebook" placeholder="Дата принайте" disabled />
                 </a-form-model-item>
               </div>
             </div>
@@ -103,11 +159,8 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import status from "../../../mixins/status";
 import BiletCard from "../../../components/cards/biletCard.vue";
-const provinceData = ["Zhejiang", "Jiangsu"];
-const cityData = {
-  Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
-  Jiangsu: ["Nanjing", "Suzhou", "Zhenjiang"],
-};
+import moment from "moment";
+
 export default {
   mixins: [status],
   head: {
@@ -115,11 +168,32 @@ export default {
   },
   data() {
     return {
-      provinceData,
-      cityData,
-      cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0],
-
+      statusValue: "new",
+      statusData: [
+        {
+          label: "Новые",
+          value: "new",
+        },
+        {
+          label: "Ожидание",
+          value: "in_process",
+        },
+        {
+          label: "Принятые",
+          value: "accepted",
+        },
+        {
+          label: "Отмененные",
+          value: "canceled",
+        },
+      ],
+      order: {
+        client: {
+          id: "",
+          name: "",
+          phone_number: "",
+        },
+      },
       rules: {
         title: {
           ru: [
@@ -151,7 +225,11 @@ export default {
       },
     };
   },
+  mounted() {
+    this.__GET_ORDERS_BY_ID();
+  },
   methods: {
+    moment,
     onSubmit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
@@ -160,6 +238,20 @@ export default {
           return false;
         }
       });
+    },
+    async __GET_ORDERS_BY_ID(id) {
+      try {
+        const data = await this.$store.dispatch(
+          "fetchOrders/getOrdersById",
+          this.$route.params.index
+        );
+        this.order = data?.order;
+        this.order.created_at = moment(data?.order?.created_at).format(
+          "Do MMMM. YYYY hh:mm"
+        );
+      } catch (e) {
+        this.statusFunc(e);
+      }
     },
     async __POST_POSTS(data) {
       try {
