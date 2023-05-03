@@ -7,6 +7,7 @@ export const state = () => ({
     accepted: "",
     canceled: "",
     all: "",
+    is_edited: "",
   },
 });
 export const mutations = {
@@ -34,6 +35,9 @@ export const mutations = {
       : 0;
     state.orders.canceled = payload.filter((item) => item.status == "canceled")
       ? payload.filter((item) => item.status == "canceled").length
+      : 0;
+    state.orders.is_edited = payload.filter((item) => item.is_edited == 1)
+      ? payload.filter((item) => item.is_edited == 1).length
       : 0;
   },
 };

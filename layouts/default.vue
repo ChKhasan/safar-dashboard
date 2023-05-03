@@ -213,6 +213,8 @@ export default {
           return `${item.name} (${this.$store.state.orders.accepted})`;
         case "34":
           return `${item.name} (${this.$store.state.orders.in_process})`;
+        case "35":
+          return `${item.name} (${this.$store.state.orders.is_edited})`;
         case "38":
           return `${item.name} (${this.$store.state.orders.canceled})`;
         default:
