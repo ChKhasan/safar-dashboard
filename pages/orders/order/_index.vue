@@ -164,10 +164,6 @@ export default {
       statusValue: "new",
       statusData: [
         {
-          label: "Новые",
-          value: "new",
-        },
-        {
           label: "Ожидание",
           value: "in_process",
         },
@@ -218,8 +214,14 @@ export default {
       },
     };
   },
-  mounted() {
+  async mounted() {
     this.__GET_ORDERS_BY_ID();
+    await this.$store.dispatch("fetchOrders/editOrders", {
+      id: this.$route.params.index,
+      data: { status: "in_process" },
+    });
+    this.$store.dispatch("getOrders");
+
   },
   methods: {
     moment,

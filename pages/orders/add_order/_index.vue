@@ -71,6 +71,10 @@
                     class="order-client-tariffs px-4 pt-4"
                     :class="{ 'mt-4': tariff.type == 'by_count' }"
                   >
+                    <div class="tariff_info d-flex">
+                      <h4>{{ tariff.name?.ru }}</h4>
+                      <span>{{ tariff?.subtitle?.ru }}</span>
+                    </div>
                     <div class="order-client-card-tariff" v-if="tariff.type == 'tariff'">
                       <span>{{ tariff.tab_start_text?.ru }}</span>
                       <p
@@ -435,5 +439,22 @@ export default {
   background: #ebfbf3 !important;
   color: #309c74 !important;
   border: 1px solid #00cd69 !important;
+}
+.tariff_info h4 {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 28px;
+  color: #020105;
+  margin-right: 20px;
+}
+.tariff_info span {
+  font-family: "TT Interfaces";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #5d5d5f;
 }
 </style>
