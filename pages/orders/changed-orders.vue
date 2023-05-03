@@ -60,7 +60,7 @@
     <div class="container_xl app-container pb-5 main-table">
       <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
-          <div class="order-list-header-grid w-100 align-items-center">
+          <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
             <div class="input status-select w-100">
               <a-select v-model="secondCity">
@@ -77,12 +77,12 @@
             >
               <a-icon type="reload"
             /></a-button>
-            <a-button
+            <!-- <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
               >Применить
-            </a-button>
+            </a-button> -->
           </div>
         </div>
         <a-table

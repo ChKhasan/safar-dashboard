@@ -4,7 +4,7 @@ export const actions = {
     return res;
   },
   async getBookedOrders({}, payload) {
-    const res = await this.$axios.$get(`/orders/number_of_books`, { params: payload });
+    const res = await this.$axios.$get(`/tariffs/number_of_books`, { params: payload });
     return res;
   },
   async getCalendar({}, payload) {

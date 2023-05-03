@@ -91,7 +91,7 @@
                     class="calendar-day-card-body-list"
                     v-for="(info, index) in day"
                     :class="{'no-place': info?.max_clients ? info?.max_clients <= info?.booked:false }"
-                    @click="orders = {orders: info.orders,name: info?.tariff_name?.ru,close: info?.max_clients ? info?.max_clients > info?.booked:true}"
+                    @click="orders = {orders: info.orders,name: info?.tariff_name?.ru,close: info?.max_clients ? info?.max_clients > info?.booked:true,date: moment(info?.date).format('DD-MM-YYYY'),session: info.session,tariff_id: info?.tariff_id}"
                     :key="index"
                   >
                     <div class="time">
@@ -123,14 +123,24 @@
           v-if="orders?.close"
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
-            @click="$router.push(`/orders/add_order/${$route.params.index == 0 ? services[0].id:$route.params.index}`)"
+            @click="toBooked(orders)"
           >
             Добавить заказ
           </a-button>
           </div>
         </Transition>
         <Transition name="bounce">
-          <div v-if="orders?.orders?.length == 0" class="calendar-empty"><a-empty /></div>
+        <div v-if="orders?.orders?.length == 0">
+          <div class="calendar-empty"><a-empty /></div>
+          <a-button
+          v-if="orders?.close"
+            class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
+            type="primary"
+            @click="toBooked(orders)"
+          >
+            Добавить заказ
+          </a-button>
+        </div>
         </Transition>
 
         
@@ -200,6 +210,7 @@ export default {
       moment(this.$route.query.start_date, this.dateFormat),
       moment(this.$route.query.end_date, this.dateFormat),
     ];
+
     this.__GET_SERVICES();
     this.__GET_CALENDAR();
     // var dt = moment('15/05/2023', "YYYY-MM-DD HH:mm:ss");
@@ -213,6 +224,17 @@ export default {
   },
   methods: {
     moment,
+    toBooked(orders) {
+      console.log(orders);
+      this.$router.push({
+        path: `/orders/add_order/${this.$route.params.index == 0 ? this.services[0].id:$route.params.index}`,
+        query: {
+          date: orders.date,
+          tariff_id: orders.tariff_id,
+          session: orders.session
+        }
+      })
+    },
     momentDate: function (date) {
       return moment(date).format("DD-MM-YYYY");
     },

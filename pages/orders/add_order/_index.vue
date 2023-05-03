@@ -25,12 +25,9 @@
             <div>
               <div class="card_block main-table px-4 py-4">
                 <FormTitle title="Данные заказа" />
-                <div class="order-grid-2 mb-4">
+                <div class="order-grid-1 mb-4">
                   <a-form-model-item class="form-item mb-0" label="Дата заказы">
                     <a-input placeholder="Дата заказы" disabled v-model="form.date" />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="№ заказы">
-                    <a-input placeholder="№ заказы" />
                   </a-form-model-item>
                 </div>
                 <div>
@@ -49,25 +46,11 @@
               <div class="order-bilets">
                 <div class="card_block main-table mt-4 py-4">
                   <div class="px-4 d-flex justify-content-between">
-                    <FormTitle title="Ручное бронирование" /><a-form-model-item
-                      class="form-item mb-0"
-                      style="min-width: 280px"
-                      :class="{ 'select-placeholder': !value }"
-                    >
-                      <a-select v-model="value" placeholder="Услуга">
-                        <a-select-option
-                          v-for="service in service?.tariffs"
-                          :key="service?.id"
-                          placeholder="good"
-                        >
-                          {{ service?.name?.ru }}
-                        </a-select-option>
-                      </a-select>
-                    </a-form-model-item>
+                    <FormTitle title="Ручное бронирование" />
                   </div>
-                  <div class="order-grid-3 px-4">
+                  <div class="order-grid-3 px-4" v-if="tariff.type == 'by_count'">
                     <a-form-model-item class="form-item mb-0" label="Остаток">
-                      <a-input placeholder="Остаток" />
+                      <a-input placeholder="Остаток" disabled v-model="booked" />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="Минимальный клиент">
                       <a-input
@@ -84,7 +67,10 @@
                       />
                     </a-form-model-item>
                   </div>
-                  <div class="order-client-tariffs px-4 pt-4 mt-4">
+                  <div
+                    class="order-client-tariffs px-4 pt-4"
+                    :class="{ 'mt-4': tariff.type == 'by_count' }"
+                  >
                     <div class="order-client-card-tariff" v-if="tariff.type == 'tariff'">
                       <span>{{ tariff.tab_start_text?.ru }}</span>
                       <p
@@ -113,7 +99,11 @@
                         >
                           -
                         </div>
-                        <span class="mx-3 d-flex justify-content-center" style="width: 24px">{{ elem.count }}</span>
+                        <span
+                          class="mx-3 d-flex justify-content-center"
+                          style="width: 24px"
+                          >{{ elem.count }}</span
+                        >
                         <div class="order-client-card-btn" @click="countUp(elem.indexId)">
                           +
                         </div>
@@ -198,6 +188,7 @@ export default {
       cities: cityData[provinceData[0]],
       secondCity: cityData[provinceData[0]][0],
       tariff: {},
+      booked: "",
       editorOption: {
         // Some Quill options...
         theme: "snow",
@@ -289,7 +280,8 @@ export default {
     };
   },
   mounted() {
-    this.__GET_SERVICES_BY_ID();
+    this.__BOOKED_ORDERS();
+    this.__GET_TARIFF_BY_ID();
   },
   methods: {
     onSubmit() {
@@ -342,14 +334,21 @@ export default {
       });
       console.log(this.form.data);
     },
-    async __GET_SERVICES_BY_ID() {
+    // async __GET_SERVICES_BY_ID() {
+    //   const data = await this.$store.dispatch(
+    //     "fetchServices/getServicesById",
+    //     this.$route.params.index
+    //   );
+    //   this.service = data?.service;
+    //   this.form.date = moment(data.created_at).format("YYYY-MM-DD");
+    //   this.transformData(data?.service?.tariffs[0]);
+    // },
+    async __GET_TARIFF_BY_ID() {
       const data = await this.$store.dispatch(
-        "fetchServices/getServicesById",
-        this.$route.params.index
+        "fetchTariff/getTariffById",
+        this.$route.query.tariff_id
       );
-      this.service = data?.service;
-      this.form.date = moment(data.created_at).format("YYYY-MM-DD");
-      this.transformData(data?.service?.tariffs[0]);
+      this.transformData(data?.tariff);
     },
     transformData(data) {
       this.tariff = data;
@@ -362,6 +361,17 @@ export default {
           active: index == 0 ? true : false,
         };
       });
+      this.booked = `0/${this.tariff.max_clients}`;
+    },
+    async __BOOKED_ORDERS(data) {
+      try {
+        const data = await this.$store.dispatch("fetchOrders/getBookedOrders", {
+          ...this.$route.query,
+        });
+        console.log(data);
+      } catch (e) {
+        this.statusFunc(e);
+      }
     },
     async __POST_ORDER(data) {
       try {
