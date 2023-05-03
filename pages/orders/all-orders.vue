@@ -256,7 +256,7 @@ export default {
           key: index + 1,
         };
       });
-      this.$store.commit("orders", this.orders.length);
+      // this.$store.commit("orders", this.orders);
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },
     async __GET_SERVICES() {
@@ -278,8 +278,6 @@ export default {
             query: { ...this.$route.query, service: val },
           });
         if (val == this.$route.query.service) this.__GET_ORDERS();
-      } else {
-        this.clearQuery(val);
       }
     },
   },

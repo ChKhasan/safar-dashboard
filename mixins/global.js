@@ -38,6 +38,7 @@ export default {
         await this.$router.replace({
           path: link,
           query: {
+            ...this.$route.query,
             page: this.current,
             per_page: e,
           },

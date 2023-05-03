@@ -3,6 +3,10 @@ export const actions = {
     const res = await this.$axios.$get(`/orders`, { params: payload });
     return res;
   },
+  async getBookedOrders({}, payload) {
+    const res = await this.$axios.$get(`/orders/number_of_books`, { params: payload });
+    return res;
+  },
   async getCalendar({}, payload) {
     const res = await this.$axios.$get(`/calendar/${payload.id}`, {
       params: payload.query,

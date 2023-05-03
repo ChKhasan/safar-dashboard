@@ -8,13 +8,6 @@
         >
           Отмена
         </div>
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          type="primary"
-        >
-          <span class="svg-icon"> </span>
-          Добавить
-        </a-button>
       </div>
     </TitleBlock>
     <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
@@ -72,7 +65,7 @@
                   </a-form-model-item>
                 </div>
               </div>
-              <div class="card_block main-table px-4 mt-4 py-4">
+              <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
                 <FormTitle title="Клиент" />
                 <div class="order-client-grid-3">
                   <a-form-model-item class="form-item mb-0" label="ID Клиент">
@@ -85,18 +78,17 @@
                       disabled
                     />
                   </a-form-model-item>
-                  {{ order.client.phone_number }}
-                  <a-form-model-item class="form-item mb-0" label="Имя Клиента">
-                    <!-- <a-input
-                      placeholder="Имя Клиента"
-                      v-model="order.client.phone_number"
-                      disabled
-                    /> -->
+
+                  <a-form-model-item
+                    class="form-item mb-0 disabled_input"
+                    label="Имя Клиента"
+                  >
                     <the-mask
+                      disabled
                       class="w-100"
                       type="text"
                       placeholder="(___) ___-____"
-                      :mask="['+ (998) ###-##-##', '+ (998) ###-##-##']"
+                      :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
                       v-model="order.client.phone_number"
                       label-position="top"
                     />
@@ -130,6 +122,7 @@
                   class="py-3 add-btn btn-primary d-flex justify-content-center align-items-center"
                   style="height: 42px"
                   type="primary"
+                  @click="onSubmit"
                 >
                   Изменить статус
                 </a-button>
@@ -231,13 +224,20 @@ export default {
   methods: {
     moment,
     onSubmit() {
-      this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.__POST_POSTS(this.form);
-        } else {
-          return false;
-        }
-      });
+      this.__EDIT_CATEGORIES({ status: this.statusValue });
+    },
+    async __EDIT_CATEGORIES(res) {
+      try {
+        await this.$store.dispatch("fetchOrders/editOrders", {
+          id: this.$route.params.index,
+          data: res,
+        });
+        this.$store.dispatch("getOrders");
+        this.$router.go(-1);
+        this.notification("success", "success", "Заказ успешно добавлен");
+      } catch (e) {
+        this.statusFunc(e);
+      }
     },
     async __GET_ORDERS_BY_ID(id) {
       try {
@@ -246,6 +246,7 @@ export default {
           this.$route.params.index
         );
         this.order = data?.order;
+        this.statusValue = data?.order?.status;
         this.order.created_at = moment(data?.order?.created_at).format(
           "Do MMMM. YYYY hh:mm"
         );

@@ -19,6 +19,7 @@
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
             <div>{{ search }}</div>
             <a-button
+              @click="clearQuery"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -82,6 +83,7 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
+import global from "../mixins/global";
 const columns = [
   {
     title: "№",
@@ -144,7 +146,7 @@ export default {
   head: {
     title: "Услуги",
   },
-  mixins: [status],
+  mixins: [status, global],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -158,15 +160,42 @@ export default {
     };
   },
   mounted() {
-    this.__GET_SERVICES();
+    // this.__GET_SERVICES();
+    this.getFirstData("/", "__GET_SERVICES");
   },
   methods: {
-    changeSearch(val) {
-      this.search = val.target.value;
+    async clearQuery(val) {
+      this.value = "";
+      const query = { ...this.$route.query, page: 1 };
+      this.current = 1;
+      delete query.search;
+      if (this.$route.query?.search) {
+        await this.$router.replace({
+          path: "/",
+          query: { ...query },
+        });
+        this.__GET_SERVICES();
+      }
+    },
+    async changeSearch(val) {
+      console.log(val.target.value);
+      this.searchVal = val.target.value;
+      if (val.target.value.length > 2) {
+        if (this.$route.query?.search != val.target.value)
+          await this.$router.replace({
+            path: "/",
+            query: { ...this.$route.query, search: val.target.value },
+          });
+        if (val.target.value == this.$route.query.search) this.__GET_SERVICES();
+      } else if (val.target.value.length == 0) {
+        this.clearQuery(val);
+      }
     },
     async __GET_SERVICES() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchServices/getServices");
+      const data = await this.$store.dispatch("fetchServices/getServices", {
+        ...this.$route.query,
+      });
       this.loading = false;
       this.services = data?.services.map((item, index) => {
         return {

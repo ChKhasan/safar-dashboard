@@ -63,11 +63,20 @@
           <div class="order-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
             <div class="input status-select w-100">
-              <a-select v-model="secondCity">
-                <a-select-option v-for="city in cities" :key="city">
-                  {{ city }}
-                </a-select-option>
-              </a-select>
+              <a-form-model-item
+                class="form-item mb-0"
+                :class="{ 'select-placeholder': !value }"
+              >
+                <a-select v-model="value" placeholder="Услуга">
+                  <a-select-option
+                    v-for="service in services"
+                    :key="service?.id"
+                    placeholder="good"
+                  >
+                    {{ service?.name?.ru }}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
             </div>
             <a-button
               type="primary"
@@ -89,6 +98,7 @@
           :columns="columns"
           :data-source="orders"
           :pagination="false"
+          :loading="loading"
           align="center"
         >
           <span to="/orders/1232/details" slot="client" slot-scope="text" align="center">
@@ -122,17 +132,17 @@
             <span
               class="action-btn"
               v-html="eyeIcon"
-              @click="$router.push(`/orders/order/1`)"
+              @click="$router.push(`/orders/order/${text}`)"
             >
             </span>
             <span
               class="action-btn"
-              @click="$router.push('/orders/order/1')"
+              @click="$router.push(`/orders/order/${text}`)"
               v-html="editIcon"
             >
             </span>
-            <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
-            </span>
+            <!-- <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
+            </span> -->
           </span>
         </a-table>
         <div class="d-flex justify-content-between mt-4">
@@ -142,7 +152,7 @@
             style="width: 120px"
             @change="
               ($event) =>
-                changePageSizeGlobal($event, '/orders/all-orders', '__GET_ORDERS')
+                changePageSizeGlobal($event, '/orders/accepted-orders', '__GET_ORDERS')
             "
           >
             <a-select-option
@@ -181,10 +191,8 @@ export default {
   mixins: [orderColumns, global],
   data() {
     return {
-      provinceData,
-      cityData,
-      cities: cityData[provinceData[0]],
-      secondCity: cityData[provinceData[0]][0],
+      services: [],
+      value: "",
       pageSize: 10,
       eyeIcon: require("../../assets/svg/Eye.svg?raw"),
       editIcon: require("../../assets/svg/edit.svg?raw"),
@@ -199,8 +207,24 @@ export default {
       },
     };
   },
-  mounted() {
-    this.getFirstData("/orders/accepted-orders", "__GET_ORDERS");
+  async mounted() {
+    this.__GET_SERVICES();
+    if (
+      !Object.keys(this.$route.query).includes("page") ||
+      !Object.keys(this.$route.query).includes("per_page")
+    ) {
+      await this.$router.replace({
+        path: "/orders/accepted-orders",
+        query: {
+          page: this.params.page,
+          per_page: this.params.pageSize,
+          status: "accepted",
+        },
+      });
+    }
+    this.__GET_ORDERS();
+    this.current = Number(this.$route.query.page);
+    this.params.pageSize = Number(this.$route.query.per_page);
   },
   methods: {
     changeSearch(val) {
@@ -209,10 +233,12 @@ export default {
     moment,
     deleteAction(id) {},
     async clearQuery(val) {
+      this.value = "";
       const query = { ...this.$route.query, page: 1 };
       this.current = 1;
       delete query.search;
-      if (this.$route.query?.search) {
+      delete query.service;
+      if (this.$route.query?.search || this.$route.query?.service) {
         await this.$router.replace({
           path: "/orders/accepted-orders",
           query: { ...query },
@@ -245,7 +271,29 @@ export default {
           key: index + 1,
         };
       });
+      // this.$store.commit("orders", this.orders);
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
+    },
+    async __GET_SERVICES() {
+      const data = await this.$store.dispatch("fetchServices/getServices");
+      this.services = data?.services.map((item, index) => {
+        return {
+          ...item,
+          key: index + 1,
+        };
+      });
+    },
+  },
+  watch: {
+    async value(val) {
+      if (val) {
+        if (this.$route.query?.service != val)
+          await this.$router.replace({
+            path: "/orders/accepted-orders",
+            query: { ...this.$route.query, service: val },
+          });
+        if (val == this.$route.query.service) this.__GET_ORDERS();
+      }
     },
   },
   components: { TitleBlock, SearchInput },

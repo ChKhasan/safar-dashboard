@@ -206,9 +206,15 @@ export default {
     ordersCount(item) {
       switch (item.index) {
         case "31":
-          return `${item.name} (${this.$store.state.orders.new})`;
+          return `${item.name} (${this.$store.state.orders.all})`;
         case "32":
-          return `${item.name} (9)`;
+          return `${item.name} (${this.$store.state.orders.new})`;
+        case "33":
+          return `${item.name} (${this.$store.state.orders.accepted})`;
+        case "34":
+          return `${item.name} (${this.$store.state.orders.in_process})`;
+        case "38":
+          return `${item.name} (${this.$store.state.orders.canceled})`;
         default:
           return item.name;
       }

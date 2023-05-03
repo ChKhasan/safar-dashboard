@@ -123,7 +123,7 @@
           v-if="orders?.close"
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
-            @click="$router.push('/orders/add_order')"
+            @click="$router.push(`/orders/add_order/${$route.params.index == 0 ? services[0].id:$route.params.index}`)"
           >
             Добавить заказ
           </a-button>
