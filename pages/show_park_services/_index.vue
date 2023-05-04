@@ -764,19 +764,7 @@ export default {
             price: 0,
           },
         ],
-        faqs: [
-          {
-            indexId: 1,
-            question: {
-              ru: "",
-              uz: "",
-            },
-            answer: {
-              ru: "",
-              uz: "",
-            },
-          },
-        ],
+        faqs: [],
         package_options: [
           {
             indexId: 1,

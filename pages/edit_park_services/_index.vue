@@ -834,17 +834,7 @@ export default {
           },
         ],
         faqs: [
-          {
-            indexId: 1,
-            question: {
-              ru: "",
-              uz: "",
-            },
-            answer: {
-              ru: "",
-              uz: "",
-            },
-          },
+          
         ],
         package_options: [
           {
