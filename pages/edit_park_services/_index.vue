@@ -285,21 +285,13 @@
               :key="service.indexId"
             >
               <div class="grid-2 mb-4 w-100">
-                <a-form-model-item
-                  class="form-item mb-0"
-                  label="Qo’shimcha xizmatlar"
-                  :class="{ 'has-error': !service.name.ru }"
-                >
+                <a-form-model-item class="form-item mb-0" label="Qo’shimcha xizmatlar">
                   <a-input
                     v-model="service.name[item.index]"
                     placeholder="Service name"
                   />
                 </a-form-model-item>
-                <a-form-model-item
-                  class="form-item mb-0"
-                  label="Xizmatlar narxi"
-                  :class="{ 'has-error': !service.price }"
-                >
+                <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
                   <a-input
                     :max-length="8"
                     v-model="service.price"
@@ -772,10 +764,17 @@ export default {
             const { statisticFile, indexId, ...rest } = item;
             return rest;
           }),
-        feedbacks: this.form.feedbacks.map((item) => {
-          const { feedbacksFile, indexId, ...rest } = item;
-          return rest;
-        }),
+        feedbacks: this.form.feedbacks
+          .map((item) => {
+            const { feedbacksFile, indexId, ...rest } = item;
+            return rest;
+          })
+          .filter((elem) => elem.name.ru),
+        additional_services: this.form.additional_services.filter(
+          (item) => item.price && item.name.ru
+        ),
+        faqs: this.form.faqs.filter((elem) => elem.question.ru && elem.answer.ru),
+        package_options: this.form.package_options.filter((elem) => elem.desc.ru),
       };
       const {
         lg_banner,
@@ -792,16 +791,9 @@ export default {
         gallery,
         ...dataRest
       } = data;
-      let addServiceRequired = [];
-      dataRest.additional_services.forEach((item) => {
-        if (!item.price || !item.name.ru)
-          addServiceRequired.push(item);
-      });
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          addServiceRequired.length == 0
-            ? this.__EDIT_SERVICES(dataRest)
-            : this.$router.push({ hash: "sessions_tariffs" });
+          this.__EDIT_SERVICES(dataRest);
         } else {
           return false;
         }

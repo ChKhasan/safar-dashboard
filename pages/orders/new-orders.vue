@@ -1,60 +1,10 @@
 <template lang="html">
   <div class="all-orders">
-    <TitleBlock title="Все заказы" :breadbrumb="['Заказы']" lastLink="Все заказы">
+    <TitleBlock title="Новые заказы" :breadbrumb="['Заказы']" lastLink="Новые заказы">
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
-        <div class="order-links-grid">
-          <nuxt-link
-            class="order-links"
-            :class="{ 'active-orders': $route.path == '/orders/all-orders' }"
-            to="/orders/all-orders"
-          >
-            <span class="order-green"></span> Все заказы (0)
-          </nuxt-link>
-          <nuxt-link
-            class="order-links"
-            :class="{ 'active-orders': $route.path == '/orders/new-orders' }"
-            to="/orders/new-orders"
-          >
-            <span class="order-light-blue"></span> Новые (0)
-          </nuxt-link>
-          <nuxt-link
-            class="order-links"
-            :class="{
-              'active-orders': $route.path == '/orders/accepted-orders',
-            }"
-            to="/orders/accepted-orders"
-          >
-            <span class="order-black"></span> Принятые (0)
-          </nuxt-link>
-          <nuxt-link
-            class="order-links"
-            :class="{ 'active-orders': $route.path == '/orders/expectation-orders' }"
-            to="/orders/expectation-orders"
-          >
-            <span class="order-blue"></span> Ожидание (0)
-          </nuxt-link>
-          <nuxt-link
-            class="order-links"
-            :class="{
-              'active-orders': $route.path == '/orders/changed-orders',
-            }"
-            to="/orders/changed-orders"
-          >
-            <span class="order-yellow"></span> Измененные (0)
-          </nuxt-link>
-
-          <nuxt-link
-            class="order-links"
-            :class="{
-              'active-orders': $route.path == '/orders/canceled-orders',
-            }"
-            to="/orders/canceled-orders"
-          >
-            <span class="order-red"></span> Отмененные (0)
-          </nuxt-link>
-        </div>
+        <OrderBtns />
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
@@ -181,6 +131,7 @@ import TitleBlock from "../../components/Title-block.vue";
 import orderColumns from "../../mixins/orderColumns";
 import moment from "moment";
 import global from "../../mixins/global";
+import OrderBtns from "../../components/order-btns.vue";
 const provinceData = ["Zhejiang", "Jiangsu"];
 const cityData = {
   Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
@@ -296,7 +247,7 @@ export default {
       }
     },
   },
-  components: { TitleBlock, SearchInput },
+  components: { TitleBlock, SearchInput, OrderBtns },
 };
 </script>
 <style lang="css">
