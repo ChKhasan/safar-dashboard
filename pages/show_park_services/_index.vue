@@ -342,13 +342,13 @@
             </div>
           </div>
           <div
-            class="card_block px-4 py-4 mt-0 border-left-radius"
+            class="card_block px-4 py-4 mt-0 border-left-radius main-table"
             v-for="(item, index) in formTabData"
             :key="index"
             v-if="formTab.faq == item.index"
           >
             <FormTitle title="Ko’p so’raladigan savollarga javob yozish" />
-            <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
+            <!-- <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
               <div class="d-flex align-items-center">
                 <a-form-model-item class="form-item w-100" label="Savol yozish">
                   <a-input
@@ -357,11 +357,8 @@
                     disabled
                   />
                 </a-form-model-item>
-                <!-- <div
-                  @click="deleteFaqs(faq.indexId)"
-                  class="variant-btn variant-btn-delete mt-3 mx-2"
-                  v-html="xIcon"
-                ></div> -->
+
+         
               </div>
               <a-form-model-item class="form-item mb-0" label="Javob yozish">
                 <quill-editor
@@ -371,7 +368,24 @@
                   v-model="faq.answer[item.index]"
                 />
               </a-form-model-item>
-            </div>
+            </div> -->
+            <a-table :columns="columns" :pagination="false" :data-source="form.faqs">
+              <span slot="indexId" slot-scope="text">#{{ text.indexId }}</span>
+              <span
+                slot="answer"
+                slot-scope="text"
+                v-html="text?.ru ? text?.ru : '-----'"
+              ></span>
+              <span slot="question" slot-scope="text">
+                <span>{{ text?.ru ? text?.ru : "-----" }}</span>
+              </span>
+
+              <span slot="id" slot-scope="text">
+                <span class="action-btn" v-html="editIcon"> </span>
+
+                <span class="action-btn" v-html="deleteIcon"> </span>
+              </span>
+            </a-table>
             <!-- <div class="create-inner-variant" @click="addFaqs">
               <span v-html="plusIcon"> </span>
               Qo’shish
@@ -537,7 +551,43 @@ import "quill/dist/quill.bubble.css";
 import FormTitle from "../../components/Form-title.vue";
 import status from "../../mixins/status";
 import TariffCard from "../../components/cards/tariffCard.vue";
-
+const columns = [
+  {
+    title: "№",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "indexId" },
+    className: "column-service",
+    align: "left",
+    width: 50,
+  },
+  {
+    title: "вопрос",
+    dataIndex: "question",
+    key: "question",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "question" },
+    className: "column-name",
+    align: "left",
+    width: "45%",
+  },
+  {
+    title: "ответ",
+    dataIndex: "answer",
+    key: "answer",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "answer" },
+    className: "column-service",
+  },
+  {
+    title: "ДЕЙСТВИЯ",
+    className: "column-btns",
+    dataIndex: "indexId",
+    key: "indexId",
+    align: "right",
+    scopedSlots: { customRender: "id" },
+    width: 100,
+  },
+];
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -554,12 +604,16 @@ export default {
   mixins: [status],
   data() {
     return {
+      columns,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       service: [],
       xIcon: require("../../assets/svg/x.svg?raw"),
       plusIcon: require("../../assets/svg/plus.svg?raw"),
       infoIcon: require("../../assets/svg/info.svg?raw"),
+      addIcon: require("../../assets/svg/add-icon.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
       formTab: {
         name: "ru",
         guarantee: "ru",
@@ -885,6 +939,7 @@ export default {
           return {
             ...item,
             indexId: item.id,
+            key: item.id,
           };
         }),
         package_options: data?.service.package_options.map((item, index) => {

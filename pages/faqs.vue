@@ -91,10 +91,11 @@
       <div class="d-flex flex-column">
         <div class="form_tab mb-4 bottom_hr">
           <span
+            style="border-right: 0"
             v-for="(item, index) in formTabData"
             :key="index"
             @click="formTab = item.index"
-            :class="{ 'avtive-formTab': formTab == item.index }"
+            :class="{ 'avtive-formTabModal': formTab == item.index }"
           >
             {{ item.label }}
           </span>

@@ -328,13 +328,13 @@
             </div>
           </div>
           <div
-            class="card_block px-4 py-4 mt-0 border-left-radius"
+            class="card_block px-4 py-4 mt-0 border-left-radius main-table"
             v-for="(item, index) in formTabData"
             :key="index"
             v-if="formTab.faq == item.index"
           >
             <FormTitle title="Ko’p so’raladigan savollarga javob yozish" />
-            <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
+            <!-- <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
               <div class="d-flex align-items-center">
                 <a-form-model-item class="form-item w-100" label="Savol yozish">
                   <a-input v-model="faq.question[item.index]" placeholder="Question" />
@@ -352,7 +352,31 @@
                   v-model="faq.answer[item.index]"
                 />
               </a-form-model-item>
-            </div>
+            </div> -->
+            <a-table :columns="columns" :pagination="false" :data-source="form.faqs">
+              <span slot="indexId" slot-scope="text">#{{ text.indexId }}</span>
+              <span
+                slot="answer"
+                slot-scope="text"
+                v-html="text?.ru ? text?.ru : '-----'"
+              ></span>
+              <span slot="question" slot-scope="text">
+                <span>{{ text?.ru ? text?.ru : "-----" }}</span>
+              </span>
+
+              <span slot="id" slot-scope="text">
+                <span class="action-btn" v-html="editIcon" @click="editFaqs(text)">
+                </span>
+                <a-popconfirm
+                  title="Are you sure delete this row?"
+                  ok-text="Yes"
+                  cancel-text="No"
+                  @confirm="deleteFaqs(text)"
+                >
+                  <span class="action-btn" v-html="deleteIcon"> </span>
+                </a-popconfirm>
+              </span>
+            </a-table>
             <div class="create-inner-variant" @click="addFaqs">
               <span v-html="plusIcon"> </span>
               Qo’shish
@@ -500,6 +524,76 @@
         </div>
       </div>
     </a-form-model>
+    <a-modal
+      v-model="visible"
+      :dialog-style="{ top: '50px' }"
+      :title="title"
+      :closable="false"
+      width="720px"
+      @ok="handleOk"
+    >
+      <div class="d-flex flex-column">
+        <div class="form_tab mb-4 bottom_hr">
+          <span
+            style="border-right: 0"
+            v-for="(item, index) in formTabData"
+            :key="index"
+            @click="formTabModal = item.index"
+            :class="{ 'avtive-formTabModal': formTabModal == item.index }"
+          >
+            {{ item.label }}
+          </span>
+        </div>
+        <div
+          class="d-flex flex-column"
+          v-for="(item, index) in formTabData"
+          :key="index"
+          v-if="formTabModal == item.index"
+        >
+          <a-form-model
+            :model="formFaq"
+            ref="ruleFormFaq"
+            :rules="rules"
+            layout="vertical"
+          >
+            <a-form-model-item class="form-item mb-3" label="Вопрос" prop="question.ru">
+              <a-input
+                type="textarea"
+                rows="5"
+                v-model="formFaq.question[item.index]"
+                placeholder="Вопрос"
+              />
+            </a-form-model-item>
+            <a-form-model-item class="form-item mb-3" label="Ответ" prop="answer.ru">
+              <a-input
+                type="textarea"
+                rows="5"
+                v-model="formFaq.answer[item.index]"
+                placeholder="Ответ"
+              />
+            </a-form-model-item>
+          </a-form-model>
+        </div>
+      </div>
+      <template slot="footer">
+        <div class="add_modal-footer d-flex justify-content-end">
+          <div
+            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="handleOk"
+          >
+            Cancel
+          </div>
+          <a-button
+            class="add-btn add-header-btn btn-primary"
+            type="primary"
+            @click="saveData"
+          >
+            <span class="svg-icon" v-html="addIcon"></span>
+            Save
+          </a-button>
+        </div>
+      </template>
+    </a-modal>
   </div>
 </template>
 
@@ -511,7 +605,43 @@ import "quill/dist/quill.bubble.css";
 import FormTitle from "../../components/Form-title.vue";
 import status from "../../mixins/status";
 import TariffCard from "../../components/cards/tariffCard.vue";
-
+const columns = [
+  {
+    title: "№",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "indexId" },
+    className: "column-service",
+    align: "left",
+    width: 50,
+  },
+  {
+    title: "вопрос",
+    dataIndex: "question",
+    key: "question",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "question" },
+    className: "column-name",
+    align: "left",
+    width: "45%",
+  },
+  {
+    title: "ответ",
+    dataIndex: "answer",
+    key: "answer",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "answer" },
+    className: "column-service",
+  },
+  {
+    title: "ДЕЙСТВИЯ",
+    className: "column-btns",
+    dataIndex: "indexId",
+    key: "indexId",
+    align: "right",
+    scopedSlots: { customRender: "id" },
+    width: 100,
+  },
+];
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -528,12 +658,30 @@ export default {
   mixins: [status],
   data() {
     return {
+      title: "Добавить",
+      formTabModal: "ru",
+      formFaq: {
+        question: {
+          ru: "",
+          uz: "",
+        },
+        answer: {
+          ru: "",
+          uz: "",
+        },
+      },
+      visible: false,
+      columns,
+      faqId: "",
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       service: [],
       xIcon: require("../../assets/svg/x.svg?raw"),
       plusIcon: require("../../assets/svg/plus.svg?raw"),
       infoIcon: require("../../assets/svg/info.svg?raw"),
+      addIcon: require("../../assets/svg/add-icon.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
       formTab: {
         name: "ru",
         guarantee: "ru",
@@ -858,6 +1006,7 @@ export default {
           return {
             ...item,
             indexId: item.id,
+            key: item.id,
           };
         }),
         package_options: data?.service.package_options.map((item, index) => {
@@ -886,6 +1035,7 @@ export default {
         }),
         galleries: data?.service?.gallery?.files,
       };
+      console.log(this.form.faqs);
       data?.service.gallery?.sm_files.forEach((item, index) => {
         data?.service.gallery?.files.forEach((elem, ind) => {
           if (index == ind) {
@@ -943,6 +1093,16 @@ export default {
         });
       }
     },
+    handleOk() {
+      this.visible = false;
+      console.log(this.form);
+    },
+    editFaqs(indexId) {
+      this.visible = true;
+      this.faqId = indexId;
+      const faq = this.form.faqs.find((item) => item.indexId == indexId);
+      this.formFaq = { ...faq };
+    },
     deleteFaqs(indexId) {
       if (this.form.faqs.length > 1)
         this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
@@ -975,19 +1135,29 @@ export default {
         indexId: Math.max(...this.form.package_options.map((o) => o.indexId)) + 1,
       });
     },
+    saveData() {
+      this.visible = false;
+      if (this.faqId) {
+        let faq = this.form.faqs.find((item) => item.indexId == this.faqId);
+        faq = { ...this.formFaq, indexId: this.faqId };
+        this.faqId = "";
+      } else {
+        this.form.faqs.push({
+          ...this.formFaq,
+          indexId:
+            this.form.faqs.length > 0
+              ? Math.max(...this.form.faqs.map((o) => o.indexId)) + 1
+              : 1,
+          key:
+            this.form.faqs.length > 0
+              ? Math.max(...this.form.faqs.map((o) => o.indexId)) + 1
+              : 1,
+          id: 0,
+        });
+      }
+    },
     addFaqs() {
-      this.form.faqs.push({
-        question: {
-          ru: "",
-          uz: "",
-        },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        id: 0,
-        indexId: Math.max(...this.form.faqs.map((o) => o.indexId)) + 1,
-      });
+      this.visible = true;
     },
     addFeedbacks() {
       this.form.feedbacks.push({
@@ -1075,6 +1245,23 @@ export default {
     await this.__GET_SERVICES_BY_ID();
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+  },
+  watch: {
+    visible(val) {
+      if (!val) {
+        this.formTabModal = "ru";
+        this.formFaq = {
+          question: {
+            ru: "",
+            uz: "",
+          },
+          answer: {
+            ru: "",
+            uz: "",
+          },
+        };
+      }
+    },
   },
   components: { TitleBlock, FormTitle, TariffCard },
 };

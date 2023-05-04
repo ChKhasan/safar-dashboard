@@ -441,6 +441,11 @@
 .avtive-formTab {
   color: #3699ff !important;
 }
+.avtive-formTabModal {
+  color: #fff !important;
+  background: #3699ff !important;
+  border-radius: 5px;
+}
 .border-left-radius {
   border-top-left-radius: 0 !important;
 }
