@@ -54,7 +54,7 @@
           ></span>
           <span slot="package_options" slot-scope="text">
             <span
-              class="option-items"
+              class="option-items d-flex flex-column"
               v-for="desc in text"
               v-html="desc?.desc?.ru ? desc?.desc?.ru : '-----'"
             ></span>
