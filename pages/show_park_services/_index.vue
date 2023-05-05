@@ -392,7 +392,7 @@
             </div> -->
           </div>
         </div>
-        <div
+        <!-- <div
           class="container_xl app-container d-flex flex-column"
           v-if="$route.hash == '' || $route.hash == '#total_info'"
         >
@@ -420,12 +420,6 @@
               v-for="option in form.package_options"
               :key="option.indexId"
             >
-              <!-- <div
-                @click="deletePackageOption(option.indexId)"
-                class="variant-btn variant-btn-delete mt-3"
-                style="position: absolute; right: 5px; top: -10px; z-index: 9"
-                v-html="xIcon"
-              ></div> -->
               <a-form-model-item class="form-item mb-0 mt-0">
                 <quill-editor
                   class="product-editor mt-0 padding-editor"
@@ -435,12 +429,8 @@
                 />
               </a-form-model-item>
             </span>
-            <!-- <div class="create-inner-variant" @click="addPackageOption">
-              <span v-html="plusIcon"> </span>
-              Qo’shish
-            </div> -->
           </div>
-        </div>
+        </div> -->
         <div
           class="container_xl app-container d-flex flex-column"
           v-if="$route.hash == '#reviews'"

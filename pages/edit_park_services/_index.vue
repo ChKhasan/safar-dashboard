@@ -383,7 +383,7 @@
             </div>
           </div>
         </div>
-        <div
+        <!-- <div
           class="container_xl app-container d-flex flex-column"
           v-if="$route.hash == '' || $route.hash == '#total_info'"
         >
@@ -430,7 +430,7 @@
               Qo’shish
             </div>
           </div>
-        </div>
+        </div> -->
         <div
           class="container_xl app-container d-flex flex-column"
           v-if="$route.hash == '#reviews'"
