@@ -172,6 +172,9 @@
   > td {
   background: transparent !important;
 }
+.option-items ul {
+  margin-left: 20px;
+}
 .option-items {
   padding: 8px 16px;
   background: #eff2f5;
