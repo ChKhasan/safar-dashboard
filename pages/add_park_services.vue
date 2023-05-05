@@ -611,10 +611,16 @@
               />
             </a-form-model-item>
             <a-form-model-item class="form-item mb-3" label="Ответ" prop="answer.ru">
-              <a-input
+              <!-- <a-input
                 type="textarea"
                 rows="5"
                 v-model="formFaq.answer[item.index]"
+                placeholder="Ответ"
+              /> -->
+              <quill-editor
+              v-model="formFaq.answer[item.index]"
+                class="product-editor mt-1"
+                :options="editorOption"
                 placeholder="Ответ"
               />
             </a-form-model-item>
@@ -1069,8 +1075,7 @@ export default {
       this.formFaq = { ...faq };
     },
     deleteFaqs(indexId) {
-      if (this.form.faqs.length > 1)
-        this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
+      this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
     },
     deleteFeedbacks(indexId) {
       if (this.form.feedbacks.length > 1)

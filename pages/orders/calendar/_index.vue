@@ -227,7 +227,7 @@ export default {
     toBooked(orders) {
       console.log(orders);
       this.$router.push({
-        path: `/orders/add_order/${this.$route.params.index == 0 ? this.services[0].id:$route.params.index}`,
+        path: `/orders/add_order/${this.$route.params.index == 0 ? this.services[0].id:this.$route.params.index}`,
         query: {
           date: orders.date,
           tariff_id: orders.tariff_id,
