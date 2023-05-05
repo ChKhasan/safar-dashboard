@@ -43,8 +43,8 @@
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span slot="name" slot-scope="text">{{ text?.ru ? text?.ru : "-----" }}</span>
-          <span slot="subtitle" slot-scope="text">{{
-            text?.ru ? text?.ru : "-----"
+          <span slot="date" slot-scope="text">{{
+            moment(text).format("DD/MM/YYYY")
           }}</span>
           <span slot="desc" slot-scope="text">
             <span v-html="text.ru ? text.ru : '-----'"></span>
@@ -99,6 +99,8 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import moment from "moment";
+
 const columns = [
   {
     title: "№",
@@ -128,19 +130,19 @@ const columns = [
     colSpan: 0,
   },
   {
-    title: "подзаголовок",
-    dataIndex: "subtitle",
-    key: "subtitle",
-    className: "column-service",
-    scopedSlots: { customRender: "subtitle" },
+    title: "ДАТА",
+    dataIndex: "created_at",
+    key: "created_at",
+    className: "column-date",
+    scopedSlots: { customRender: "date" },
   },
-  {
-    title: "описание",
-    dataIndex: "desc",
-    key: "desc",
-    className: "column-subservice",
-    scopedSlots: { customRender: "desc" },
-  },
+  // {
+  //   title: "описание",
+  //   dataIndex: "desc",
+  //   key: "desc",
+  //   className: "column-subservice",
+  //   scopedSlots: { customRender: "desc" },
+  // },
 
   {
     title: "ДЕЙСТВИЯ",
@@ -175,6 +177,7 @@ export default {
     this.getFirstData("/news", "__GET_POSTS");
   },
   methods: {
+    moment,
     changeSearch(val) {
       this.search = val.target.value;
     },

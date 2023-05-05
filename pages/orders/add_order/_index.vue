@@ -284,6 +284,9 @@ export default {
     };
   },
   mounted() {
+    this.form.date = moment(
+      `${this.$route.query.date} ${this.$route.query.session}`
+    ).format("Do MMMM. YYYY hh:mm-hh:mm");
     this.__BOOKED_ORDERS();
     this.__GET_TARIFF_BY_ID();
   },

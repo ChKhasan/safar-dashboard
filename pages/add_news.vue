@@ -59,6 +59,7 @@
                 />
               </a-form-model-item>
             </div>
+            <span>
             <div class="card_block main-table px-4 py-4">
               <FormTitle title="Параметры" />
               <div class="clearfix">
@@ -78,7 +79,7 @@
                   <img alt="example" style="width: 100%" :src="previewImage" />
                 </a-modal>
               </div>
-              <a-form-model-item class="form-item mb-3" label="Instagram">
+              <!-- <a-form-model-item class="form-item mb-3" label="Instagram">
                 <a-input v-model="form.instagram" placeholder="link" />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Telegram">
@@ -86,8 +87,9 @@
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Facebook">
                 <a-input v-model="form.facebook" placeholder="link" />
-              </a-form-model-item>
+              </a-form-model-item> -->
             </div>
+            </span>
           </div>
         </div>
       </div>
