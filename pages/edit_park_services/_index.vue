@@ -185,6 +185,92 @@
               </span>
             </div>
           </div>
+
+          <div
+            class="card_block border-left-radius px-4 py-4 mt-0"
+            v-for="(item, index) in formTabData"
+            :key="index"
+            v-if="formTab.guarantee == item.index"
+          >
+            <a-form-model-item class="form-item mb-0" label="Statistika qo’shish">
+              <div class="mt-3 statistic-grid">
+                <div v-for="card in form.cards" class="d-flex">
+                  <div class="clearfix">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="card.imgList"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeCards($event, card.indexId)"
+                    >
+                      <div v-if="card.imgList.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                  <div class="d-flex flex-column justify-content-between w-100">
+                    <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="card.name[item.index]"
+                        placeholder="Statistika nomi"
+                      />
+                    </a-form-model-item>
+                    <!-- <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="card.name[item.index]"
+                        placeholder="Statistika nomi"
+                      />
+                    </a-form-model-item> -->
+                  </div>
+                </div>
+              </div>
+            </a-form-model-item>
+            <div
+              class="grid-with-btn"
+              v-for="(moment,index) in form.moments"
+              :key="moment.indexId"
+            >
+              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+                <a-input v-model="moment.title[item.index]" placeholder="Text" />
+              </a-form-model-item>
+              <div class="d-flex align-items-center">
+                <div
+                  class="variant-btn variant-btn-delete mt-3"
+                  v-html="xIcon"
+                  @click="deleteMoments(moment.indexId)"
+                ></div>
+              </div>
+            </div>
+            <div class="create-inner-variant mt-4" @click="addMoments">
+              <span v-html="plusIcon"> </span>
+              Qo’shish
+            </div>
+          </div>
+        </div>
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
+        >
+          <div class="form_tab">
+            <div>
+              <span
+                v-for="(item, index) in formTabData"
+                :key="index"
+                @click="formTab.guarantee = item.index"
+                :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
+              >
+                {{ item.label }}
+              </span>
+            </div>
+          </div>
           <div
             class="card_block border-left-radius px-4 py-4 mt-0"
             v-for="(item, index) in formTabData"
@@ -658,8 +744,10 @@ function getBase64(file) {
 }
 export default {
   name: "IndexPage",
-  head: {
-    title: "Услуги",
+  head() {
+    return {
+      title: this.form.name.ru,
+    };
   },
   mixins: [status],
   data() {
@@ -780,6 +868,44 @@ export default {
           ru: "",
           uz: "",
         },
+        moments: [
+          {
+            indexId: 1,
+            title: {
+              ru: "",
+              uz: "",
+            },
+          },
+        ],
+        cards: [
+          {
+            indexId: 1,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+          {
+            indexId: 2,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+          {
+            indexId: 3,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+        ],
         guarantee: {
           ru: "",
           uz: "",
@@ -906,6 +1032,18 @@ export default {
             const { statisticFile, indexId, ...rest } = item;
             return rest;
           }),
+        cards: this.form.cards
+          .filter((elem) => elem.name.ru)
+          .map((item) => {
+            const { imgList, indexId, ...rest } = item;
+            return rest;
+          }),
+        moments: this.form.moments
+          .filter((elem) => elem.title.ru)
+          .map((item) => {
+            const { indexId, ...rest } = item;
+            return rest;
+          }),
         feedbacks: this.form.feedbacks
           .map((item) => {
             const { feedbacksFile, indexId, ...rest } = item;
@@ -990,6 +1128,32 @@ export default {
               : [],
           };
         }),
+        moments: data?.service.moments.map((item, index) => {
+          return {
+            indexId: index,
+            id: item.id,
+            title: item.title,
+          };
+        }),
+        cards: data?.service.cards.map((item, index) => {
+          return {
+            indexId: item.id,
+            id: item.id,
+            name: item.name,
+            img: item?.sm_img ? item?.sm_img : "",
+            imgList: item?.sm_img
+              ? [
+                  {
+                    uid: "-1",
+                    name: "image.png",
+                    status: "done",
+                    oldImg: true,
+                    url: item?.sm_img,
+                  },
+                ]
+              : [],
+          };
+        }),
         additional_services: data?.service.additional_services.map((item, index) => {
           return {
             ...item,
@@ -1029,7 +1193,6 @@ export default {
         }),
         galleries: data?.service?.gallery?.files,
       };
-      console.log(this.form.faqs);
       data?.service.gallery?.sm_files.forEach((item, index) => {
         data?.service.gallery?.files.forEach((elem, ind) => {
           if (index == ind) {
@@ -1046,7 +1209,6 @@ export default {
           }
         });
       });
-      console.log(this.fileGalleries);
       this.fileForCard = this.form.for_card
         ? [
             {
@@ -1086,7 +1248,22 @@ export default {
           statisticFile: [],
         });
       }
+      const cardsLength = this.form.cards.length;
+      for (var i = 0; i < 3 - cardsLength; i++) {
+        this.form.cards.push({
+          indexId: this.form.cards.length + i + 1,
+          id: 0,
+          name: {
+            ru: "",
+            uz: "",
+          },
+          img: "",
+          imgList: [],
+        });
+      }
+      console.log(this.form);
     },
+
     handleOk() {
       this.visible = false;
       console.log(this.form);
@@ -1100,9 +1277,19 @@ export default {
     deleteFaqs(indexId) {
       this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
     },
+    deleteMoments(indexId) {
+      if (this.form.moments.length > 1)
+        this.form.moments = this.form.moments.filter((item) => item.indexId != indexId);
+    },
     deleteFeedbacks(indexId) {
       if (this.form.feedbacks.length > 1)
         this.form.feedbacks = this.form.feedbacks.filter(
+          (item) => item.indexId != indexId
+        );
+    },
+    deletePackageOption(indexId) {
+      if (this.form.package_options.length > 1)
+        this.form.package_options = this.form.package_options.filter(
           (item) => item.indexId != indexId
         );
     },
@@ -1148,6 +1335,16 @@ export default {
           id: 0,
         });
       }
+    },
+    addMoments() {
+      this.form.moments.push({
+        id: 0,
+        title: {
+          ru: "",
+          uz: "",
+        },
+        indexId: Math.max(...this.form.moments.map((o) => o.indexId)) + 1,
+      });
     },
     addFaqs() {
       this.visible = true;
@@ -1213,6 +1410,15 @@ export default {
       const stat = this.form.statistics.find((item) => item.indexId == id);
       stat.statisticFile = fileList;
       if (fileList[0]?.response?.path) stat.img = fileList[0]?.response?.path;
+    },
+    handleChangeCards({ fileList }, id) {
+      const stat = this.form.cards.find((item) => item.indexId == id);
+      stat.imgList = fileList;
+      if (fileList[0]?.response?.path) {
+        stat.img = fileList[0]?.response?.path;
+      } else if (fileList.length == 0) {
+        stat.img = null;
+      }
     },
     handleChangeServiceUpload({ fileList }, name) {
       name == "banner" ? (this.fileBanner = fileList) : (this.fileForCard = fileList);

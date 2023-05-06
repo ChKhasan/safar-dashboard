@@ -172,7 +172,7 @@
         </div>
         <div
           class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#total_info'"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
         >
           <div class="form_tab">
             <div>
@@ -195,18 +195,16 @@
           >
             <a-form-model-item class="form-item mb-0" label="Statistika qo’shish">
               <div class="mt-3 statistic-grid">
-                <div v-for="statistic in form.statistics" class="d-flex">
+                <div v-for="card in form.cards" class="d-flex">
                   <div class="clearfix">
                     <a-upload
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
-                      :file-list="statistic.statisticFile"
+                      :file-list="card.imgList"
                       @preview="handlePreview"
-                      @change="
-                        ($event) => handleChangeStatistic($event, statistic.indexId)
-                      "
+                      @change="($event) => handleChangeCards($event, card.indexId)"
                     >
-                      <div v-if="statistic.statisticFile.length < 1">
+                      <div v-if="card.imgList.length < 1">
                         <a-icon type="plus" />
                         <div class="ant-upload-text">Upload</div>
                       </div>
@@ -222,24 +220,37 @@
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
                       <a-input
-                        v-model="statistic.name[item.index]"
-                        placeholder="Statistika soni"
-                      />
-                    </a-form-model-item>
-                    <a-form-model-item class="form-item mb-3">
-                      <a-input
-                        v-model="statistic.number[item.index]"
+                        v-model="card.name[item.index]"
                         placeholder="Statistika nomi"
                       />
                     </a-form-model-item>
+                    <!-- <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="card.name[item.index]"
+                        placeholder="Statistika nomi"
+                      />
+                    </a-form-model-item> -->
                   </div>
                 </div>
               </div>
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Основные моменты">
-              <a-input v-model="form.name[item.index]" placeholder="Group name" />
-            </a-form-model-item>
-            <div class="create-inner-variant mt-4" @click="addServices">
+            <div
+              class="grid-with-btn"
+              v-for="(moment,index) in form.moments"
+              :key="moment.indexId"
+            >
+              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+                <a-input v-model="moment.title[item.index]" placeholder="Text" />
+              </a-form-model-item>
+              <div class="d-flex align-items-center">
+                <div
+                  class="variant-btn variant-btn-delete mt-3"
+                  v-html="xIcon"
+                  @click="deleteMoments(moment.indexId)"
+                ></div>
+              </div>
+            </div>
+            <div class="create-inner-variant mt-4" @click="addMoments">
               <span v-html="plusIcon"> </span>
               Qo’shish
             </div>
@@ -247,7 +258,7 @@
         </div>
         <div
           class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#total_info'"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
         >
           <div class="form_tab">
             <div>
@@ -618,7 +629,7 @@
                 placeholder="Ответ"
               /> -->
               <quill-editor
-              v-model="formFaq.answer[item.index]"
+                v-model="formFaq.answer[item.index]"
                 class="product-editor mt-1"
                 :options="editorOption"
                 placeholder="Ответ"
@@ -880,6 +891,44 @@ export default {
           ru: "",
           uz: "",
         },
+        moments: [
+          {
+            indexId: 1,
+            title: {
+              ru: "",
+              uz: "",
+            },
+          },
+        ],
+        cards: [
+          {
+            indexId: 1,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+          {
+            indexId: 2,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+          {
+            indexId: 3,
+            name: {
+              ru: "",
+              uz: "",
+            },
+            imgList: [],
+            img: "",
+          },
+        ],
         guarantee: {
           ru: "",
           uz: "",
@@ -1023,7 +1072,6 @@ export default {
   methods: {
     handleOk() {
       this.visible = false;
-      console.log(this.form);
     },
     onSubmit() {
       const data = {
@@ -1032,6 +1080,18 @@ export default {
           .filter((elem) => elem.name.ru || elem.number.ru)
           .map((item) => {
             const { statisticFile, indexId, ...rest } = item;
+            return rest;
+          }),
+        cards: this.form.cards
+          .filter((elem) => elem.name.ru)
+          .map((item) => {
+            const { imgList, indexId, ...rest } = item;
+            return rest;
+          }),
+        moments: this.form.moments
+          .filter((elem) => elem.title.ru)
+          .map((item) => {
+            const { indexId, ...rest } = item;
             return rest;
           }),
         feedbacks: this.form.feedbacks
@@ -1088,6 +1148,10 @@ export default {
         this.form.additional_services = this.form.additional_services.filter(
           (item) => item.indexId != indexId
         );
+    }, 
+    deleteMoments(indexId) {
+      if (this.form.moments.length > 1)
+        this.form.moments = this.form.moments.filter((item) => item.indexId != indexId);
     },
     deletePackageOption(indexId) {
       if (this.form.package_options.length > 1)
@@ -1152,6 +1216,15 @@ export default {
         indexId: Math.max(...this.form.additional_services.map((o) => o.indexId)) + 1,
       });
     },
+    addMoments() {
+      this.form.moments.push({
+        title: {
+          ru: "",
+          uz: "",
+        },
+        indexId: Math.max(...this.form.moments.map((o) => o.indexId)) + 1,
+      });
+    },
     addGroup() {
       this.$router.push("add_services");
     },
@@ -1177,6 +1250,15 @@ export default {
     handleChangeStatistic({ fileList }, id) {
       const stat = this.form.statistics.find((item) => item.indexId == id);
       stat.statisticFile = fileList;
+      if (fileList[0]?.response?.path) {
+        stat.img = fileList[0]?.response?.path;
+      } else if (fileList.length == 0) {
+        stat.img = null;
+      }
+    },
+    handleChangeCards({ fileList }, id) {
+      const stat = this.form.cards.find((item) => item.indexId == id);
+      stat.imgList = fileList;
       if (fileList[0]?.response?.path) {
         stat.img = fileList[0]?.response?.path;
       } else if (fileList.length == 0) {

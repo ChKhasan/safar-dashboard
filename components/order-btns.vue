@@ -5,27 +5,21 @@
       :class="{ 'active-orders': $route.path == '/orders/all-orders' }"
       to="/orders/all-orders"
     >
-      <span class="order-green"></span> Все заказы ({{
-        `${this.$store.state.orders.all}`
-      }})
+      <span class="order-green"></span> Все заказы ({{ `${$store.state.orders.all}` }})
     </nuxt-link>
     <nuxt-link
       class="order-links"
       :class="{ 'active-orders': $route.path == '/orders/new-orders' }"
       to="/orders/new-orders"
     >
-      <span class="order-light-blue"></span> Новые ({{
-        `${this.$store.state.orders.new}`
-      }})
+      <span class="order-light-blue"></span> Новые ({{ `${$store.state.orders.new}` }})
     </nuxt-link>
     <nuxt-link
       class="order-links"
       :class="{ 'active-orders': $route.path == '/orders/accepted-orders' }"
       to="/orders/accepted-orders"
     >
-      <span class="order-black"></span> Принятые ({{
-        `${this.$store.state.orders.accepted}`
-      }})
+      <span class="order-black"></span> Принятые ({{ `${$store.state.orders.accepted}` }})
     </nuxt-link>
     <nuxt-link
       class="order-links"
@@ -33,7 +27,7 @@
       to="/orders/expectation-orders"
     >
       <span class="order-blue"></span> Ожидание ({{
-        `${this.$store.state.orders.in_process}`
+        `${$store.state.orders.in_process}`
       }})
     </nuxt-link>
     <nuxt-link
@@ -42,7 +36,7 @@
       to="/orders/changed-orders"
     >
       <span class="order-yellow"></span> Измененные ({{
-        `${this.$store.state.orders.is_edited}`
+        `${$store.state.orders.is_edited}`
       }})
     </nuxt-link>
     <nuxt-link
@@ -50,12 +44,14 @@
       :class="{ 'active-orders': $route.path == '/orders/canceled-orders' }"
       to="/orders/canceled-orders"
     >
-      <span class="order-red"></span> Отмененные ({{
-        `${this.$store.state.orders.canceled}`
-      }})
+      <span class="order-red"></span> Отмененные ({{ `${$store.state.orders.canceled}` }})
     </nuxt-link>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  mounted() {
+    console.log(this.$store.state);
+  },
+};
 </script>

@@ -24,11 +24,13 @@ import {
   InputNumber,
   Skeleton,
   Empty,
+  Alert
 } from "ant-design-vue";
 
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;
 
+Vue.use(Alert);
 Vue.use(Empty);
 Vue.use(DatePicker);
 Vue.use(Skeleton);
