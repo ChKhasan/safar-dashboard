@@ -119,6 +119,7 @@ const columns = [
     scopedSlots: { customRender: "sm_poster" },
     className: "column-name",
     align: "left",
+    width: 55,
     colSpan: 2,
   },
   {

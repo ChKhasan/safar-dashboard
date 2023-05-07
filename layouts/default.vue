@@ -111,6 +111,13 @@ export default {
               edit: "edit_faqs",
             },
             {
+              key: "7",
+              name: "Категории (F.A.Q)",
+              to: "/category_faqs",
+              add: "category_faqs",
+              edit: "category_faqs",
+            },
+            {
               key: "6",
               name: "Промо",
               to: "/promos",

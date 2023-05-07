@@ -1,6 +1,10 @@
 <template>
   <div class="">
-    <TitleBlock title="F.A.Q" :breadbrumb="['Главный']" lastLink="F.A.Q">
+    <TitleBlock
+      title="Категории (F.A.Q)"
+      :breadbrumb="['Главный']"
+      lastLink="Категории (F.A.Q)"
+    >
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
@@ -33,16 +37,11 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span
-            slot="answer"
-            slot-scope="text"
-            v-html="text?.ru ? text?.ru : '-----'"
-          ></span>
-          <span slot="question" slot-scope="text">
+          <span slot="created_at" slot-scope="text">{{
+            moment(text).format("DD/MM/YYYY")
+          }}</span>
+          <span slot="title_faq" slot-scope="text">
             <span>{{ text?.ru ? text?.ru : "-----" }}</span>
-          </span>
-          <span slot="category" slot-scope="text">
-            <span>{{ text ? text?.title.ru : "-----" }}</span>
           </span>
 
           <span slot="id" slot-scope="text">
@@ -110,36 +109,8 @@
           v-if="formTab == item.index"
         >
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item
-              class="form-item mb-3"
-              :class="{ 'select-placeholder': form.faq_category_id == null }"
-              label="Услуга"
-              prop="faq_category_id"
-            >
-              <a-select v-model="form.faq_category_id" placeholder="Услуга">
-                <a-select-option
-                  v-for="(category, index) in categories"
-                  :key="category?.id"
-                >
-                  {{ category?.title?.ru }}
-                </a-select-option>
-              </a-select>
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Вопрос" prop="question.ru">
-              <a-input
-                type="textarea"
-                rows="5"
-                v-model="form.question[item.index]"
-                placeholder="Вопрос"
-              />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Ответ" prop="answer.ru">
-              <a-input
-                type="textarea"
-                rows="5"
-                v-model="form.answer[item.index]"
-                placeholder="Ответ"
-              />
+            <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
+              <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -174,6 +145,8 @@ import global from "../mixins/global";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
+import moment from "moment";
+
 const columns = [
   {
     title: "№",
@@ -185,33 +158,23 @@ const columns = [
     width: 50,
   },
   {
-    title: "Кат",
-    dataIndex: "category",
-    key: "category",
+    title: "Заголовок",
+    dataIndex: "title",
+    key: "title",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "category" },
-    className: "column-service",
-    width: "20%",
-  },
-  {
-    title: "вопрос",
-    dataIndex: "question",
-    key: "question",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "question" },
+    scopedSlots: { customRender: "title_faq" },
     className: "column-name",
     align: "left",
-    width: "30%",
+    width: "45%",
   },
   {
-    title: "ответ",
-    dataIndex: "answer",
-    key: "answer",
+    title: "Дата",
+    dataIndex: "created_at",
+    key: "created_at",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "answer" },
-    className: "column-service",
+    scopedSlots: { customRender: "created_at" },
+    className: "column-date",
   },
-
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
@@ -269,43 +232,24 @@ export default {
       search: "",
       columns,
       faqs: [],
-      categories: [],
       rules: {
-        faq_category_id: [
-          { required: true, message: "This field is required", trigger: "change" },
-        ],
-        question: {
+        title: {
           ru: [{ required: true, message: "This field is required", trigger: "change" }],
-        },
-        answer: {
-          ru: [
-            {
-              required: true,
-              message: "This field is required",
-              trigger: "change",
-            },
-          ],
         },
       },
       form: {
-        question: {
+        title: {
           ru: "",
           uz: "",
         },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        faq_category_id: null,
-        service_id: null,
       },
     };
   },
   async mounted() {
-    this.getFirstData("/faqs", "__GET_FAQS");
-    this.__GET_FAQS_CATEGORIES();
+    this.getFirstData("/category_faqs", "__GET_FAQS");
   },
   methods: {
+    moment,
     changeSearch(val) {
       this.search = val.target.value;
     },
@@ -330,34 +274,26 @@ export default {
     deleteAction(id) {
       this.__DELETE_GLOBAL(
         id,
-        "fetchFaqs/deleteFaqs",
+        "fetchFaqs/deleteFaqsCategories",
         "Услуга был успешно удален",
         "__GET_FAQS"
       );
     },
     async __GET_FAQS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchFaqs/getFaqs", {
+      const data = await this.$store.dispatch("fetchFaqs/getFaqsCategories", {
         ...this.$route.query,
       });
       this.loading = false;
-      const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
-      this.faqs = data?.faqs?.data.map((item, index) => {
+      //   const pageIndex = this.indexPage(data?.categories?.current_page, data?.categories?.per_page);
+      this.faqs = data?.categories.map((item, index) => {
         return {
           ...item,
-          key: index + pageIndex,
+          key: index + 1,
         };
       });
-      this.totalPage = data?.faqs?.total;
-    },
-    async __GET_FAQS_CATEGORIES() {
-      this.loading = true;
-      const data = await this.$store.dispatch("fetchFaqs/getFaqsCategoriesAll");
-      this.loading = false;
-      // const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
-      this.categories = data?.categories;
-      // this.totalPage = data?.faqs?.total;
-      console.log(this.categories);
+      //   this.totalPage = data?.categories?.total;
+      console.log();
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
@@ -375,7 +311,7 @@ export default {
     },
     async __POST_FAQS(data) {
       try {
-        await this.$store.dispatch("fetchFaqs/postFaqs", data);
+        await this.$store.dispatch("fetchFaqs/postFaqsCategories", data);
         this.notification("success", "success", "Услуга успешно добавлен");
         this.handleOk();
         this.__GET_FAQS();
@@ -385,36 +321,30 @@ export default {
     },
     async __GET_FAQS_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
+        const data = await this.$store.dispatch("fetchFaqs/getFaqsCategoriesById", id);
         this.visible = true;
-        this.form = data?.faq;
+        this.form.title = data?.category?.title;
       } catch (e) {
         this.statusFunc(e);
       }
     },
     emptyData() {
       this.form = {
-        question: {
+        title: {
           ru: "",
           uz: "",
         },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        service_id: null,
       };
     },
     async __EDIT_FAQS(res) {
       try {
-        await this.$store.dispatch("fetchFaqs/editFaqs", {
+        await this.$store.dispatch("fetchFaqs/editFaqsCategories", {
           id: this.editId,
           data: res,
         });
         this.handleOk();
         this.__GET_FAQS();
         this.notification("success", "success", "Пост успешно изменена");
-        this.$router.push("/faqs");
       } catch (e) {
         this.statusFunc(e);
       }
