@@ -194,6 +194,94 @@
               </span>
             </div>
           </div>
+
+          <div
+            class="card_block border-left-radius px-4 py-4 mt-0"
+            v-for="(item, index) in formTabData"
+            :key="index"
+            v-if="formTab.guarantee == item.index"
+          >
+            <a-form-model-item class="form-item mb-0" label="Statistika qo’shish">
+              <div class="mt-3 statistic-grid">
+                <div v-for="card in form.cards" class="d-flex">
+                  <div class="clearfix">
+                    <a-upload
+                    disabled
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="card.imgList"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeCards($event, card.indexId)"
+                    >
+                      <div v-if="card.imgList.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                  <div class="d-flex flex-column justify-content-between w-100">
+                    <a-form-model-item class="form-item mb-3">
+                      <a-input
+                      disabled
+                        v-model="card.name[item.index]"
+                        placeholder="Statistika nomi"
+                      />
+                    </a-form-model-item>
+                    <!-- <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="card.name[item.index]"
+                        placeholder="Statistika nomi"
+                      />
+                    </a-form-model-item> -->
+                  </div>
+                </div>
+              </div>
+            </a-form-model-item>
+            <div
+              class="grid-with-btn"
+              v-for="(moment,index) in form.moments"
+              :key="moment.indexId"
+            >
+              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+                <a-input disabled v-model="moment.title[item.index]" placeholder="Text" />
+              </a-form-model-item>
+              <!-- <div class="d-flex align-items-center">
+                <div
+                  class="variant-btn variant-btn-delete mt-3"
+                  v-html="xIcon"
+                  @click="deleteMoments(moment.indexId)"
+                ></div>
+              </div> -->
+            </div>
+            <!-- <div class="create-inner-variant mt-4" @click="addMoments">
+              <span v-html="plusIcon"> </span>
+              Qo’shish
+            </div> -->
+          </div>
+        </div>
+        <div
+          class="container_xl app-container d-flex flex-column"
+          v-if="$route.hash == '' || $route.hash == '#total_info'"
+        >
+          <div class="form_tab">
+            <div>
+              <span
+                v-for="(item, index) in formTabData"
+                :key="index"
+                @click="formTab.guarantee = item.index"
+                :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
+              >
+                {{ item.label }}
+              </span>
+            </div>
+          </div>
           <div
             class="card_block border-left-radius px-4 py-4 mt-0"
             v-for="(item, index) in formTabData"
@@ -907,6 +995,32 @@ export default {
               : [],
           };
         }),
+        moments: data?.service.moments.map((item, index) => {
+          return {
+            indexId: index,
+            id: item.id,
+            title: item.title,
+          };
+        }),
+        cards: data?.service.cards.map((item, index) => {
+          return {
+            indexId: item.id,
+            id: item.id,
+            name: item.name,
+            img: item?.sm_img ? item?.sm_img : "",
+            imgList: item?.sm_img
+              ? [
+                  {
+                    uid: "-1",
+                    name: "image.png",
+                    status: "done",
+                    oldImg: true,
+                    url: item?.sm_img,
+                  },
+                ]
+              : [],
+          };
+        }),
         additional_services: data?.service.additional_services.map((item, index) => {
           return {
             ...item,
@@ -1001,6 +1115,19 @@ export default {
           statisticFile: [],
         });
       }
+      const cardsLength = this.form.cards.length;
+      for (var i = 0; i < 3 - cardsLength; i++) {
+        this.form.cards.push({
+          indexId: this.form.cards.length + i + 1,
+          id: 0,
+          name: {
+            ru: "",
+            uz: "",
+          },
+          img: "",
+          imgList: [],
+        });
+      }
     },
     handleCancel() {
       this.previewVisible = false;
@@ -1032,6 +1159,15 @@ export default {
         this.form[name] = fileList[0]?.response?.path;
       } else if (fileList.length == 0) {
         this.form[name] = null;
+      }
+    },
+    handleChangeCards({ fileList }, id) {
+      const stat = this.form.cards.find((item) => item.indexId == id);
+      stat.imgList = fileList;
+      if (fileList[0]?.response?.path) {
+        stat.img = fileList[0]?.response?.path;
+      } else if (fileList.length == 0) {
+        stat.img = null;
       }
     },
     handleChangeGalleriesUpload({ fileList }) {
