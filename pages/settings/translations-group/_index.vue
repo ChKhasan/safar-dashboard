@@ -11,9 +11,6 @@
 
           Добавить группу
         </a-button>
-        <a-typography-paragraph :copyable="{ tooltip: false }">
-          Hide Copy tooltips.
-        </a-typography-paragraph>
       </div>
     </TitleBlock>
     <div class="container_xl app-container pb-5 pt-5">
