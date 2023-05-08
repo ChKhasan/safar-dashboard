@@ -24,7 +24,7 @@ import {
   InputNumber,
   Skeleton,
   Empty,
-  Alert
+  Alert,
 } from "ant-design-vue";
 
 Vue.prototype.$notification = notification;

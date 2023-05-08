@@ -1,0 +1,408 @@
+<template lang="html">
+  <div class="site-info">
+    <TitleBlock
+      title="Общие данные"
+      :breadbrumb="['Настройки сайта']"
+      lastLink="Общие данные"
+    >
+      <div class="d-flex">
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          type="primary"
+          @click="onSubmit"
+        >
+          <span class="svg-icon"> </span>
+          Сохранить
+        </a-button>
+      </div>
+    </TitleBlock>
+    <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+      <div class="pb-5 pt-5">
+        <div class="container_xl app-container d-flex flex-column">
+          <div class="form_tab">
+            <div>
+              <span
+                v-for="(item, index) in formTabData"
+                :key="index"
+                @click="formTab = item.index"
+                :class="{ 'avtive-formTab': formTab == item.index }"
+              >
+                {{ item.label }}
+              </span>
+            </div>
+          </div>
+          <div class="posts-grid">
+            <div
+              class="card_block main-table px-4 py-4 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab == item.index"
+            >
+              <div class="d-flex gx-5" style="gap: 16px">
+                <a-form-model-item
+                  class="form-item mb-3 w-100"
+                  label="Заголовок"
+                  :prop="item.index == 'ru' ? 'title.ru' : ''"
+                >
+                  <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 w-100" label="Подзаголовок">
+                  <a-input
+                    v-model="form.subtitle[item.index]"
+                    placeholder="Подзаголовок"
+                  />
+                </a-form-model-item>
+              </div>
+
+              <a-form-model-item class="form-item mb-3" label="Описание">
+                <quill-editor
+                  v-model="form.desc[item.index]"
+                  class="product-editor mt-1"
+                  :options="editorOption"
+                />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3 w-100" label="Адрес">
+                <a-input
+                  type="textarea"
+                  rows="3"
+                  v-model="form.addresses[item.index]"
+                  placeholder="Адрес"
+                />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3 w-100" label="Время работы">
+                <a-input
+                  type="textarea"
+                  rows="3"
+                  v-model="form.working_houses[item.index]"
+                  placeholder="Время работы"
+                />
+              </a-form-model-item>
+              <a-form-model-item class="form-item mb-3 w-100" label="Номер телефона">
+                <the-mask
+                  class="w-100"
+                  type="text"
+                  placeholder="(___) ___-____"
+                  :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
+                  v-model="form.phone_numbers"
+                  label-position="top"
+                />
+              </a-form-model-item>
+            </div>
+            <span>
+              <div class="card_block px-4 py-4">
+                <a-form-model-item class="form-item mb-3" label="Email">
+                  <a-input v-model="form.emails" placeholder="link" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Instagram">
+                  <a-input v-model="form.instagram" placeholder="link" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Telegram">
+                  <a-input v-model="form.telegram" placeholder="link" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Facebook">
+                  <a-input v-model="form.facebook" placeholder="link" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="YouTube">
+                  <a-input v-model="form.youtube" placeholder="link" />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Втсавить карту(iframe)">
+                  <a-input v-model="form.map" placeholder="iframe" />
+                </a-form-model-item>
+                <div class="clearfix d-flex">
+                  <a-form-model-item class="form-item mb-3 w-100" label="Лого">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListLogo"
+                      @preview="handlePreview"
+                      @change="($event) => handleChange($event, 'logo')"
+                    >
+                      <div v-if="fileListLogo.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3 w-100" label="Favicon">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListFavicon"
+                      @preview="handlePreview"
+                      @change="($event) => handleChange($event, 'favicon')"
+                    >
+                      <div v-if="fileListFavicon.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </a-form-model-item>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </a-form-model>
+  </div>
+</template>
+<script>
+import FormTitle from "../../components/Form-title.vue";
+import TitleBlock from "../../components/Title-block.vue";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import status from "../../mixins/status";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
+export default {
+  mixins: [status],
+  head: {
+    title: "Новости",
+  },
+  data() {
+    return {
+      editorOption: {
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [
+              {
+                font: [],
+              },
+              {
+                size: [],
+              },
+            ],
+            ["bold", "italic", "underline", "strike"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
+          ],
+        },
+      },
+      formTab: "ru",
+      formTabData: [
+        {
+          label: "Русский",
+          index: "ru",
+        },
+        {
+          label: "O'zbek",
+          index: "uz",
+        },
+        {
+          label: "English",
+          index: "en",
+        },
+      ],
+      rules: {
+        title: {
+          ru: [
+            {
+              required: true,
+              message: "This field is required",
+              trigger: "change",
+            },
+          ],
+        },
+      },
+      form: {
+        title: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
+        subtitle: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
+        desc: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
+        addresses: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
+        working_houses: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
+        phone_numbers: "",
+        emails: "",
+        instagram: "",
+        facebook: "",
+        youtube: "",
+        telegram: "",
+        map: "",
+        logo: "",
+        favicon: "",
+      },
+      previewVisible: false,
+      previewImage: "",
+      fileListLogo: [],
+      fileListFavicon: [],
+    };
+  },
+  mounted() {
+    this.__GET_STATIC_INFO();
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  },
+  methods: {
+    onSubmit() {
+      const {
+        id,
+        created_at,
+        lg_favicon,
+        lg_logo,
+        md_favicon,
+        md_logo,
+        sm_favicon,
+        sm_logo,
+        updated_at,
+        ...rest
+      } = this.form;
+      this.$refs["ruleForm"].validate((valid) => {
+        if (valid) {
+          console.log(rest);
+          //   this.__POST_STATIC_INFO(this.form);
+        } else {
+          return false;
+        }
+      });
+    },
+    async __POST_STATIC_INFO(data) {
+      try {
+        await this.$store.dispatch("fetchStaticInfo/postStaticInfo", data);
+        this.notification("success", "success", "Успешно добавлен");
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
+    async __GET_STATIC_INFO() {
+      try {
+        const data = await this.$store.dispatch("fetchStaticInfo/getStaticInfo");
+        console.log(data);
+        this.form = { ...data.info, phone_numbers: `998${data.info.phone_numbers}` };
+        if (this.form.sm_logo) {
+          this.fileListLogo = [
+            {
+              uid: "-1",
+              name: "image.png",
+              status: "done",
+              oldImg: true,
+              url: this.form.sm_logo,
+            },
+          ];
+        }
+        if (this.form.sm_favicon) {
+          this.fileListFavicon = [
+            {
+              uid: "-1",
+              name: "image.png",
+              status: "done",
+              oldImg: true,
+              url: this.form.sm_favicon,
+            },
+          ];
+        }
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
+    handleChange({ fileList }, name) {
+      if (name == "logo") {
+        this.fileListLogo = fileList;
+      } else {
+        this.fileListFavicon = fileList;
+      }
+      if (fileList[0]?.response?.path) this.form[name] = fileList[0]?.response?.path;
+    },
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+  },
+  components: { TitleBlock, FormTitle },
+};
+</script>
+<style lang="css">
+.posts-grid {
+  display: grid;
+  grid-gap: 13px;
+  grid-template-columns: 5fr 2fr;
+}
+.posts .ant-upload.ant-upload-select-picture-card,
+.posts .ant-upload-list-picture-card .ant-upload-list-item,
+.posts .ant-upload-list-picture-card-container {
+  width: 100% !important;
+  height: 150px !important;
+}
+</style>

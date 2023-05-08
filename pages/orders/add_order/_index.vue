@@ -284,9 +284,11 @@ export default {
     };
   },
   mounted() {
-    this.form.date = moment(
-      `${this.$route.query.date} ${this.$route.query.session}`
-    ).format("Do MMMM. YYYY hh:mm-hh:mm");
+    this.$route.query.session
+      ? (this.form.date = moment(
+          `${this.$route.query.date} ${this.$route.query.session}`
+        ).format("Do MMMM. YYYY hh:mm-hh:mm"))
+      : (this.form.date = moment(`${this.$route.query.date} `).format("Do MMMM. YYYY"));
     this.__BOOKED_ORDERS();
     this.__GET_TARIFF_BY_ID();
   },
@@ -294,6 +296,7 @@ export default {
     onSubmit() {
       const data = {
         ...this.form,
+        date: moment(this.$route.query.date).format("YYYY-MM-DD"),
         data: this.form.data.map((item) => {
           if (this.tariff.type == "tariff") {
             return {
@@ -371,11 +374,11 @@ export default {
       this.booked = `0/${this.tariff.max_clients}`;
     },
     async __BOOKED_ORDERS(data) {
+      console.log("Asdasdasdas");
       try {
         const data = await this.$store.dispatch("fetchOrders/getBookedOrders", {
           ...this.$route.query,
         });
-        console.log(data);
       } catch (e) {
         this.statusFunc(e);
       }

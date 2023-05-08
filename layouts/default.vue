@@ -39,6 +39,7 @@
                 ><span v-if="!collapsed">{{ menu.title }}</span></span
               >
               <a-menu-item
+                v-if="menu.menuItems.length > 0"
                 :key="items.key"
                 v-for="items in menu.menuItems"
                 :class="{
@@ -76,6 +77,7 @@ export default {
       defaultOpens: ["1"],
       openKeys: ["1"],
       logo: require("../assets/svg/logo-light.svg?raw"),
+      icon: require("../assets/svg/toolbar-catalog.svg?raw"),
       menuData: [
         {
           title: "Главный",
@@ -185,6 +187,41 @@ export default {
             },
           ],
         },
+        {
+          title: "Клиенты",
+          sub: "4",
+          icon: require("../assets/svg/clients.svg?raw"),
+          menuItems: [
+            {
+              key: "41",
+              name: "Клиенты",
+              to: "/clients",
+              add: "clients",
+              edit: "clients",
+            },
+          ],
+        },
+        {
+          title: "Настройки сайта",
+          sub: "2",
+          icon: require("../assets/svg/settings.svg?raw"),
+          menuItems: [
+            {
+              key: "21",
+              name: "Переводы",
+              to: "/settings/translations",
+              add: "settings-translations",
+              edit: "settings-translations-group",
+            },
+            {
+              key: "22",
+              name: " Общие данные",
+              to: "/settings/site-info",
+              add: "settings-site-info",
+              edit: "settings-site-info",
+            },
+          ],
+        },
       ],
     };
   },
@@ -206,6 +243,10 @@ export default {
     checkDefaultOpen() {
       if (this.$route.name.includes("orders")) {
         this.openKeys = ["3"];
+      } else if (this.$route.name.includes("settings")) {
+        this.openKeys = ["2"];
+      } else if (this.$route.name.includes("clients")) {
+        this.openKeys = ["4"];
       } else {
         this.openKeys = ["1"];
       }
