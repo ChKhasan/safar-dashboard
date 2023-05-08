@@ -377,7 +377,6 @@ export default {
         (item) => item.id == this.$route.params.index
       );
       this.groupKey = translate.sub_text;
-      console.log(translate);
       this.translations = translate.translates.map((item, index) => {
         return {
           keyIndex: item.key,

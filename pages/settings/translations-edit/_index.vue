@@ -41,21 +41,18 @@
           <span slot="keyIndex" slot-scope="text">
             <div class="ant-input">
               <span>{{ groupKey }}.</span>
-              <a-input v-model="text.keyIndex" placeholder="Atribut Name"></a-input>
+              <a-input v-model="text.keyIndex" placeholder="ключ..."></a-input>
             </div>
           </span>
 
           <span slot="valRu" slot-scope="text">
-            <a-input v-model="text.val.ru" placeholder="Atribut Name"></a-input>
-          </span>
-          <span slot="valRu" slot-scope="text">
-            <a-input v-model="text.val.ru" placeholder="Atribut Name"></a-input>
+            <a-input v-model="text.val.ru" placeholder="ru..."></a-input>
           </span>
           <span slot="valEn" slot-scope="text">
-            <a-input v-model="text.val.en" placeholder="Atribut Name"></a-input>
+            <a-input v-model="text.val.en" placeholder="en..."></a-input>
           </span>
           <span slot="valUz" slot-scope="text">
-            <a-input v-model="text.val.uz" placeholder="Atribut Name"></a-input>
+            <a-input v-model="text.val.uz" placeholder="uz..."></a-input>
           </span>
 
           <span slot="id" slot-scope="text">
@@ -79,7 +76,12 @@
             class="table-page-size"
             style="width: 120px"
             @change="
-              ($event) => changePageSizeGlobal($event, '/faqs', '__GET_TRANSLATIONS')
+              ($event) =>
+                changePageSizeGlobal(
+                  $event,
+                  `/translations-edit/${$route.params.index}`,
+                  '__GET_TRANSLATIONS'
+                )
             "
           >
             <a-select-option
@@ -100,95 +102,6 @@
         </div>
       </div>
     </div>
-    <a-modal
-      v-model="visible"
-      :dialog-style="{ top: '50px' }"
-      :title="title"
-      :closable="false"
-      width="720px"
-      @ok="handleOk"
-    >
-      <div class="d-flex flex-column">
-        <div class="d-flex flex-column">
-          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
-            </a-form-model-item>
-          </a-form-model>
-        </div>
-      </div>
-      <template slot="footer">
-        <div class="add_modal-footer d-flex justify-content-end">
-          <div
-            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-            @click="handleOk"
-          >
-            Cancel
-          </div>
-          <a-button
-            class="add-btn add-header-btn btn-primary"
-            type="primary"
-            @click="postGroup"
-          >
-            <span class="svg-icon" v-html="addIcon"></span>
-            Save
-          </a-button>
-        </div>
-      </template>
-    </a-modal>
-    <a-modal
-      v-model="visibleTranslate"
-      :dialog-style="{ top: '50px' }"
-      :title="title"
-      :closable="false"
-      width="720px"
-      @ok="handleOkTranslate"
-    >
-      <div class="d-flex flex-column">
-        <div class="d-flex flex-column">
-          <a-form-model
-            :model="formTranlate"
-            ref="ruleFormFaq"
-            :rules="rules"
-            layout="vertical"
-          >
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
-            </a-form-model-item>
-          </a-form-model>
-        </div>
-      </div>
-      <template slot="footer">
-        <div class="add_modal-footer d-flex justify-content-end">
-          <div
-            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-            @click="handleOkTranslate"
-          >
-            Cancel
-          </div>
-          <a-button
-            class="add-btn add-header-btn btn-primary"
-            type="primary"
-            @click="postGroup"
-          >
-            <span class="svg-icon" v-html="addIcon"></span>
-            Save
-          </a-button>
-        </div>
-      </template>
-    </a-modal>
   </div>
 </template>
 
@@ -257,32 +170,12 @@ export default {
   },
   data() {
     return {
-      title: "Добавить группу",
-      editId: null,
       groupKey: "",
-      formTab: "ru",
-      visible: false,
-      visibleTranslate: false,
-      formTabData: [
-        {
-          label: "Русский",
-          index: "ru",
-        },
-        {
-          label: "O'zbek",
-          index: "uz",
-        },
-      ],
-      eyeIcon: require("../../../assets/svg/Eye.svg?raw"),
-      editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
-      addIcon: require("../../../assets/svg/add-icon.svg?raw"),
       plusIcon: require("../../../assets/svg/plus.svg?raw"),
       loading: false,
       search: "",
       columns,
-      faqs: [],
-      categories: [],
       rules: {
         sub_text: [
           { required: true, message: "This field is required", trigger: "change" },
@@ -319,17 +212,11 @@ export default {
     postGroup() {
       this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
-          this.__POST_FAQS(this.form);
+          this.__POST_TRANSLATIONS(this.form);
         } else {
           return false;
         }
       });
-    },
-    editAction(id) {
-      this.visibleTranslate = true;
-      this.title = "Изменить";
-      this.editId = id;
-      //   this.__GET_TRANSLATIONS_BY_ID(id);
     },
     deleteAction(obj) {
       if (obj.id == 0) {
@@ -371,9 +258,7 @@ export default {
       const translate = data?.groups?.data.find(
         (item) => item.id == this.$route.params.index
       );
-
       this.groupKey = translate.sub_text;
-      console.log(this.groupKey);
       this.form = translate.translates.map((item, index) => {
         return {
           indexId: index + pageIndex,
@@ -389,17 +274,7 @@ export default {
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
-    addFaqs() {
-      this.title = "Добавить";
-      this.fileList = [];
-      this.editId = null;
-      this.visible = true;
-    },
-    handleOkTranslate() {
-      this.visibleTranslate = false;
-    },
     saveTranslations() {
-      console.log(this.form);
       const data = {
         translate_group_id: this.$route.params.index,
         translates: this.form.map((item) => {
@@ -410,12 +285,9 @@ export default {
           };
         }),
       };
-      this.__POST_FAQS(data);
+      this.__POST_TRANSLATIONS(data);
     },
-    handleOk() {
-      this.visible = false;
-    },
-    async __POST_FAQS(data) {
+    async __POST_TRANSLATIONS(data) {
       try {
         await this.$store.dispatch("fetchTranslations/postUpdateTranslations", data);
         this.notification("success", "success", "Услуга успешно добавлен");
@@ -424,52 +296,15 @@ export default {
         this.statusFunc(e);
       }
     },
-    async __GET_TRANSLATIONS_BY_ID(id) {
-      try {
-        const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
-        this.visible = true;
-        this.form = data?.faq;
-      } catch (e) {
-        this.statusFunc(e);
-      }
-    },
-    emptyData() {
-      this.form = {
-        question: {
-          ru: "",
-          uz: "",
-        },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        service_id: null,
-      };
-    },
-    async __EDIT_FAQS(res) {
-      try {
-        await this.$store.dispatch("fetchFaqs/editFaqs", {
-          id: this.editId,
-          data: res,
-        });
-        this.handleOk();
-        this.__GET_TRANSLATIONS();
-        this.notification("success", "success", "Пост успешно изменена");
-        this.$router.push("/faqs");
-      } catch (e) {
-        this.statusFunc(e);
-      }
-    },
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/faqs", "__GET_TRANSLATIONS");
+      this.changePagination(
+        val,
+        `/translations-edit/${$route.params.index}`,
+        "__GET_TRANSLATIONS"
+      );
     },
-    // visible(val) {
-    //   if (val == false) {
-    //     this.emptyData();
-    //   }
-    // },
   },
   components: { TitleBlock, SearchInput },
 };
