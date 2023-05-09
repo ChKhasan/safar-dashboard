@@ -332,7 +332,7 @@ export default {
     postGroup() {
       this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
-          this.__POST_FAQS(this.form);
+          this.__POST_GROUPS(this.form);
         } else {
           return false;
         }
@@ -342,7 +342,6 @@ export default {
       this.visibleTranslate = true;
       this.title = "Изменить";
       this.editId = id;
-      //   this.__GET_TRANSLATIONS_BY_ID(id);
     },
     deleteAction(id) {
       this.__DELETE_GLOBAL(
@@ -398,21 +397,12 @@ export default {
     handleOk() {
       this.visible = false;
     },
-    async __POST_FAQS(data) {
+    async __POST_GROUPS(data) {
       try {
         await this.$store.dispatch("fetchTranslations/postTranslateGroup", data);
         this.notification("success", "success", "Услуга успешно добавлен");
         this.handleOk();
-        this.__GET_TRANSLATIONS();
-      } catch (e) {
-        this.statusFunc(e);
-      }
-    },
-    async __GET_TRANSLATIONS_BY_ID(id) {
-      try {
-        const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
-        this.visible = true;
-        this.form = data?.faq;
+        this.__GET_TRANSLATE_GROUPS();
       } catch (e) {
         this.statusFunc(e);
       }
@@ -429,25 +419,11 @@ export default {
         },
         service_id: null,
       };
-    },
-    async __EDIT_FAQS(res) {
-      try {
-        await this.$store.dispatch("fetchFaqs/editFaqs", {
-          id: this.editId,
-          data: res,
-        });
-        this.handleOk();
-        this.__GET_TRANSLATIONS();
-        this.notification("success", "success", "Пост успешно изменена");
-        this.$router.push("/faqs");
-      } catch (e) {
-        this.statusFunc(e);
-      }
-    },
+    }
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/faqs", "__GET_TRANSLATIONS");
+      this.changePagination(val, "/translations", "__GET_TRANSLATIONS");
     },
     // visible(val) {
     //   if (val == false) {

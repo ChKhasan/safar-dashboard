@@ -78,14 +78,7 @@
                 />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3 w-100" label="Номер телефона">
-                <the-mask
-                  class="w-100"
-                  type="text"
-                  placeholder="(___) ___-____"
-                  :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
-                  v-model="form.phone_numbers"
-                  label-position="top"
-                />
+                <a-input placeholder="(___) ___-____" v-model="form.phone_numbers" />
               </a-form-model-item>
             </div>
             <span>
@@ -325,8 +318,7 @@ export default {
       } = this.form;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          console.log(rest);
-          //   this.__POST_STATIC_INFO(this.form);
+          this.__POST_STATIC_INFO(this.form);
         } else {
           return false;
         }
@@ -343,8 +335,7 @@ export default {
     async __GET_STATIC_INFO() {
       try {
         const data = await this.$store.dispatch("fetchStaticInfo/getStaticInfo");
-        console.log(data);
-        this.form = { ...data.info, phone_numbers: `998${data.info.phone_numbers}` };
+        this.form = { ...data.info };
         if (this.form.sm_logo) {
           this.fileListLogo = [
             {
@@ -404,5 +395,8 @@ export default {
 .posts .ant-upload-list-picture-card-container {
   width: 100% !important;
   height: 150px !important;
+}
+.tel_number_input:focus {
+  outline: none;
 }
 </style>
