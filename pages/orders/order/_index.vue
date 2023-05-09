@@ -71,9 +71,9 @@
                   <a-form-model-item class="form-item mb-0" label="ID Клиент">
                     <a-input placeholder="ID" v-model="order.client.id" disabled />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="Номер клиента">
+                  <a-form-model-item class="form-item mb-0" label="Имя Клиента">
                     <a-input
-                      placeholder="Номер клиента"
+                      placeholder="Имя Клиента"
                       v-model="order.client.name"
                       disabled
                     />
@@ -81,7 +81,7 @@
 
                   <a-form-model-item
                     class="form-item mb-0 disabled_input"
-                    label="Имя Клиента"
+                    label="Номер клиента "
                   >
                     <the-mask
                       disabled
@@ -221,7 +221,6 @@ export default {
       data: { status: "in_process" },
     });
     this.$store.dispatch("getOrders");
-
   },
   methods: {
     moment,
