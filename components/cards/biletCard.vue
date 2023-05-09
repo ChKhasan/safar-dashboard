@@ -9,7 +9,19 @@
         >
         <div class="column-btns">
           <span>
-            <span v-if="isPaid" class="action-btn" v-html="ticketIcon"> </span>
+            <a
+              :href="`https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`"
+              class="action-btn"
+              download
+              v-if="isPaid"
+              @click.prevent="
+                downloadItem(
+                  `https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`
+                )
+              "
+              v-html="ticketIcon"
+            >
+            </a>
             <span class="action-btn" v-html="editIcon"> </span>
           </span>
         </div>
@@ -40,8 +52,10 @@
 </template>
 <script>
 import moment from "moment";
+import status from "../../mixins/status";
 export default {
   props: ["orderIn", "isPaid"],
+  mixins: [status],
   data() {
     return {
       ticketIcon: require("../../assets/svg/ticket.svg?raw"),
@@ -50,6 +64,21 @@ export default {
   },
   methods: {
     moment,
+    downloadItem(url) {
+      this.$axios
+        .$get(url, { responseType: "blob" })
+        .then((response) => {
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "Safar park ticket";
+          link.click();
+          URL.revokeObjectURL(link.href);
+        })
+        .catch((err) => {
+          this.statusFunc(err);
+        });
+    },
   },
 };
 </script>
