@@ -12,8 +12,6 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="onSubmit"
-          
-          
         >
           <span class="svg-icon"> </span>
           Сохранять
@@ -314,13 +312,9 @@ export default {
           }
         }),
       };
-      data.data = data.data.filter((item) => item.name);
+      data.data = data.data.filter((item) => item.name && item.count > 0);
       this.$refs["ruleForm"].validate((valid) => {
-        if (valid) {
-          this.__POST_ORDER(data);
-        } else {
-          return false;
-        }
+        valid ? this.__POST_ORDER(data) : false;
       });
     },
     countUp(id) {
@@ -336,7 +330,11 @@ export default {
     },
     countDown(id) {
       const obj = this.form.data.find((item) => item.indexId == id);
-      if (obj.count > this.min_clients) {
+      let summ = 0;
+      this.form.data.forEach((item) => {
+        summ = summ + item.count;
+      });
+      if (obj.count > 0 && summ > this.tariff.min_clients) {
         obj.count--;
       }
     },
@@ -364,24 +362,17 @@ export default {
         return {
           indexId: index + 1,
           name: item.name,
-          count: 1,
+          count: index == 0 ? this.tariff.min_clients : 0,
           active: index == 0 ? true : false,
         };
       });
       this.booked = `${booked}/${this.tariff.max_clients}`;
     },
-    async __BOOKED_ORDERS(data) {
-      console.log("Asdasdasdas");
-      try {
-        console.log(data);
-      } catch (e) {
-        this.statusFunc(e);
-      }
-    },
     async __POST_ORDER(data) {
       try {
         await this.$store.dispatch("fetchOrders/postOrders", data);
         this.notification("success", "success", "Пост успешно добавлен");
+        this.$router.go(-1);
       } catch (e) {
         this.statusFunc(e);
       }
@@ -390,7 +381,6 @@ export default {
   watch: {
     value(val) {
       const tariff = this.service.tariffs.find((item) => item.id == val);
-      console.log(tariff);
       this.transformData(tariff);
     },
   },
