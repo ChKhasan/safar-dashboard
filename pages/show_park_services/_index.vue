@@ -965,7 +965,7 @@ export default {
       try {
         await this.$store.dispatch("fetchServices/deleteServices", id);
         this.$router.push("/");
-        this.notification("success", "success", "Услуга был успешно удален");
+        this.notification("success", "success", "Услуга успешно удален");
       } catch (e) {
         this.statusFunc(e);
       }

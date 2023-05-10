@@ -270,7 +270,7 @@ export default {
           id: this.$route.params.index,
           data: res,
         });
-        this.notification("success", "success", "Пост успешно изменена");
+        this.notification("success", "success", "Успешно изменена");
         this.$router.push("/news");
       } catch (e) {
         this.statusFunc(e);

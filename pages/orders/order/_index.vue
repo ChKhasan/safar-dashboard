@@ -235,7 +235,7 @@ export default {
         });
         this.$store.dispatch("getOrders");
         this.$router.go(-1);
-        this.notification("success", "success", "Заказ успешно добавлен");
+        this.notification("success", "success", "Заказ успешно изменена");
       } catch (e) {
         this.statusFunc(e);
       }
@@ -258,7 +258,7 @@ export default {
     async __POST_POSTS(data) {
       try {
         await this.$store.dispatch("fetchPosts/postPosts", data);
-        this.notification("success", "success", "Пост успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push("/news");
       } catch (e) {
         this.statusFunc(e);

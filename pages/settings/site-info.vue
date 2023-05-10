@@ -327,7 +327,7 @@ export default {
     async __POST_STATIC_INFO(data) {
       try {
         await this.$store.dispatch("fetchStaticInfo/postStaticInfo", data);
-        this.notification("success", "success", "Успешно добавлен");
+        this.notification("success", "success", "Успешно изменена");
       } catch (e) {
         this.statusFunc(e);
       }

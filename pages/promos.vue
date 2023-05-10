@@ -345,7 +345,7 @@ export default {
     async __POST_PROMOS(data) {
       try {
         await this.$store.dispatch("fetchPromos/postPromos", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.handleOk();
         this.__GET_PROMOS();
       } catch (e) {
@@ -388,7 +388,7 @@ export default {
         });
         this.handleOk();
         this.__GET_PROMOS();
-        this.notification("success", "success", "Пост успешно изменена");
+        this.notification("success", "success", "Успешно изменена");
         this.$router.push("/promos");
       } catch (e) {
         this.statusFunc(e);

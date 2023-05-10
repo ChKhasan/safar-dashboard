@@ -371,7 +371,7 @@ export default {
     async __POST_ORDER(data) {
       try {
         await this.$store.dispatch("fetchOrders/postOrders", data);
-        this.notification("success", "success", "Пост успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.go(-1);
       } catch (e) {
         this.statusFunc(e);

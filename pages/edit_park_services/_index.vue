@@ -1085,7 +1085,7 @@ export default {
           id: this.$route.params.index,
           data: data,
         });
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push("/");
       } catch (e) {
         this.statusFunc(e);
@@ -1098,7 +1098,7 @@ export default {
       try {
         await this.$store.dispatch("fetchServices/deleteServices", id);
         this.$router.push("/");
-        this.notification("success", "success", "Услуга был успешно удален");
+        this.notification("success", "success", "Успешно удален");
       } catch (e) {
         this.statusFunc(e);
       }

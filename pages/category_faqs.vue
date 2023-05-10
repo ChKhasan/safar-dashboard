@@ -312,7 +312,7 @@ export default {
     async __POST_FAQS(data) {
       try {
         await this.$store.dispatch("fetchFaqs/postFaqsCategories", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.handleOk();
         this.__GET_FAQS();
       } catch (e) {
@@ -344,7 +344,7 @@ export default {
         });
         this.handleOk();
         this.__GET_FAQS();
-        this.notification("success", "success", "Пост успешно изменена");
+        this.notification("success", "success", "Успешно изменена");
       } catch (e) {
         this.statusFunc(e);
       }

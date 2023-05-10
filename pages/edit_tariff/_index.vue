@@ -983,7 +983,7 @@ export default {
           id: this.$route.params.index,
           data: data,
         });
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push({
           name: "edit_park_services",
           params: { index: this.service_id },

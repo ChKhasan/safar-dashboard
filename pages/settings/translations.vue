@@ -400,7 +400,7 @@ export default {
     async __POST_GROUPS(data) {
       try {
         await this.$store.dispatch("fetchTranslations/postTranslateGroup", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.handleOk();
         this.__GET_TRANSLATE_GROUPS();
       } catch (e) {

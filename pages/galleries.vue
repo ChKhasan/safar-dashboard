@@ -376,7 +376,7 @@ export default {
     async __POST_GALLERIES(data) {
       try {
         await this.$store.dispatch("fetchGalleries/postGalleries", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push("/galleries");
         this.handleOk();
         this.__GET_GALLERIES();
@@ -432,7 +432,7 @@ export default {
         this.handleOk();
 
         this.__GET_GALLERIES();
-        this.notification("success", "success", "Пост успешно изменена");
+        this.notification("success", "success", "Успешно изменена");
         this.$router.push("/galleries");
       } catch (e) {
         this.statusFunc(e);

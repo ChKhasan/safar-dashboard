@@ -890,7 +890,7 @@ export default {
     async __POST_TARIFF(data) {
       try {
         await this.$store.dispatch("fetchTariff/postTariff", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push(this.routerInfo);
       } catch (e) {
         this.statusFunc(e);

@@ -290,7 +290,7 @@ export default {
     async __POST_TRANSLATIONS(data) {
       try {
         await this.$store.dispatch("fetchTranslations/postUpdateTranslations", data);
-        this.notification("success", "success", "Услуга успешно добавлен");
+        this.notification("success", "success", "Успешно добавлен");
         this.$router.push(`/settings/translations-group/${this.$route.params.index}`);
       } catch (e) {
         this.statusFunc(e);
