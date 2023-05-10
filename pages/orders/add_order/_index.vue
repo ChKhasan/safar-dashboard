@@ -12,6 +12,8 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="onSubmit"
+          
+          
         >
           <span class="svg-icon"> </span>
           Сохранять
@@ -281,6 +283,7 @@ export default {
         ],
       },
       service: [],
+      countBooked: "",
     };
   },
   mounted() {
@@ -289,7 +292,6 @@ export default {
           `${this.$route.query.date} ${this.$route.query.session}`
         ).format("Do MMMM. YYYY hh:mm-hh:mm"))
       : (this.form.date = moment(`${this.$route.query.date} `).format("Do MMMM. YYYY"));
-    this.__BOOKED_ORDERS();
     this.__GET_TARIFF_BY_ID();
   },
   methods: {
@@ -327,14 +329,14 @@ export default {
       this.form.data.forEach((item) => {
         summ = summ + item.count;
       });
-      console.log(summ < this.tariff.max_clients, obj);
+      summ = summ + this.countBooked;
       if (summ < this.tariff.max_clients) {
         obj.count++;
       }
     },
     countDown(id) {
       const obj = this.form.data.find((item) => item.indexId == id);
-      if (obj.count > 0) {
+      if (obj.count > this.min_clients) {
         obj.count--;
       }
     },
@@ -343,25 +345,19 @@ export default {
         item.indexId == id ? (item.active = true) : (item.active = false);
         return item;
       });
-      console.log(this.form.data);
     },
-    // async __GET_SERVICES_BY_ID() {
-    //   const data = await this.$store.dispatch(
-    //     "fetchServices/getServicesById",
-    //     this.$route.params.index
-    //   );
-    //   this.service = data?.service;
-    //   this.form.date = moment(data.created_at).format("YYYY-MM-DD");
-    //   this.transformData(data?.service?.tariffs[0]);
-    // },
+
     async __GET_TARIFF_BY_ID() {
-      const data = await this.$store.dispatch(
-        "fetchTariff/getTariffById",
-        this.$route.query.tariff_id
-      );
-      this.transformData(data?.tariff);
+      const [dataOrder, dataBooked] = await Promise.all([
+        this.$store.dispatch("fetchTariff/getTariffById", this.$route.query.tariff_id),
+        this.$store.dispatch("fetchOrders/getBookedOrders", {
+          ...this.$route.query,
+        }),
+      ]);
+      this.countBooked = dataBooked?.number_of_bookings;
+      this.transformData(dataOrder?.tariff, dataBooked?.number_of_bookings);
     },
-    transformData(data) {
+    transformData(data, booked) {
       this.tariff = data;
       this.form.tariff_id = data.id;
       this.form.data = data.prices.map((item, index) => {
@@ -372,15 +368,11 @@ export default {
           active: index == 0 ? true : false,
         };
       });
-      this.booked = `${this.countBooked}/${this.tariff.max_clients}`;
+      this.booked = `${booked}/${this.tariff.max_clients}`;
     },
     async __BOOKED_ORDERS(data) {
       console.log("Asdasdasdas");
       try {
-        const data = await this.$store.dispatch("fetchOrders/getBookedOrders", {
-          ...this.$route.query,
-        });
-        this.countBooked = data?.number_of_bookings;
         console.log(data);
       } catch (e) {
         this.statusFunc(e);
