@@ -212,6 +212,7 @@ const columns = [
     className: "column-name",
     align: "left",
     colSpan: 2,
+    width: 55
   },
   {
     dataIndex: "title",

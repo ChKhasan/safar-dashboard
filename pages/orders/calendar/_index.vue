@@ -95,7 +95,6 @@
                     :key="index"
                   >
                     <div class="time">
-                    {{ info?.date }}
                       {{ info?.session ? info?.session : "----" }}
                     </div>
                     <div class="name">{{ info?.tariff_name?.ru }}</div>
@@ -225,15 +224,14 @@ export default {
   methods: {
     moment,
     toBooked(orders) {
-      console.log(orders);
-      // this.$router.push({
-      //   path: `/orders/add_order/${this.$route.params.index == 0 ? this.services[0].id:this.$route.params.index}`,
-      //   query: {
-      //     date: orders.date,
-      //     tariff_id: orders.tariff_id,
-      //     session: orders.session
-      //   }
-      // })
+      this.$router.push({
+        path: `/orders/add_order/${this.$route.params.index == 0 ? this.services[0].id:this.$route.params.index}`,
+        query: {
+          date: orders.date,
+          tariff_id: orders.tariff_id,
+          session: orders.session
+        }
+      })
     },
     momentDate: function (date) {
       return moment(date).format("DD-MM-YYYY");
