@@ -296,7 +296,8 @@ export default {
     onSubmit() {
       const data = {
         ...this.form,
-        date: moment(this.$route.query.date).format("YYYY-MM-DD"),
+        session: this.$route.query.session ? this.$route.query.session : null,
+        date: this.$route.query.date,
         data: this.form.data.map((item) => {
           if (this.tariff.type == "tariff") {
             return {
@@ -371,7 +372,7 @@ export default {
           active: index == 0 ? true : false,
         };
       });
-      this.booked = `0/${this.tariff.max_clients}`;
+      this.booked = `${this.countBooked}/${this.tariff.max_clients}`;
     },
     async __BOOKED_ORDERS(data) {
       console.log("Asdasdasdas");
@@ -379,6 +380,8 @@ export default {
         const data = await this.$store.dispatch("fetchOrders/getBookedOrders", {
           ...this.$route.query,
         });
+        this.countBooked = data?.number_of_bookings;
+        console.log(data);
       } catch (e) {
         this.statusFunc(e);
       }
