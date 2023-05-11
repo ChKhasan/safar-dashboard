@@ -951,10 +951,10 @@ export default {
     },
     showDeleteConfirm(val) {
       this.$confirm({
-        title: "Are you sure delete this service?",
-        okText: "Yes",
+        title: "Вы уверены, что удалили эту услугу?",
+        okText: "Да",
         okType: "danger",
-        cancelText: "No",
+        cancelText: "Нет",
         onOk: () => {
           this.deleteService();
         },
