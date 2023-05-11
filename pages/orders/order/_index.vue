@@ -65,6 +65,7 @@
                   </a-form-model-item>
                 </div>
               </div>
+
               <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
                 <FormTitle title="Клиент" />
                 <div class="order-client-grid-3">
@@ -91,6 +92,19 @@
                       :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
                       v-model="order.client.phone_number"
                       label-position="top"
+                    />
+                  </a-form-model-item>
+                </div>
+              </div>
+              <div class="card_block main-table px-4 mt-4 py-4" >
+                <FormTitle title="Описание" />
+                <div class="">
+                  <a-form-model-item class="form-item mb-0" >
+                    <quill-editor
+                      v-model="order.comments"
+                      disabled
+                      class="product-editor mt-1"
+                      :options="editorOption"
                     />
                   </a-form-model-item>
                 </div>
@@ -162,6 +176,68 @@ export default {
   data() {
     return {
       statusValue: "new",
+      editorOption: {
+        // Some Quill options...
+        theme: "snow",
+        modules: {
+          toolbar: [
+            [
+              {
+                font: [],
+              },
+              {
+                size: [],
+              },
+            ],
+            ["bold", "italic", "underline", "strike"],
+            [
+              {
+                color: [],
+              },
+              {
+                background: [],
+              },
+            ],
+            [
+              {
+                script: "super",
+              },
+              {
+                script: "sub",
+              },
+            ],
+            [
+              {
+                header: [false, 1, 2, 3, 4, 5, 6],
+              },
+              "blockquote",
+              "code-block",
+            ],
+            [
+              {
+                list: "ordered",
+              },
+              {
+                list: "bullet",
+              },
+              {
+                indent: "-1",
+              },
+              {
+                indent: "+1",
+              },
+            ],
+            [
+              "direction",
+              {
+                align: [],
+              },
+            ],
+            ["link", "image", "video"],
+            ["clean"],
+          ],
+        },
+      },
       statusData: [
         {
           label: "Ожидание",
@@ -247,6 +323,7 @@ export default {
           this.$route.params.index
         );
         this.order = data?.order;
+        console.log(this.order);
         this.statusValue = data?.order?.status;
         this.order.created_at = moment(data?.order?.created_at).format(
           "Do MMMM. YYYY hh:mm"

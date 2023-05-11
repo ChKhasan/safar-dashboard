@@ -30,7 +30,7 @@
     <div class="bilet-card-body flex-column">
       <div class="d-flex" v-for="(dataIn, index) in orderIn.data" :key="index">
         <div class="bilet-card-services">
-          <span>{{ dataIn.name }}</span>
+          <span>{{ dataIn?.name }}</span>
         </div>
         <p>
           <span>{{ dataIn.count }} x </span>
