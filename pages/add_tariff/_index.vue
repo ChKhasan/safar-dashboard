@@ -247,7 +247,10 @@
                       placeholder="Введите параметр (текст)"
                     />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item inner mb-3">
+                  <a-form-model-item
+                    class="form-item inner mb-3"
+                    :class="{ 'has-error': !price.price }"
+                  >
                     <a-input-number
                       v-model="price.price"
                       :default-value="1000"
@@ -866,21 +869,28 @@ export default {
         item && item[0] == "" ? [] : item;
       });
       let priceRequired = [];
-      data.prices.forEach((item) => {
-        if (
-          item.price == null ||
-          item.price == "" ||
-          item.name == null ||
-          item.name == ""
-        )
-          priceRequired.push(item);
-      });
+      if (data.type == "by_count") {
+        data.prices.forEach((item) => {
+          if (item.price == null || item.price == "") priceRequired.push(item);
+        });
+      } else {
+        data.prices.forEach((item) => {
+          if (
+            item.price == null ||
+            item.price == "" ||
+            item.name == null ||
+            item.name == ""
+          )
+            priceRequired.push(item);
+        });
+      }
       const { fileListStat, ...rest } = data;
-      console.log(rest);
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           priceRequired.length == 0
             ? this.__POST_TARIFF(rest)
+            : data.type == "by_count"
+            ? this.notification("error", "Tariff", "Price is required")
             : this.notification("error", "Tariff", "Price and price text is required");
         } else {
           return false;

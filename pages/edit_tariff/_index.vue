@@ -808,23 +808,30 @@ export default {
       });
       let priceRequired = [];
 
-      data.prices.forEach((item) => {
-        if (
-          item.price == "" ||
-          item.price == null ||
-          item.name == "" ||
-          item.name == null
-        ) {
-          priceRequired.push(item);
-        }
-      });
+      if (data.type == "by_count") {
+        data.prices.forEach((item) => {
+          if (item.price == null || item.price == "") priceRequired.push(item);
+        });
+      } else {
+        data.prices.forEach((item) => {
+          if (
+            item.price == null ||
+            item.price == "" ||
+            item.name == null ||
+            item.name == ""
+          )
+            priceRequired.push(item);
+        });
+      }
       const { fileListStat, ...rest } = data;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           if (priceRequired.length == 0) {
             this.__EDIT_TARIFF(rest);
           } else {
-            this.notification("error", "Tariff", "Price and price text required");
+            data.type == "by_count"
+              ? this.notification("error", "Tariff", "Price is required")
+              : this.notification("error", "Tariff", "Price and price text is required");
           }
         } else {
           return false;
