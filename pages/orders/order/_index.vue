@@ -96,7 +96,7 @@
                   </a-form-model-item>
                 </div>
               </div>
-              <div class="card_block main-table px-4 mt-4 py-4" >
+              <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
                 <FormTitle title="Описание" />
                 <div class="">
                   <a-form-model-item class="form-item mb-0" >
