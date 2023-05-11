@@ -42,6 +42,7 @@
             />
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
+          <span slot="create_at" slot-scope="text">{{ moment(text?.created_at).format("DD/MM/YYYY")}}</span>
           <span
             slot="name"
             slot-scope="text"
@@ -84,6 +85,8 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import moment from "moment";
+
 const columns = [
   {
     title: "№",
@@ -101,7 +104,7 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "sm_banner" },
     className: "column-name",
-    width: 60,
+    width: "60px",
     align: "left",
     colSpan: 2,
   },
@@ -116,19 +119,24 @@ const columns = [
     colSpan: 0,
   },
   {
-    title: "гарантия",
-    dataIndex: "guarantee",
-    key: "guarantee",
-    className: "column-service",
-    scopedSlots: { customRender: "guarantee" },
+    title: "Дата",
+    className: "column-date",
+    scopedSlots: { customRender: "create_at" },
   },
-  {
-    title: "варианты пакетов",
-    dataIndex: "package_options",
-    key: "package_options",
-    className: "column-subservice",
-    scopedSlots: { customRender: "package_options" },
-  },
+  // {
+  //   title: "гарантия",
+  //   dataIndex: "guarantee",
+  //   key: "guarantee",
+  //   className: "column-service",
+  //   scopedSlots: { customRender: "guarantee" },
+  // },
+  // {
+  //   title: "варианты пакетов",
+  //   dataIndex: "package_options",
+  //   key: "package_options",
+  //   className: "column-subservice",
+  //   scopedSlots: { customRender: "package_options" },
+  // },
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
@@ -164,6 +172,7 @@ export default {
     this.getFirstData("/", "__GET_SERVICES");
   },
   methods: {
+    moment,
     async clearQuery(val) {
       this.value = "";
       const query = { ...this.$route.query, page: 1 };
