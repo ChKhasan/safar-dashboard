@@ -21,32 +21,26 @@ export const mutations = {
     state.services = payload;
   },
   orders(state, payload) {
-    state.orders.all = payload.length ? payload.length : 0;
-    state.orders.new =
-      payload.filter((item) => item.status == "new").length > 0
-        ? payload.filter((item) => item.status == "new").length
-        : 0;
-    state.orders.in_process =
-      payload.filter((item) => item.status == "in_process").length > 0
-        ? payload.filter((item) => item.status == "in_process").length
-        : 0;
-    state.orders.accepted = payload.filter((item) => item.status == "accepted")
-      ? payload.filter((item) => item.status == "accepted").length
-      : 0;
-    state.orders.canceled = payload.filter((item) => item.status == "canceled")
-      ? payload.filter((item) => item.status == "canceled").length
-      : 0;
-    state.orders.is_edited = payload.filter((item) => item.is_edited == 1)
-      ? payload.filter((item) => item.is_edited == 1).length
-      : 0;
+    state.orders.all =
+      payload.edited +
+      payload.in_process +
+      payload.accepted +
+      payload.canceled +
+      payload.new;
+    state.orders.new = payload.new;
+    state.orders.in_process = payload.in_process;
+    state.orders.accepted = payload.accepted;
+    state.orders.canceled = payload.canceled;
+    state.orders.is_edited = payload.edited;
   },
 };
 export const actions = {
   async getOrders({ commit }, payload) {
-    const res = await this.$axios.$get(`/orders`, { params: payload });
-    const order = res?.orders?.data.filter((item) => item.status == "new")
-      ? res?.orders?.data.filter((item) => item.status == "new").length
-      : 0;
-    commit("orders", res?.orders?.data);
+    const res = await this.$axios.$get(`/orders/counts`);
+    console.log(res);
+    // const order = res?.orders?.data.filter((item) => item.status == "new")
+    //   ? res?.orders?.data.filter((item) => item.status == "new").length
+    //   : 0;
+    commit("orders", res?.counts);
   },
 };

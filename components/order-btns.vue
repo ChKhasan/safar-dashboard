@@ -16,13 +16,6 @@
     </nuxt-link>
     <nuxt-link
       class="order-links"
-      :class="{ 'active-orders': $route.path == '/orders/accepted-orders' }"
-      to="/orders/accepted-orders"
-    >
-      <span class="order-black"></span> Принятые ({{ `${$store.state.orders.accepted}` }})
-    </nuxt-link>
-    <nuxt-link
-      class="order-links"
       :class="{ 'active-orders': $route.path == '/orders/expectation-orders' }"
       to="/orders/expectation-orders"
     >
@@ -30,6 +23,14 @@
         `${$store.state.orders.in_process}`
       }})
     </nuxt-link>
+    <nuxt-link
+      class="order-links"
+      :class="{ 'active-orders': $route.path == '/orders/accepted-orders' }"
+      to="/orders/accepted-orders"
+    >
+      <span class="order-black"></span> Принятые ({{ `${$store.state.orders.accepted}` }})
+    </nuxt-link>
+
     <nuxt-link
       class="order-links"
       :class="{ 'active-orders': $route.path == '/orders/changed-orders' }"

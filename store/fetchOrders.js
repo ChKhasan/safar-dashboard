@@ -3,6 +3,10 @@ export const actions = {
     const res = await this.$axios.$get(`/orders`, { params: payload });
     return res;
   },
+  async getOrdersCount() {
+    const res = await this.$axios.$get(`/orders/counts`);
+    return res;
+  },
   async getBookedOrders({}, payload) {
     const res = await this.$axios.$get(`/tariffs/number_of_books`, { params: payload });
     return res;

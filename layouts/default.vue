@@ -151,17 +151,17 @@ export default {
               disabled: false,
             },
             {
-              name: "Принятые заказы",
-              index: "33",
-              to: "/orders/accepted-orders",
-              path: "orders-accepted-orders",
-              disabled: false,
-            },
-            {
               name: "Ожидание",
               index: "34",
               to: "/orders/expectation-orders",
               path: "orders-expectation-orders",
+              disabled: false,
+            },
+            {
+              name: "Принятые заказы",
+              index: "33",
+              to: "/orders/accepted-orders",
+              path: "orders-accepted-orders",
               disabled: false,
             },
             {

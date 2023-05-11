@@ -206,7 +206,7 @@
                 <div v-for="card in form.cards" class="d-flex">
                   <div class="clearfix">
                     <a-upload
-                    disabled
+                      disabled
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
                       :file-list="card.imgList"
@@ -229,7 +229,7 @@
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
                       <a-input
-                      disabled
+                        disabled
                         v-model="card.name[item.index]"
                         placeholder="Statistika nomi"
                       />
@@ -246,10 +246,13 @@
             </a-form-model-item>
             <div
               class="grid-with-btn"
-              v-for="(moment,index) in form.moments"
+              v-for="(moment, index) in form.moments"
               :key="moment.indexId"
             >
-              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+              <a-form-model-item
+                class="form-item mb-3"
+                :label="index == 0 ? 'Основные моменты' : ''"
+              >
                 <a-input disabled v-model="moment.title[item.index]" placeholder="Text" />
               </a-form-model-item>
               <!-- <div class="d-flex align-items-center">
@@ -611,7 +614,7 @@
           <a-button
             class="add-btn add-header-btn btn-primary d-flex align-items-center"
             type="danger"
-            @click="deleteService"
+            @click="showDeleteConfirm(visible)"
           >
             Delete service
           </a-button>
@@ -946,6 +949,19 @@ export default {
         }
       });
     },
+    showDeleteConfirm(val) {
+      this.$confirm({
+        title: "Are you sure delete this service?",
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        onOk: () => {
+          this.deleteService();
+        },
+        onCancel() {},
+      });
+    },
+
     async __EDIT_SERVICES(data) {
       try {
         await this.$store.dispatch("fetchServices/editServices", {

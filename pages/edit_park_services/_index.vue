@@ -235,10 +235,13 @@
             </a-form-model-item>
             <div
               class="grid-with-btn"
-              v-for="(moment,index) in form.moments"
+              v-for="(moment, index) in form.moments"
               :key="moment.indexId"
             >
-              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+              <a-form-model-item
+                class="form-item mb-3"
+                :label="index == 0 ? 'Основные моменты' : ''"
+              >
                 <a-input v-model="moment.title[item.index]" placeholder="Text" />
               </a-form-model-item>
               <div class="d-flex align-items-center">
@@ -603,7 +606,7 @@
           <a-button
             class="add-btn add-header-btn btn-primary d-flex align-items-center"
             type="danger"
-            @click="deleteService"
+            @click="showDeleteConfirm"
           >
             Delete service
           </a-button>
@@ -1090,6 +1093,18 @@ export default {
       } catch (e) {
         this.statusFunc(e);
       }
+    },
+    showDeleteConfirm(val) {
+      this.$confirm({
+        title: "Are you sure delete this service?",
+        okText: "Yes",
+        okType: "danger",
+        cancelText: "No",
+        onOk: () => {
+          this.deleteService();
+        },
+        onCancel() {},
+      });
     },
     deleteService() {
       this.__DELETE_SERVICES(this.$route.params.index);

@@ -26,9 +26,10 @@ import {
   Empty,
   Alert,
 } from "ant-design-vue";
-
+const { info, success, error, warning, confirm } = Modal;
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;
+Vue.prototype.$confirm = confirm;
 
 Vue.use(Alert);
 Vue.use(Empty);
