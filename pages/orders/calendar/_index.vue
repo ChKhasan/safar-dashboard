@@ -83,7 +83,7 @@
             <span v-for="(day, index) in calendar" :key="index">
               <div class="calendar-day-card">
                 <div class="calendar-day-card-header">
-                  <p>{{ moment(day[0]?.date).format("Do MMMM.") }}</p>
+                  <p>{{ moment(moment(day[0]?.date,"DD-MM-YYYY")).format("Do MMMM.") }}</p>
                   <span>{{ weeks[moment(day[0]?.date,"YYYY-MM-DD").day()] }}</span>
                 </div>
                 <div class="calendar-day-card-body">
