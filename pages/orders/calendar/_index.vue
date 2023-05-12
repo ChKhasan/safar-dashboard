@@ -84,7 +84,7 @@
               <div class="calendar-day-card">
                 <div class="calendar-day-card-header">
                   <p>{{ moment(moment(day[0]?.date,"DD-MM-YYYY")).format("Do MMMM.") }}</p>
-                  <span>{{ weeks[moment(day[0]?.date,"YYYY-MM-DD").day()] }}</span>
+                  <span>{{ weeks[moment(moment(day[0]?.date,"DD-MM-YYYY"),"YYYY-MM-DD").day()] }}</span>
                 </div>
                 <div class="calendar-day-card-body">
                   <div
