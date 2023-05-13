@@ -55,16 +55,15 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="keyIndex" slot-scope="text">{{
-            `${text.sub_text}.${text.key}`
-          }}</span>
-
           <span
-            slot="valRu"
+          style="cursor: pointer"
+            slot="keyIndex"
             slot-scope="text"
-            :ref="`ru${text.id}`"
-            @click="copyText(`ru${text.id}`)"
+            @click="copyText(`${text.sub_text}.${text.key}`)"
+            >{{ `${text.sub_text}.${text.key}` }}</span
           >
+
+          <span slot="valRu" slot-scope="text">
             {{ text?.val?.ru ? text?.val?.ru : "-----" }}
           </span>
           <span slot="valEn" slot-scope="text">
@@ -320,14 +319,10 @@ export default {
     changeSearch(val) {
       this.search = val.target.value;
     },
-    copyText(refName) {
-      //     const element = this.$refs[refName];
-      //     element.setAttribute('type', 'text')
-      //     element.select();
-      //     element.setSelectionRange(0, 99999);
-      //     console.log(element);
-      //   document.execCommand("copy");
-      //   this.$message.success("You are online");
+    async copyText(name) {
+      console.log(name);
+      await navigator.clipboard.writeText(name);
+      this.$message.success("Copy");
     },
     postGroup() {
       this.$refs["ruleFormFaq"].validate((valid) => {
@@ -419,7 +414,7 @@ export default {
         },
         service_id: null,
       };
-    }
+    },
   },
   watch: {
     async current(val) {
