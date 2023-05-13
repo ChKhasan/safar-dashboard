@@ -71,7 +71,13 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="keyIndex" slot-scope="text">{{ `${groupKey}.${text}` }}</span>
+          <span
+          style="cursor: pointer"
+            slot="keyIndex"
+            slot-scope="text"
+            @click="copyText(`${groupKey}.${text}`)"
+            >{{ `${groupKey}.${text}` }}</span
+          >
 
           <span slot="valRu" slot-scope="text">
             {{ text?.val?.ru ? text?.val?.ru : "-----" }}
@@ -333,6 +339,10 @@ export default {
   methods: {
     changeSearch(val) {
       this.search = val.target.value;
+    },
+    async copyText(name) {
+      await navigator.clipboard.writeText(name);
+      this.$message.success("Copy");
     },
     postGroup() {
       this.$refs["ruleFormFaq"].validate((valid) => {

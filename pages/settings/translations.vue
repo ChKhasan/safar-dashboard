@@ -56,7 +56,7 @@
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span
-          style="cursor: pointer"
+            style="cursor: pointer"
             slot="keyIndex"
             slot-scope="text"
             @click="copyText(`${text.sub_text}.${text.key}`)"
@@ -320,7 +320,6 @@ export default {
       this.search = val.target.value;
     },
     async copyText(name) {
-      console.log(name);
       await navigator.clipboard.writeText(name);
       this.$message.success("Copy");
     },
