@@ -16,8 +16,8 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -113,10 +113,9 @@
             <a-form-model-item
               class="form-item mb-3"
               :class="{ 'select-placeholder': form.faq_category_id == null }"
-              label="Услуга"
-              prop="faq_category_id"
+              label="Категории (F.A.Q)"
             >
-              <a-select v-model="form.faq_category_id" placeholder="Услуга">
+              <a-select v-model="form.faq_category_id" placeholder="Категории (F.A.Q)">
                 <a-select-option
                   v-for="(category, index) in categories"
                   :key="category?.id"
@@ -157,7 +156,6 @@
             type="primary"
             @click="saveData"
           >
-            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -185,7 +183,7 @@ const columns = [
     width: 50,
   },
   {
-    title: "Кат",
+    title: "Категории",
     dataIndex: "category",
     key: "category",
     slots: { title: "customTitle" },
@@ -310,12 +308,18 @@ export default {
       this.search = val.target.value;
     },
     saveData() {
+      const data = {
+        ...this.form,
+      };
+      if (this.form.faq_category_id == "false") {
+        data.faq_category_id = null;
+      }
       this.$refs["ruleFormFaq"][0].validate((valid) => {
         if (valid) {
           if (this.editId) {
-            this.__EDIT_FAQS(this.form);
+            this.__EDIT_FAQS(data);
           } else {
-            this.__POST_FAQS(this.form);
+            this.__POST_FAQS(data);
           }
         } else {
           return false;
@@ -328,12 +332,7 @@ export default {
       this.__GET_FAQS_BY_ID(id);
     },
     deleteAction(id) {
-      this.__DELETE_GLOBAL(
-        id,
-        "fetchFaqs/deleteFaqs",
-        "Услуга был успешно удален",
-        "__GET_FAQS"
-      );
+      this.__DELETE_GLOBAL(id, "fetchFaqs/deleteFaqs", "Успешно удален", "__GET_FAQS");
     },
     async __GET_FAQS() {
       this.loading = true;
@@ -357,6 +356,13 @@ export default {
       // const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
       this.categories = data?.categories;
       // this.totalPage = data?.faqs?.total;
+      console.log(this.categories);
+      this.categories.unshift({
+        title: {
+          ru: "Без категории",
+        },
+        id: "false",
+      });
       console.log(this.categories);
     },
     indexPage(current_page, per_page) {

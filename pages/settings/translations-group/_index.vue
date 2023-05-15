@@ -47,8 +47,8 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid1 w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"

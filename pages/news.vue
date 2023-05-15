@@ -17,7 +17,7 @@
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -183,12 +183,7 @@ export default {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_GLOBAL(
-        id,
-        "fetchPosts/deletePosts",
-        "Услуга был успешно удален",
-        "__GET_POSTS"
-      );
+      this.__DELETE_GLOBAL(id, "fetchPosts/deletePosts", "Успешно удален", "__GET_POSTS");
     },
     async __GET_POSTS() {
       this.loading = true;

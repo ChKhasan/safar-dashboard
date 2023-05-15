@@ -16,8 +16,8 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -33,7 +33,9 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="date" slot-scope="text">{{ text.replace(/-/g, "/") }}</span>
+          <span slot="date" slot-scope="text">{{
+            text ? text.replace(/-/g, "/") : "----"
+          }}</span>
           <span slot="service" slot-scope="text">{{
             text?.name?.ru ? text?.name?.ru : "-------"
           }}</span>
@@ -143,7 +145,6 @@
             type="primary"
             @click="saveData"
           >
-            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -303,7 +304,7 @@ export default {
       this.__DELETE_GLOBAL(
         id,
         "fetchPromos/deletePromos",
-        "Промо успешно удален",
+        "Успешно удален",
         "__GET_PROMOS"
       );
     },

@@ -289,7 +289,9 @@ export default {
       ? (this.form.date = moment(
           `${this.$route.query.date} ${this.$route.query.session}`
         ).format("Do MMMM. YYYY hh:mm-hh:mm"))
-      : (this.form.date = moment(`${this.$route.query.date} `).format("Do MMMM. YYYY"));
+      : (this.form.date = moment(moment(this.$route.query.date, "DD-MM-YYYY")).format(
+          "Do MMMM. YYYY"
+        ));
     this.__GET_TARIFF_BY_ID();
   },
   methods: {
@@ -357,6 +359,7 @@ export default {
     },
     transformData(data, booked) {
       this.tariff = data;
+
       this.form.tariff_id = data.id;
       this.form.data = data.prices.map((item, index) => {
         return {
@@ -367,11 +370,13 @@ export default {
         };
       });
       this.booked = `${booked}/${this.tariff.max_clients}`;
+      console.log(data);
     },
     async __POST_ORDER(data) {
       try {
         await this.$store.dispatch("fetchOrders/postOrders", data);
         this.notification("success", "success", "Успешно добавлен");
+        this.$store.dispatch("getOrders");
         this.$router.go(-1);
       } catch (e) {
         this.statusFunc(e);

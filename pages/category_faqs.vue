@@ -20,8 +20,8 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <span></span>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -128,7 +128,6 @@
             type="primary"
             @click="saveData"
           >
-            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -275,7 +274,7 @@ export default {
       this.__DELETE_GLOBAL(
         id,
         "fetchFaqs/deleteFaqsCategories",
-        "Услуга был успешно удален",
+        "Успешно удален",
         "__GET_FAQS"
       );
     },

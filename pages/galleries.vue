@@ -17,7 +17,7 @@
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -49,7 +49,6 @@
             <span v-html="text?.ru ? text?.ru : '-----'"></span>
           </span>
           <span slot="id" slot-scope="text">
-            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
             <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
             <a-popconfirm
               title="Are you sure delete this row?"
@@ -168,7 +167,6 @@
             :loading="loadingBtn"
             @click="saveData"
           >
-            <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -212,7 +210,7 @@ const columns = [
     className: "column-name",
     align: "left",
     colSpan: 2,
-    width: 55
+    width: 55,
   },
   {
     dataIndex: "title",
@@ -339,7 +337,7 @@ export default {
       this.__DELETE_GLOBAL(
         id,
         "fetchGalleries/deleteGalleries",
-        "Тариф был успешно удален",
+        "Успешно удален",
         "__GET_GALLERIES"
       );
     },

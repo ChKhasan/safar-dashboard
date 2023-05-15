@@ -1,23 +1,14 @@
 <template>
   <div class="">
-    <TitleBlock title="Xizmatlar">
-      <div class="d-flex">
-        <a-button
-          class="add-btn add-header-btn btn-primary d-flex align-items-center"
-          type="primary"
-          @click="$router.push('/add_news')"
-        >
-          <span class="svg-icon" v-html="addIcon"> </span>
-          Добавить
-        </a-button>
-      </div>
+    <TitleBlock title="Заявки">
+      <div class="d-flex"></div>
     </TitleBlock>
     <div class="container_xl app-container pb-5 pt-5">
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -29,31 +20,20 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="posts"
+          :data-source="applications"
           :loading="loading"
         >
-          <span slot="sm_poster" slot-scope="text">
-            <img v-if="text != null" class="table-image" :src="text" />
-            <img
-              v-else
-              class="table-image"
-              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
-            />
+          <span slot="key" slot-scope="text">#{{ text.key }}</span>
+          <span slot="name" slot-scope="text">
+            {{ text ? text : "----" }}
           </span>
-          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="desc" slot-scope="text">
-            <span v-html="text.ru"></span>
+          <span slot="created_at" slot-scope="text">{{
+            moment(text).format("DD/MM/YYYY")
+          }}</span>
+          <span slot="message" slot-scope="text">
+            {{ text }}
           </span>
           <span slot="id" slot-scope="text">
-            <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
-            <span
-              class="action-btn"
-              v-html="editIcon"
-              @click="$router.push(`/edit_news/${text}`)"
-            >
-            </span>
             <a-popconfirm
               title="Are you sure delete this row?"
               ok-text="Yes"
@@ -73,38 +53,47 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
+import moment from "moment";
 const columns = [
   {
-    title: "заголовок",
-    dataIndex: "sm_poster",
-    key: "sm_poster",
+    title: "№",
+    key: "key",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "sm_poster" },
-    className: "column-name",
+    scopedSlots: { customRender: "key" },
+    className: "column-service",
     align: "left",
-    colSpan: 2,
+    width: 50,
   },
   {
-    dataIndex: "title",
-    key: "title",
+    title: "Имя",
+    dataIndex: "name",
+    key: "name",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    colSpan: 0,
+    align: "left",
   },
   {
-    title: "подзаголовок",
-    dataIndex: "subtitle",
-    key: "subtitle",
+    title: "Дата",
+    dataIndex: "created_at",
+    key: "created_at",
+    slots: { title: "created_at" },
+    scopedSlots: { customRender: "created_at" },
+    className: "column-date",
+  },
+  {
+    title: "НОМЕР ТЕЛЕФОНА",
+    dataIndex: "phone_number",
+    key: "phone_number",
     className: "column-service",
-    scopedSlots: { customRender: "subtitle" },
+    scopedSlots: { customRender: "phone_number" },
   },
   {
-    title: "описание",
-    dataIndex: "desc",
-    key: "desc",
+    title: "Сообщение",
+    dataIndex: "message",
+    key: "message",
     className: "column-subservice",
-    scopedSlots: { customRender: "desc" },
+    scopedSlots: { customRender: "message" },
   },
 
   {
@@ -133,32 +122,46 @@ export default {
       loading: false,
       search: "",
       columns,
-      posts: [],
+      applications: [],
     };
   },
   mounted() {
-    this.__GET_POSTS();
+    this.__GET_APPLICATIONS();
   },
   methods: {
+    moment,
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_POSTS(id);
+      this.__DELETE_APPLICATIONS(id);
     },
-    async __GET_POSTS() {
+    async __GET_APPLICATIONS() {
       this.loading = true;
       const data = await this.$store.dispatch("fetchApplications/getApplications");
       this.loading = false;
-      this.posts = data?.applications?.data;
+      const pageIndex = this.indexPage(
+        data?.applications?.current_page,
+        data?.applications?.per_page
+      );
+      this.applications = data?.applications?.data.map((item, index) => {
+        return {
+          ...item,
+          key: index + pageIndex,
+        };
+      });
+      this.totalPage = data?.applications?.total;
     },
-    async __DELETE_POSTS(id) {
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
+    },
+    async __DELETE_APPLICATIONS(id) {
       try {
         this.loading = true;
         await this.$store.dispatch("fetchApplications/deleteApplications", id);
         this.loading = false;
-        this.notification("success", "success", "Услуга был успешно удален");
-        this.__GET_POSTS();
+        this.notification("success", "success", "Успешно удален");
+        this.__GET_APPLICATIONS();
       } catch (e) {
         this.statusFunc(e);
       }
