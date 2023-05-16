@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="all-orders">
-    <TitleBlock title="Измененные заказы" :breadbrumb="['Заказы']" lastLink="Измененные заказы">
+    <TitleBlock
+      title="Измененные заказы"
+      :breadbrumb="['Заказы']"
+      lastLink="Измененные заказы"
+    >
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
@@ -196,7 +200,13 @@ export default {
           key: index + 1,
         };
       });
+      this.totalPage = data?.orders?.total;
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
+    },
+  },
+  watch: {
+    async current(val) {
+      this.changePagination(val, "/orders/canceled-orders", "__GET_ORDERS");
     },
   },
   components: { TitleBlock, SearchInput, OrderBtns },

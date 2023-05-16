@@ -42,7 +42,9 @@
             />
           </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="create_at" slot-scope="text">{{ moment(text?.created_at).format("DD/MM/YYYY")}}</span>
+          <span slot="create_at" slot-scope="text">{{
+            moment(text?.created_at).format("DD/MM/YYYY")
+          }}</span>
           <span
             slot="name"
             slot-scope="text"
@@ -187,7 +189,6 @@ export default {
       }
     },
     async changeSearch(val) {
-      console.log(val.target.value);
       this.searchVal = val.target.value;
       if (val.target.value.length > 2) {
         if (this.$route.query?.search != val.target.value)

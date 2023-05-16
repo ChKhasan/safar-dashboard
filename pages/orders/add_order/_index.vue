@@ -370,7 +370,6 @@ export default {
         };
       });
       this.booked = `${booked}/${this.tariff.max_clients}`;
-      console.log(data);
     },
     async __POST_ORDER(data) {
       try {

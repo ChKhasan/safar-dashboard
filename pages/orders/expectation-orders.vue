@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="all-orders">
-    <TitleBlock title="Ожидание заказы" :breadbrumb="['Заказы']" lastLink="Ожидание заказы">
+    <TitleBlock
+      title="Ожидание заказы"
+      :breadbrumb="['Заказы']"
+      lastLink="Ожидание заказы"
+    >
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
@@ -158,20 +162,24 @@ export default {
       },
     };
   },
- async mounted() {
+  async mounted() {
     this.__GET_SERVICES();
     if (
-        !Object.keys(this.$route.query).includes("page") ||
-        !Object.keys(this.$route.query).includes("per_page")
-      ) {
-        await this.$router.replace({
-          path: '/orders/expectation-orders',
-          query: { page: this.params.page, per_page: this.params.pageSize,status: 'in_process' },
-        });
-      }
-      this.__GET_ORDERS();
-      this.current = Number(this.$route.query.page);
-      this.params.pageSize = Number(this.$route.query.per_page);
+      !Object.keys(this.$route.query).includes("page") ||
+      !Object.keys(this.$route.query).includes("per_page")
+    ) {
+      await this.$router.replace({
+        path: "/orders/expectation-orders",
+        query: {
+          page: this.params.page,
+          per_page: this.params.pageSize,
+          status: "in_process",
+        },
+      });
+    }
+    this.__GET_ORDERS();
+    this.current = Number(this.$route.query.page);
+    this.params.pageSize = Number(this.$route.query.per_page);
   },
   methods: {
     changeSearch(val) {
@@ -219,6 +227,7 @@ export default {
         };
       });
       // this.$store.commit("orders", this.orders);
+      this.totalPage = data?.orders?.total;
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },
     async __GET_SERVICES() {
@@ -232,6 +241,9 @@ export default {
     },
   },
   watch: {
+    async current(val) {
+      this.changePagination(val, "/orders/expectation-orders", "__GET_ORDERS");
+    },
     async value(val) {
       if (val) {
         if (this.$route.query?.service != val)

@@ -38,24 +38,16 @@ export default {
 
   modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", "nuxt-precompress"],
   nuxtPrecompress: {
-    enabled: true, // Enable in production
-    report: false, // set true to turn one console messages during module init
-    test: /\.(js|css|html|txt|xml|svg)$/, // files to compress on build
-    // Serving options
+    enabled: true,
+    report: false,
+    test: /\.(js|css|html|txt|xml|svg)$/,
     middleware: {
-      // You can disable middleware if you serve static files using nginx...
       enabled: true,
-      // Enable if you have .gz or .br files in /static/ folder
       enabledStatic: true,
-      // Priority of content-encodings, first matched with request Accept-Encoding will me served
       encodingsPriority: ["br", "gzip"],
     },
-
-    // build time compression settings
     gzip: {
-      // should compress to gzip?
       enabled: true,
-
       filename: "[path].gz[query]",
       threshold: 10240,
       minRatio: 0.8,

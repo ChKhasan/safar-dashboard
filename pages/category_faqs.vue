@@ -292,7 +292,6 @@ export default {
         };
       });
       //   this.totalPage = data?.categories?.total;
-      console.log();
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
@@ -306,7 +305,6 @@ export default {
     },
     handleOk() {
       this.visible = false;
-      console.log(this.form);
     },
     async __POST_FAQS(data) {
       try {

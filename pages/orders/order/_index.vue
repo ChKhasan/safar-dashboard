@@ -323,7 +323,6 @@ export default {
           this.$route.params.index
         );
         this.order = data?.order;
-        console.log(this.order);
         this.statusValue = data?.order?.status;
         this.order.created_at = moment(data?.order?.created_at).format(
           "Do MMMM. YYYY hh:mm"

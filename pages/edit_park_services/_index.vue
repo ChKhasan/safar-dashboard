@@ -1276,12 +1276,10 @@ export default {
           imgList: [],
         });
       }
-      console.log(this.form);
     },
 
     handleOk() {
       this.visible = false;
-      console.log(this.form);
     },
     editFaqs(indexId) {
       this.visible = true;

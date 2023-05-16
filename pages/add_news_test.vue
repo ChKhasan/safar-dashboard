@@ -294,10 +294,7 @@ export default {
     });
   },
   methods: {
-    showData() {
-      console.log(this.formTest);
-      console.log(this.rules);
-    },
+    showData() {},
     onSubmit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
@@ -319,7 +316,6 @@ export default {
     handleChange({ fileList }, name) {
       this.fileList = fileList;
       if (fileList[0]?.response?.path) this.formTest[name] = fileList[0]?.response?.path;
-      console.log(this.formTest, name);
     },
     handleCancel() {
       this.previewVisible = false;

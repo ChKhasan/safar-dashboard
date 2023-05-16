@@ -53,6 +53,7 @@ export default {
         await this.$router.replace({
           path: url,
           query: {
+            ...this.$route.query,
             page: val,
             per_page: this.params.pageSize,
           },
@@ -69,7 +70,11 @@ export default {
       ) {
         await this.$router.replace({
           path: url,
-          query: { page: this.params.page, per_page: this.params.pageSize },
+          query: {
+            ...this.$route.query,
+            page: this.params.page,
+            per_page: this.params.pageSize,
+          },
         });
       }
       this[dataFunc]();
@@ -82,7 +87,6 @@ export default {
         this.notification("success", "success", message);
         data && this[data]();
       } catch (e) {
-        console.log("eror", e);
         this.statusFunc(e.response);
       }
     },

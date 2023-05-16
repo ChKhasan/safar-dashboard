@@ -72,7 +72,7 @@
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
           <span
-          style="cursor: pointer"
+            style="cursor: pointer"
             slot="keyIndex"
             slot-scope="text"
             @click="copyText(`${groupKey}.${text}`)"
@@ -95,7 +95,7 @@
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="deleteAction(text)"
+              @confirm="deleteAction(text.id)"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
             </a-popconfirm>
@@ -180,21 +180,21 @@
         <div class="d-flex flex-column">
           <a-form-model
             :model="formTranlate"
-            ref="ruleFormFaq"
-            :rules="rules"
+            ref="ruleFormTrans"
+            :rules="rulesTranslate"
             layout="vertical"
           >
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
+            <a-form-model-item class="form-item mb-3" label="Ключ" prop="key">
+              <a-input v-model="formTranlate.key" placeholder="Ключ..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(ru)" prop="val.ru">
+              <a-input v-model="formTranlate.val.ru" placeholder="Значение(ru)..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(en)">
+              <a-input v-model="formTranlate.val.en" placeholder="Значение(en)..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(uz)">
+              <a-input v-model="formTranlate.val.uz" placeholder="Значение(uz)..." />
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -210,9 +210,8 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
-            @click="postGroup"
+            @click="putTranslation"
           >
-            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -274,8 +273,6 @@ const columns = [
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
-    dataIndex: "id",
-    key: "id",
     align: "right",
     scopedSlots: { customRender: "id" },
     width: 100,
@@ -294,6 +291,7 @@ export default {
       editId: null,
       visible: false,
       visibleTranslate: false,
+      editIdTrans: null,
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       deleteIcon: require("../../../assets/svg/delete.svg?raw"),
       addIcon: require("../../../assets/svg/add-icon.svg?raw"),
@@ -303,6 +301,12 @@ export default {
       columns,
       translations: [],
       groups: [],
+      rulesTranslate: {
+        val: {
+          ru: [{ required: true, message: "This field is required", trigger: "change" }],
+        },
+        key: [{ required: true, message: "This field is required", trigger: "change" }],
+      },
       rules: {
         sub_text: [
           { required: true, message: "This field is required", trigger: "change" },
@@ -316,15 +320,12 @@ export default {
         title: "",
       },
       formTranlate: {
-        translate_group_id: 1,
-        translates: {
-          id: 0,
-          key: "",
-          val: {
-            ru: "",
-            uz: "",
-            en: "",
-          },
+        translate_group_id: null,
+        key: "",
+        val: {
+          ru: "",
+          uz: "",
+          en: "",
         },
       },
     };
@@ -356,7 +357,10 @@ export default {
     editAction(id) {
       this.visibleTranslate = true;
       this.title = "Изменить";
-      this.editId = id;
+      this.editIdTrans = id.id;
+      this.formTranlate.translate_group_id = this.$route.params.index;
+      this.formTranlate.key = id.keyIndex;
+      this.formTranlate.val = id.val;
     },
     deleteAction(id) {
       this.__DELETE_GLOBAL(
@@ -418,6 +422,29 @@ export default {
         this.notification("success", "success", "Успешно добавлен");
         this.handleOk();
         this.__GET_TRANSLATE_GROUPS();
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
+    putTranslation() {
+      console.log(this.$refs);
+      this.$refs["ruleFormTrans"].validate((valid) => {
+        if (valid) {
+          this.__PUT_TRANSLATIONS(this.formTranlate);
+        } else {
+          return false;
+        }
+      });
+    },
+    async __PUT_TRANSLATIONS(data) {
+      try {
+        await this.$store.dispatch("fetchTranslations/editTranslations", {
+          id: this.editIdTrans,
+          data: data,
+        });
+        this.notification("success", "success", "Успешно изменена");
+        this.visibleTranslate = false;
+        this.__GET_TRANSLATIONS();
       } catch (e) {
         this.statusFunc(e);
       }

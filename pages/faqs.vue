@@ -356,14 +356,12 @@ export default {
       // const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
       this.categories = data?.categories;
       // this.totalPage = data?.faqs?.total;
-      console.log(this.categories);
       this.categories.unshift({
         title: {
           ru: "Без категории",
         },
         id: "false",
       });
-      console.log(this.categories);
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
@@ -377,7 +375,6 @@ export default {
     },
     handleOk() {
       this.visible = false;
-      console.log(this.form);
     },
     async __POST_FAQS(data) {
       try {

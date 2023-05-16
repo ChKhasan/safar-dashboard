@@ -207,6 +207,7 @@ export default {
           key: index + 1,
         };
       });
+      this.totalPage = data?.orders?.total;
       // this.$store.commit("orders", this.orders);
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },
@@ -221,6 +222,9 @@ export default {
     },
   },
   watch: {
+    async current(val) {
+      this.changePagination(val, "/orders/all-orders", "__GET_ORDERS");
+    },
     async value(val) {
       if (val) {
         if (this.$route.query?.service != val)

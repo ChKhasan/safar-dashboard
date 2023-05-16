@@ -223,6 +223,7 @@ export default {
         };
       });
       // this.$store.commit("orders", this.orders);
+      this.totalPage = data?.orders?.total;
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },
     async __GET_SERVICES() {
@@ -236,6 +237,9 @@ export default {
     },
   },
   watch: {
+    async current(val) {
+      this.changePagination(val, "/orders/new-orders", "__GET_ORDERS");
+    },
     async value(val) {
       if (val) {
         if (this.$route.query?.service != val)

@@ -37,10 +37,6 @@ export const mutations = {
 export const actions = {
   async getOrders({ commit }, payload) {
     const res = await this.$axios.$get(`/orders/counts`);
-    console.log(res);
-    // const order = res?.orders?.data.filter((item) => item.status == "new")
-    //   ? res?.orders?.data.filter((item) => item.status == "new").length
-    //   : 0;
     commit("orders", res?.counts);
   },
 };

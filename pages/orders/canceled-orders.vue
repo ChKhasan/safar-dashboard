@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="all-orders">
-    <TitleBlock title="Отмененные заказы" :breadbrumb="['Заказы']" lastLink="Отмененные заказы">
+    <TitleBlock
+      title="Отмененные заказы"
+      :breadbrumb="['Заказы']"
+      lastLink="Отмененные заказы"
+    >
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
@@ -223,6 +227,7 @@ export default {
         };
       });
       // this.$store.commit("orders", this.orders);
+      this.totalPage = data?.orders?.total;
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },
     async __GET_SERVICES() {
@@ -236,6 +241,9 @@ export default {
     },
   },
   watch: {
+    async current(val) {
+      this.changePagination(val, "/orders/canceled-orders", "__GET_ORDERS");
+    },
     async value(val) {
       if (val) {
         if (this.$route.query?.service != val)

@@ -281,8 +281,6 @@ export default {
       this.search = val.target.value;
     },
     saveData() {
-      console.log(this.$refs);
-      console.log(this.form);
       this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
           if (this.editId) {
@@ -330,7 +328,6 @@ export default {
       return (current_page * 1 - 1) * per_page + 1;
     },
     onChange(date, dateString) {
-      console.log(date, dateString);
     },
     addPromos() {
       this.title = "Добавить";
@@ -341,7 +338,6 @@ export default {
     },
     handleOk() {
       this.visible = false;
-      console.log(this.form);
     },
     async __POST_PROMOS(data) {
       try {

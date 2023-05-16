@@ -196,7 +196,6 @@ export default {
       const startDate = new Date();
       const endDate = this.getLastWeeksDate;
       this.calendarDate = [moment(startDate), moment(endDate)];
-      console.log(this.calendarDate);
       await this.$router.replace({
         path: `/orders/calendar/${this.$route.params.index}`,
         query: {

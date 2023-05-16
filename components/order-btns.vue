@@ -50,9 +50,5 @@
   </div>
 </template>
 <script>
-export default {
-  mounted() {
-    console.log(this.$store.state);
-  },
-};
+export default {};
 </script>

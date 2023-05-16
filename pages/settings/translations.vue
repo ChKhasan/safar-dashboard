@@ -38,8 +38,9 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput placeholder="Поиск
+            " @changeSearch="changeSearch" />
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -79,7 +80,7 @@
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="deleteAction(text)"
+              @confirm="deleteAction(text.id)"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
             </a-popconfirm>
@@ -164,21 +165,21 @@
         <div class="d-flex flex-column">
           <a-form-model
             :model="formTranlate"
-            ref="ruleFormFaq"
-            :rules="rules"
+            ref="ruleFormTrans"
+            :rules="rulesTranslate"
             layout="vertical"
           >
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
+            <a-form-model-item class="form-item mb-3" label="Ключ" prop="key">
+              <a-input v-model="formTranlate.key" placeholder="Ключ..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(ru)" prop="val.ru">
+              <a-input v-model="formTranlate.val.ru" placeholder="Значение(ru)..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Название" prop="sub_text">
-              <a-input v-model="form.sub_text" placeholder="Название..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(en)">
+              <a-input v-model="formTranlate.val.en" placeholder="Значение(en)..." />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Субтекст" prop="title">
-              <a-input v-model="form.title" placeholder="Субтекст..." />
+            <a-form-model-item class="form-item mb-3" label="Значение(uz)">
+              <a-input v-model="formTranlate.val.uz" placeholder="Значение(uz)..." />
             </a-form-model-item>
           </a-form-model>
         </div>
@@ -194,9 +195,8 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
-            @click="postGroup"
+            @click="putTranslation"
           >
-            <span class="svg-icon" v-html="addIcon"></span>
             Save
           </a-button>
         </div>
@@ -257,8 +257,6 @@ const columns = [
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
-    dataIndex: "id",
-    key: "id",
     align: "right",
     scopedSlots: { customRender: "id" },
     width: 100,
@@ -275,6 +273,7 @@ export default {
     return {
       title: "Добавить группу",
       editId: null,
+      editIdTrans: null,
       visible: false,
       visibleTranslate: false,
       editIcon: require("../../assets/svg/edit.svg?raw"),
@@ -293,20 +292,23 @@ export default {
           ru: [{ required: true, message: "This field is required", trigger: "change" }],
         },
       },
+      rulesTranslate: {
+        val: {
+          ru: [{ required: true, message: "This field is required", trigger: "change" }],
+        },
+        key: [{ required: true, message: "This field is required", trigger: "change" }],
+      },
       form: {
         sub_text: "",
         title: "",
       },
       formTranlate: {
-        translate_group_id: 1,
-        translates: {
-          id: 0,
-          key: "",
-          val: {
-            ru: "",
-            uz: "",
-            en: "",
-          },
+        translate_group_id: null,
+        key: "",
+        val: {
+          ru: "",
+          uz: "",
+          en: "",
         },
       },
     };
@@ -323,6 +325,16 @@ export default {
       await navigator.clipboard.writeText(name);
       this.$message.success("Copy");
     },
+    putTranslation() {
+      console.log(this.$refs);
+      this.$refs["ruleFormTrans"].validate((valid) => {
+        if (valid) {
+          this.__PUT_TRANSLATIONS(this.formTranlate);
+        } else {
+          return false;
+        }
+      });
+    },
     postGroup() {
       this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
@@ -333,9 +345,13 @@ export default {
       });
     },
     editAction(id) {
+      console.log(id);
       this.visibleTranslate = true;
       this.title = "Изменить";
-      this.editId = id;
+      this.editIdTrans = id.id;
+      this.formTranlate.translate_group_id = id.translate_group_id;
+      this.formTranlate.key = id.keyGroup.key;
+      this.formTranlate.val = id.val;
     },
     deleteAction(id) {
       this.__DELETE_GLOBAL(
@@ -371,6 +387,7 @@ export default {
           key: index + pageIndex,
           val: item.val,
           id: item.id,
+          translate_group_id: item.translate_group_id,
         };
       });
       this.totalPage = data?.translates?.total;
@@ -401,6 +418,19 @@ export default {
         this.statusFunc(e);
       }
     },
+    async __PUT_TRANSLATIONS(data) {
+      try {
+        await this.$store.dispatch("fetchTranslations/editTranslations", {
+          id: this.editIdTrans,
+          data: data,
+        });
+        this.notification("success", "success", "Успешно изменена");
+        this.visibleTranslate = false;
+        this.__GET_TRANSLATIONS();
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
     emptyData() {
       this.form = {
         question: {
@@ -417,7 +447,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/translations", "__GET_TRANSLATIONS");
+      this.changePagination(val, "/settings/translations", "__GET_TRANSLATIONS");
     },
     // visible(val) {
     //   if (val == false) {
