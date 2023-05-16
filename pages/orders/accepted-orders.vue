@@ -59,9 +59,12 @@
             {{ text }}
           </span>
           <a slot="amount" slot-scope="text">${{ text }}</a>
+          <span slot="orders" slot-scope="text">{{
+            text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
+          }}</span>
           <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
           <span slot="client" slot-scope="text" class="column-client">{{
-            text?.name
+            text?.name ? text?.name : "----"
           }}</span>
           <span slot="dataAdd" slot-scope="text">{{
             moment(text?.created_at).format("DD/MM/YYYY")

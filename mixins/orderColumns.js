@@ -15,10 +15,10 @@ export default {
         },
         {
           title: "Услуга",
-          dataIndex: "dataEdit",
-          scopedSlots: { customRender: "dataEdit" },
+          dataIndex: "orders",
+          scopedSlots: { customRender: "orders" },
           className: "column-name",
-          key: "dataEdit",
+          key: "orders",
         },
         {
           title: "сумма",
