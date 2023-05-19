@@ -35,9 +35,9 @@
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
-              @confirm="deleteAction(text)"
+              @confirm="showAction(text)"
             >
-              <span class="action-btn" v-html="deleteIcon"> </span>
+              <span class="action-btn" v-html="eyeIcon"> </span>
             </a-popconfirm>
           </span>
         </a-table>
@@ -126,17 +126,16 @@ const columns = [
     scopedSlots: { customRender: "created_at" },
     className: "column-date",
     align: "right",
-    
   },
-//   {
-//     title: "ДЕЙСТВИЯ",
-//     className: "column-btns",
-//     dataIndex: "id",
-//     key: "id",
-//     align: "right",
-//     scopedSlots: { customRender: "id" },
-//     width: 100,
-//   },
+  {
+    title: "ДЕЙСТВИЯ",
+    className: "column-btns",
+    dataIndex: "id",
+    key: "id",
+    align: "right",
+    scopedSlots: { customRender: "id" },
+    width: 100,
+  },
 ];
 
 export default {
@@ -147,7 +146,7 @@ export default {
   },
   data() {
     return {
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
+      eyeIcon: require("../assets/svg/Eye.svg?raw"),
       loading: false,
       search: "",
       columns,
@@ -162,13 +161,23 @@ export default {
     changeSearch(val) {
       this.search = val.target.value;
     },
-    deleteAction(id) {
-      this.__DELETE_GLOBAL(
-        id,
-        "fetchFaqs/deleteFaqsCategories",
-        "Услуга был успешно удален",
-        "__GET_CLIENTS"
-      );
+    showAction(id) {
+      this.__GET_CLIENTS_BY_ID(id);
+      // this.__DELETE_GLOBAL(
+      //   id,
+      //   "fetchFaqs/deleteFaqsCategories",
+      //   "Услуга был успешно удален",
+      //   "__GET_CLIENTS"
+      // );
+    },
+    async __GET_CLIENTS_BY_ID(id) {
+      try {
+        const data = await this.$store.dispatch("fetchClients/getClientsById", id);
+        this.visible = true;
+        console.log(data);
+      } catch (e) {
+        this.statusFunc(e);
+      }
     },
     async __GET_CLIENTS() {
       this.loading = true;
