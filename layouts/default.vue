@@ -298,7 +298,7 @@ export default {
           {
             key: "1",
             name: "Услуги",
-            to: "/",
+            to: "/services",
             add: "add_park_services",
             edit: "edit_park_services",
             show: this.checkShow("services"),
@@ -472,6 +472,16 @@ export default {
             add: "settings-you-tube",
             edit: "settings-you-tube",
             show: this.checkShow("youtube_videos"),
+          },
+          {
+            key: "26",
+            name: "По SMS",
+            to: "/settings/by-sms",
+            add: "settings-by-sms",
+            edit: "settings-by-sms",
+            show: this.$store.state.permissions
+              .find((item) => item.url == "mailing")
+              ?.pivot?.actions.includes("post"),
           },
         ],
       },

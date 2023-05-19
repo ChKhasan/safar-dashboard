@@ -62,11 +62,19 @@ export const actions = {
     commit("orders", res?.counts);
   },
   async getPermissions({ commit }, payload) {
-    const res = await this.$axios.$post(`/auth/me`,{}, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-      },
-    });
-    commit("permissions", res?.me?.role?.permissions);
+    try {
+      const res = await this.$axios.$post(
+        `/auth/me`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          },
+        }
+      );
+      commit("permissions", res?.me?.role?.permissions);
+    } catch (e) {
+      localStorage.removeItem("auth_token");
+    }
   },
 };

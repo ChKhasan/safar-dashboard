@@ -9,7 +9,12 @@
           <div class="login_input mb-10">
             <label for="">Имя пользователя</label>
             <a-form-model-item prop="username" class="mb-0">
-              <a-input type="text" class="input" placeholder="Username" v-model="form.username" />
+              <a-input
+                type="text"
+                class="input"
+                placeholder="Username"
+                v-model="form.username"
+              />
             </a-form-model-item>
             <!-- <input type="text" class="input" v-model="form.username" /> -->
           </div>
@@ -19,7 +24,7 @@
               <!-- <nuxt-link to="/">Forgot Password ?</nuxt-link> -->
             </div>
             <!-- <input type="password" class="input" v-model="form.password" /> -->
-            <a-form-model-item prop="password" class="mb-0"> 
+            <a-form-model-item prop="password" class="mb-0">
               <a-input-password
                 placeholder="Password"
                 type="password"
@@ -78,7 +83,7 @@ export default {
         console.log(res);
         localStorage.setItem("auth_token", res.token);
         this.$store.commit("logIn");
-        this.$router.push("/");
+        this.$router.push("/services");
         console.log(this.$store.state.authenticated);
       } catch (e) {
         this.showError = true;

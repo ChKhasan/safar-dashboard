@@ -156,7 +156,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  middleware: "auth",
+  // middleware: "auth",
   head: {
     title: "Услуги",
   },
@@ -174,8 +174,8 @@ export default {
     };
   },
   mounted() {
-    // this.__GET_SERVICES();
-    this.getFirstData("/", "__GET_SERVICES");
+    this.__GET_SERVICES();
+    this.getFirstData("/services", "__GET_SERVICES");
     this.checkAllActions("services");
   },
   methods: {

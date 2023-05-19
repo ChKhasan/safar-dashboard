@@ -48,6 +48,7 @@
                   <a-select-option
                     :value="client?.id"
                     :label="client?.name"
+                    :key="client.id"
                     v-for="client in clients"
                   >
                     {{ client?.name }}
