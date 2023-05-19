@@ -298,7 +298,7 @@ export default {
           {
             key: "1",
             name: "Услуги",
-            to: "/services",
+            to: "/",
             add: "add_park_services",
             edit: "edit_park_services",
             show: this.checkShow("services"),

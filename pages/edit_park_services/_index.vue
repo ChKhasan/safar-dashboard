@@ -36,7 +36,7 @@
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
-          @click="$router.push('/services')"
+          @click="$router.push('/')"
         >
           Отмена
         </div>
@@ -1096,7 +1096,7 @@ export default {
           data: data,
         });
         this.notification("success", "success", "Успешно добавлен");
-        this.$router.push("/services");
+        this.$router.push("/");
       } catch (e) {
         this.statusFunc(e);
       }
@@ -1119,7 +1119,7 @@ export default {
     async __DELETE_SERVICES(id) {
       try {
         await this.$store.dispatch("fetchServices/deleteServices", id);
-        this.$router.push("/services");
+        this.$router.push("/");
         this.notification("success", "success", "Успешно удален");
       } catch (e) {
         this.statusFunc(e);

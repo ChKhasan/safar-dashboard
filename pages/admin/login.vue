@@ -83,7 +83,7 @@ export default {
         console.log(res);
         localStorage.setItem("auth_token", res.token);
         this.$store.commit("logIn");
-        this.$router.push("/services");
+        this.$router.push("/");
         console.log(this.$store.state.authenticated);
       } catch (e) {
         this.showError = true;

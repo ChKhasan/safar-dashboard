@@ -175,7 +175,7 @@ export default {
   },
   mounted() {
     this.__GET_SERVICES();
-    this.getFirstData("/services", "__GET_SERVICES");
+    this.getFirstData("/", "__GET_SERVICES");
     this.checkAllActions("services");
   },
   methods: {
