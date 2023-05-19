@@ -120,7 +120,7 @@
             />
           </span>
           <a-button
-          v-if="orders?.close"
+          v-if="orders?.close && checkAccess('orders','post')"
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
             @click="toBooked(orders)"
@@ -133,7 +133,7 @@
         <div v-if="orders?.orders?.length == 0">
           <div class="calendar-empty"><a-empty /></div>
           <a-button
-          v-if="orders?.close"
+          v-if="orders?.close && checkAccess('orders','post')"
             class="add-btn mt-4 w-100 add-header-btn calendar-order-btn btn-primary d-flex align-items-center justify-content-center"
             type="primary"
             @click="toBooked(orders)"
@@ -153,9 +153,13 @@
 import CalendarCard from "../../../components/cards/calendarCard.vue";
 import CalendarCardEmpty from "../../../components/cards/calendarCardEmpty.vue";
 import CalendarOrderCard from "../../../components/cards/calendarOrderCard.vue";
+import authAccess from "../../../mixins/authAccess";
+
 import moment from "moment";
 export default {
   transitions: 'home',
+  mixins: [authAccess],
+
   data() {
     return {
       show: false,

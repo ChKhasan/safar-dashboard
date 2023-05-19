@@ -5,6 +5,7 @@
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
+          v-if="checkAccess('faqs', 'post')"
           @click="addFaqs"
         >
           <span class="svg-icon" v-html="addIcon"></span>
@@ -47,12 +48,19 @@
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
-            <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
+            <span
+              class="action-btn"
+              v-if="checkAccess('faqs', 'put')"
+              v-html="editIcon"
+              @click="editAction(text)"
+            >
+            </span>
             <a-popconfirm
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
               @confirm="deleteAction(text)"
+              v-if="checkAccess('faqs', 'delete')"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
             </a-popconfirm>
@@ -169,6 +177,8 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import authAccess from "../mixins/authAccess";
+
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -223,7 +233,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   head: {
     title: "F.A.Q",
   },
@@ -302,6 +312,8 @@ export default {
   async mounted() {
     this.getFirstData("/faqs", "__GET_FAQS");
     this.__GET_FAQS_CATEGORIES();
+    this.checkAllActions("faqs");
+
   },
   methods: {
     changeSearch(val) {

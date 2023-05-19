@@ -6,6 +6,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="$router.push('/add_park_services')"
+          v-if="checkAccess('services', 'post')"
         >
           <span class="svg-icon" v-html="addIcon"></span>
           Добавить
@@ -16,7 +17,7 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
             <div>{{ search }}</div>
             <a-button
               @click="clearQuery"
@@ -64,12 +65,14 @@
           </span>
           <span slot="id" slot-scope="text">
             <span
+              v-if="checkAccess('services', 'put')"
               class="action-btn"
               v-html="editIcon"
               @click="$router.push(`/edit_park_services/${text}`)"
             >
             </span>
             <span
+              v-if="checkAccess('services', 'put')"
               class="action-btn"
               v-html="eyeIcon"
               @click="$router.push(`/show_park_services/${text}`)"
@@ -87,6 +90,7 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import authAccess from "../mixins/authAccess";
 import moment from "moment";
 
 const columns = [
@@ -156,7 +160,7 @@ export default {
   head: {
     title: "Услуги",
   },
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -172,6 +176,7 @@ export default {
   mounted() {
     // this.__GET_SERVICES();
     this.getFirstData("/", "__GET_SERVICES");
+    this.checkAllActions("services");
   },
   methods: {
     moment,

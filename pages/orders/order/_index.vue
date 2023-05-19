@@ -137,6 +137,7 @@
                   style="height: 42px"
                   type="primary"
                   @click="onSubmit"
+                  v-if="checkAccess('orders', 'put')"
                 >
                   Изменить статус
                 </a-button>
@@ -165,11 +166,13 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import status from "../../../mixins/status";
+import authAccess from "../../../mixins/authAccess";
+
 import BiletCard from "../../../components/cards/biletCard.vue";
 import moment from "moment";
 
 export default {
-  mixins: [status],
+  mixins: [status,authAccess],
   head: {
     title: "Новости",
   },

@@ -16,7 +16,7 @@
       <!-- <h5>Ручной бронь</h5> -->
     </div>
     <div class="calendar-order-card-right">
-      <div class="column-btns">
+      <div class="column-btns" v-if="checkAccess('orders', 'put')">
         <span>
           <span
             class="action-btn mx-3"
@@ -36,8 +36,11 @@
   </div>
 </template>
 <script>
+import authAccess from "../../mixins/authAccess";
+
 export default {
   props: ["order"],
+  mixins: [authAccess],
   data() {
     return {
       eyeIcon: require("../../assets/svg/Eye.svg?raw"),

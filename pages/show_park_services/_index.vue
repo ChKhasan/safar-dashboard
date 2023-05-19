@@ -43,6 +43,7 @@
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
+          v-if="checkAccess('services', 'put')"
           @click="
             $router.push({
               name: `edit_park_services`,
@@ -344,7 +345,8 @@
           </div>
         </div>
         <div class="container_xl app-container" v-if="$route.hash == '#sessions_tariffs'">
-          <div class="card_block px-4 py-4 mt-0">
+          <div class="card_block px-4 py-4 mt-0" v-if="checkAccess('tariffs', 'get')">
+            <FormTitle title="Тарифы" />
             <div class="tariff-card-grid">
               <TariffCard
                 v-for="tariff in form.tariffs"
@@ -353,7 +355,7 @@
                 :key="tariff.id"
               />
             </div>
-            <div class="create-inner-variant" @click="addGroup">
+            <div class="create-inner-variant" @click="addGroup"  v-if="checkAccess('tariffs', 'post')">
               <span> </span>
               Qo’shish
             </div>
@@ -615,6 +617,7 @@
             class="add-btn add-header-btn btn-primary d-flex align-items-center"
             type="danger"
             @click="showDeleteConfirm(visible)"
+            v-if="checkAccess('services', 'delete')"
           >
             Delete service
           </a-button>
@@ -631,6 +634,8 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import FormTitle from "../../components/Form-title.vue";
 import status from "../../mixins/status";
+import authAccess from "../../mixins/authAccess";
+
 import TariffCard from "../../components/cards/tariffCard.vue";
 const columns = [
   {
@@ -682,7 +687,7 @@ export default {
   head: {
     title: "Услуги",
   },
-  mixins: [status],
+  mixins: [status,authAccess],
   data() {
     return {
       columns,

@@ -1,6 +1,6 @@
 export const actions = {
-  async getFaqs({}, payload) {
-    const res = await this.$axios.$get(`/faqs`, {
+  async getRole({}, payload) {
+    const res = await this.$axios.$get(`/roles`, {
       params: payload,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -8,8 +8,8 @@ export const actions = {
     });
     return res;
   },
-  async getFaqsCategories({}, payload) {
-    const res = await this.$axios.$get(`/faq_categories`, {
+  async getUsers({}, payload) {
+    const res = await this.$axios.$get(`/users`, {
       params: payload,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -17,17 +17,17 @@ export const actions = {
     });
     return res;
   },
-  async getFaqsCategoriesAll({}, payload) {
-    const res = await this.$axios.$get(`/faq_categories/all`, {
+  async getPermissions({}, payload) {
+    const res = await this.$axios.$get(`/permissions/all`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     });
     return res;
   },
-  async getFaqsById({}, id) {
+  async getRoleById({}, id) {
     try {
-      const res = await this.$axios.$get(`/faqs/${id}`, {
+      const res = await this.$axios.$get(`/roles/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         },
@@ -37,9 +37,9 @@ export const actions = {
       return e;
     }
   },
-  async getFaqsCategoriesById({}, id) {
+  async getUsersById({}, id) {
     try {
-      const res = await this.$axios.$get(`/faq_categories/${id}`, {
+      const res = await this.$axios.$get(`/users/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
         },
@@ -49,52 +49,40 @@ export const actions = {
       return e;
     }
   },
-  async postFaqsCategories({}, data) {
-    const res = await this.$axios.$post(`/faq_categories`, data, {
+  async postRole({}, data) {
+    const res = await this.$axios.$post(`/roles`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     });
     return res;
   },
-  async postFaqs({}, data) {
-    const res = await this.$axios.$post(`/faqs`, data, {
+  async postUser({}, data) {
+    const res = await this.$axios.$post(`/users`, data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     });
     return res;
   },
-  async editFaqsCategories({}, payload) {
-    const res = await this.$axios.$put(
-      `/faq_categories/${payload.id}`,
-      payload.data,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
-        },
-      }
-    );
-    return res;
-  },
-  async editFaqs({}, payload) {
-    const res = await this.$axios.$put(`/faqs/${payload.id}`, payload.data, {
+  async editRole({}, payload) {
+    const res = await this.$axios.$put(`/roles/${payload.id}`, payload.data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     });
     return res;
   },
-  async deleteFaqs({}, id) {
-    const res = await this.$axios.$delete(`/faqs/${id}`, {
+  async deleteRole({}, id) {
+    const res = await this.$axios.$delete(`/roles/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
     });
     return res;
   },
-  async deleteFaqsCategories({}, id) {
-    const res = await this.$axios.$delete(`/faq_categories/${id}`, {
+  async deleteUsers({}, id) {
+    const res = await this.$axios.$delete(`/users/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },

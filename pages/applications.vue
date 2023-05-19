@@ -35,6 +35,7 @@
           </span>
           <span slot="id" slot-scope="text">
             <a-popconfirm
+              v-if="checkAccess('applications', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
@@ -53,6 +54,8 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
+import authAccess from "../mixins/authAccess";
+
 import moment from "moment";
 const columns = [
   {
@@ -112,7 +115,7 @@ export default {
   head: {
     title: "Applications",
   },
-  mixins: [status],
+  mixins: [status, authAccess],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -127,6 +130,7 @@ export default {
   },
   mounted() {
     this.__GET_APPLICATIONS();
+    this.checkAllActions("applications");
   },
   methods: {
     moment,

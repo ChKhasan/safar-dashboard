@@ -6,6 +6,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="$router.push('/add_news')"
+          v-if="checkAccess('posts', 'post')"
         >
           <span class="svg-icon" v-html="addIcon"> </span>
           Добавить
@@ -16,7 +17,7 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
             <div></div>
             <a-button
               type="primary"
@@ -52,11 +53,13 @@
           <span slot="id" slot-scope="text">
             <span
               class="action-btn"
+              v-if="checkAccess('posts', 'put')"
               v-html="editIcon"
               @click="$router.push(`/edit_news/${text}`)"
             >
             </span>
             <a-popconfirm
+              v-if="checkAccess('posts', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
@@ -99,6 +102,7 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import authAccess from "../mixins/authAccess";
 import moment from "moment";
 
 const columns = [
@@ -128,6 +132,7 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
+    width: "20%",
     colSpan: 0,
   },
   {
@@ -161,7 +166,8 @@ export default {
   head: {
     title: "Новости",
   },
-  mixins: [status, global],
+  middleware: ["auth", "access"],
+  mixins: [status, global, authAccess],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -176,6 +182,7 @@ export default {
   },
   async mounted() {
     this.getFirstData("/news", "__GET_POSTS");
+    this.checkAllActions("posts");
   },
   methods: {
     moment,

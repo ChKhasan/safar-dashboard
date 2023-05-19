@@ -44,6 +44,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="onSubmit"
+          v-if="checkAccess('services', 'post')"
         >
           <span class="svg-icon"> </span>
           Добавить
@@ -236,10 +237,13 @@
             </a-form-model-item>
             <div
               class="grid-with-btn"
-              v-for="(moment,index) in form.moments"
+              v-for="(moment, index) in form.moments"
               :key="moment.indexId"
             >
-              <a-form-model-item class="form-item mb-3" :label="index == 0 ? 'Основные моменты':''">
+              <a-form-model-item
+                class="form-item mb-3"
+                :label="index == 0 ? 'Основные моменты' : ''"
+              >
                 <a-input v-model="moment.title[item.index]" placeholder="Text" />
               </a-form-model-item>
               <div class="d-flex align-items-center">
@@ -667,6 +671,8 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import FormTitle from "../components/Form-title.vue";
 import status from "../mixins/status";
+import authAccess from "../mixins/authAccess";
+
 const columns = [
   {
     title: "№",
@@ -717,7 +723,7 @@ export default {
   head: {
     title: "Услуги",
   },
-  mixins: [status],
+  mixins: [status, authAccess],
   data() {
     return {
       title: "Добавить",
@@ -1148,7 +1154,7 @@ export default {
         this.form.additional_services = this.form.additional_services.filter(
           (item) => item.indexId != indexId
         );
-    }, 
+    },
     deleteMoments(indexId) {
       if (this.form.moments.length > 1)
         this.form.moments = this.form.moments.filter((item) => item.indexId != indexId);

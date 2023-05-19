@@ -8,12 +8,14 @@
       <div class="column-btns">
         <span>
           <span
+            v-if="checkAccess('tariffs', 'put')"
             class="action-btn"
             @click="$router.push(`/edit_tariff/${tariff?.id}`)"
             v-html="editIcon"
           >
           </span>
           <a-popconfirm
+            v-if="checkAccess('tariffs', 'delete')"
             title="Are you sure delete this tariff?"
             ok-text="Yes"
             cancel-text="No"
@@ -33,6 +35,8 @@
 </template>
 <script>
 import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
+
 export default {
   props: {
     tariff: {
@@ -42,7 +46,7 @@ export default {
       type: Function,
     },
   },
-  mixins: [global],
+  mixins: [global, authAccess],
   data() {
     return {
       editIcon: require("../../assets/svg/edit.svg?raw"),

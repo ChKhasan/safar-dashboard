@@ -7,6 +7,7 @@
     >
       <div class="d-flex">
         <a-button
+          v-if="checkAccess('faq_categories', 'post')"
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="addFaqs"
@@ -46,8 +47,15 @@
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
-            <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
+            <span
+              class="action-btn"
+              v-html="editIcon"
+              v-if="checkAccess('faq_categories', 'put')"
+              @click="editAction(text)"
+            >
+            </span>
             <a-popconfirm
+              v-if="checkAccess('faq_categories', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
@@ -141,6 +149,8 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import authAccess from "../mixins/authAccess";
+
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -187,7 +197,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   head: {
     title: "F.A.Q",
   },
@@ -246,6 +256,7 @@ export default {
   },
   async mounted() {
     this.getFirstData("/category_faqs", "__GET_FAQS");
+    this.checkAllActions("faq_categories");
   },
   methods: {
     moment,

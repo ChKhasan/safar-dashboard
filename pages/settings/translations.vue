@@ -6,6 +6,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="addGroup"
+          v-if="checkAccess('translate_groups', 'post')"
         >
           <span class="svg-icon" v-html="addIcon"></span>
 
@@ -14,7 +15,10 @@
       </div>
     </TitleBlock>
     <div class="container_xl app-container pb-5 pt-5">
-      <div class="card_block main-table px-4 py-3">
+      <div
+        class="card_block main-table px-4 py-3"
+        v-if="checkAccess('translate_groups', 'get')"
+      >
         <div class="translate-links-grid btn_group translate-service-btns">
           <a-button
             v-if="loading"
@@ -26,7 +30,7 @@
             v-for="(group, index) in groups"
             v-else
             :key="group.id"
-            class="add-btn add-header-btn btn-primary d-flex align-items-center"
+            class="add-btn add-header-btn btn-primary d-flex align-items-center mb-2"
             @click="$router.push(`/settings/translations-group/${group.id}`)"
           >
             {{ group?.title }}
@@ -38,8 +42,11 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск
-            " @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск
+            "
+              @changeSearch="changeSearch"
+            />
             <div></div>
             <a-button
               type="primary"
@@ -75,11 +82,18 @@
           </span>
 
           <span slot="id" slot-scope="text">
-            <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
+            <span
+              class="action-btn"
+              v-html="editIcon"
+              v-if="checkAccess('translates', 'put')"
+              @click="editAction(text)"
+            >
+            </span>
             <a-popconfirm
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
+              v-if="checkAccess('translates', 'delete')"
               @confirm="deleteAction(text.id)"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
@@ -210,6 +224,8 @@ import SearchInput from "../../components/form/Search-input.vue";
 import TitleBlock from "../../components/Title-block.vue";
 import status from "../../mixins/status";
 import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
+
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -265,7 +281,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   head: {
     title: "Переводы",
   },
@@ -316,6 +332,7 @@ export default {
   async mounted() {
     this.getFirstData("/settings/translations", "__GET_TRANSLATIONS");
     this.__GET_TRANSLATE_GROUPS();
+    this.checkAllActions("translates");
   },
   methods: {
     changeSearch(val) {

@@ -6,6 +6,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="addPromos"
+          v-if="checkAccess('promos', 'post')"
         >
           <span class="svg-icon" v-html="addIcon"></span>
           Добавить
@@ -42,8 +43,15 @@
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
-            <span class="action-btn" v-html="editIcon" @click="editAction(text)"> </span>
+            <span
+              class="action-btn"
+              v-if="checkAccess('promos', 'put')"
+              v-html="editIcon"
+              @click="editAction(text)"
+            >
+            </span>
             <a-popconfirm
+              v-if="checkAccess('promos', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
@@ -89,6 +97,23 @@
       <div class="d-flex flex-column">
         <div class="d-flex flex-column">
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
+            <a-form-model-item class="form-item mb-3" label="Заголовок">
+              <a-input
+                type="text"
+                class="w-100 promo-date"
+                placeholder="Заголовок..."
+                v-model="form.title"
+              />
+            </a-form-model-item>
+            <a-form-model-item class="form-item mb-3" label="Статус">
+              <a-switch
+                @change="
+                  ($event) => ($event ? (form.is_active = 1) : (form.is_active = 0))
+                "
+                :checked="form.is_active == 1"
+                :default-checked="form.is_active == 1"
+              ></a-switch>
+            </a-form-model-item>
             <a-form-model-item
               class="form-item mb-3"
               :class="{ 'select-placeholder': form.service_id == null }"
@@ -158,6 +183,7 @@ import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
 import global from "../mixins/global";
+import authAccess from "../mixins/authAccess";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
@@ -218,7 +244,7 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   head: {
     title: "F.A.Q",
   },
@@ -265,16 +291,19 @@ export default {
       promos: [],
       rules: {},
       form: {
+        title: "",
         service_id: null,
         amount: null,
         promo: "",
         date: "",
+        is_active: 0,
       },
     };
   },
   async mounted() {
     this.getFirstData("/promos", "__GET_PROMOS");
     this.__GET_SERVICES();
+    this.checkAllActions("promos");
   },
   methods: {
     changeSearch(val) {
@@ -323,12 +352,12 @@ export default {
         };
       });
       this.totalPage = data?.promos?.total;
+      console.log(this.promos);
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
-    onChange(date, dateString) {
-    },
+    onChange(date, dateString) {},
     addPromos() {
       this.title = "Добавить";
 
@@ -354,6 +383,7 @@ export default {
         const data = await this.$store.dispatch("fetchPromos/getPromosById", id);
         this.visible = true;
         this.form = data?.promo;
+        console.log(this.form);
       } catch (e) {
         this.statusFunc(e);
       }

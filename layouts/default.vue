@@ -39,7 +39,7 @@
                 ><span v-if="!collapsed">{{ menu.title }}</span></span
               >
               <a-menu-item
-                v-if="menu.menuItems.length > 0"
+                v-if="menu.menuItems.length > 0 && items.show"
                 :key="items.key"
                 v-for="items in menu.menuItems"
                 :class="{
@@ -59,7 +59,16 @@
         </div>
       </a-layout-sider>
       <a-layout class="layout-right" :class="{ 'right-collapsed': collapsed }">
-        <div class="layout-header"></div>
+        <div class="layout-header d-flex justify-content-end align-items-center">
+          <a-dropdown :trigger="['click']">
+            <a-avatar icon="user" />
+            <a-menu slot="overlay">
+              <a-menu-item key="0">
+                <span @click="logOut">Logout</span>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+        </div>
         <a-layout-content class="layout-body">
           <Nuxt />
         </a-layout-content>
@@ -69,8 +78,10 @@
 </template>
 <script>
 import TitleBlock from "../components/Title-block.vue";
-
+import status from "../mixins/status";
 export default {
+  middleware: ["auth", "access"],
+
   data() {
     return {
       collapsed: false,
@@ -78,151 +89,193 @@ export default {
       openKeys: ["1"],
       logo: require("../assets/svg/logo-light.svg?raw"),
       icon: require("../assets/svg/toolbar-catalog.svg?raw"),
-      menuData: [
-        {
-          title: "Главный",
-          sub: "1",
-          icon: require("../assets/svg/toolbar-catalog.svg?raw"),
-          menuItems: [
-            {
-              key: "1",
-              name: "Услуги",
-              to: "/",
-              add: "add_park_services",
-              edit: "edit_park_services",
-            },
-            {
-              key: "2",
-              name: "Новости",
-              to: "/news",
-              add: "add_news",
-              edit: "edit_news",
-            },
-            {
-              key: "3",
-              name: "Галереи",
-              to: "/galleries",
-              add: "add_galleries",
-              edit: "edit_galleries",
-            },
-            {
-              key: "4",
-              name: "F.A.Q",
-              to: "/faqs",
-              add: "add_faqs",
-              edit: "edit_faqs",
-            },
-            {
-              key: "7",
-              name: "Категории (F.A.Q)",
-              to: "/category_faqs",
-              add: "category_faqs",
-              edit: "category_faqs",
-            },
-            {
-              key: "6",
-              name: "Промо",
-              to: "/promos",
-            },
-            {
-              key: "5",
-              name: "Заявки",
-              to: "/applications",
-            },
-          ],
-        },
-        {
-          title: "Заказы",
-          sub: "3",
-          icon: require("../assets/svg/orderIcon.svg?raw"),
-          menuItems: [
-            {
-              name: "Все заказы",
-              index: "31",
-              to: "/orders/all-orders",
-              path: "orders-all-orders",
-              disabled: false,
-            },
-            {
-              name: "Новые заказы",
-              index: "32",
-              to: "/orders/new-orders",
-              path: "orders-new-orders",
-              disabled: false,
-            },
-            {
-              name: "Ожидание",
-              index: "34",
-              to: "/orders/expectation-orders",
-              path: "orders-expectation-orders",
-              disabled: false,
-            },
-            {
-              name: "Принятые заказы",
-              index: "33",
-              to: "/orders/accepted-orders",
-              path: "orders-accepted-orders",
-              disabled: false,
-            },
-            {
-              name: "Измененные",
-              index: "35",
-              to: "/orders/changed-orders",
-              path: "orders-changed-orders",
-              disabled: false,
-            },
-            {
-              name: "Отмененные",
-              index: "38",
-              to: "/orders/canceled-orders",
-              path: "orders-canceled-orders",
-              disabled: false,
-            },
-            {
-              name: "Календарь",
-              index: "39",
-              to: "/orders/calendar/0",
-              path: "orders-calendar",
-              disabled: false,
-            },
-          ],
-        },
-        {
-          title: "Клиенты",
-          sub: "4",
-          icon: require("../assets/svg/clients.svg?raw"),
-          menuItems: [
-            {
-              key: "41",
-              name: "Клиенты",
-              to: "/clients",
-              add: "clients",
-              edit: "clients",
-            },
-          ],
-        },
-        {
-          title: "Настройки сайта",
-          sub: "2",
-          icon: require("../assets/svg/settings.svg?raw"),
-          menuItems: [
-            {
-              key: "21",
-              name: "Переводы",
-              to: "/settings/translations",
-              add: "settings-translations",
-              edit: "settings-translations-group",
-            },
-            {
-              key: "22",
-              name: " Общие данные",
-              to: "/settings/site-info",
-              add: "settings-site-info",
-              edit: "settings-site-info",
-            },
-          ],
-        },
-      ],
+      menuData: [],
+      // menuData: [
+      //   {
+      //     title: "Главный",
+      //     sub: "1",
+      //     icon: require("../assets/svg/toolbar-catalog.svg?raw"),
+      //     menuItems: [
+      //       {
+      //         key: "1",
+      //         name: "Услуги",
+      //         to: "/",
+      //         add: "add_park_services",
+      //         edit: "edit_park_services",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "2",
+      //         name: "Новости",
+      //         to: "/news",
+      //         add: "add_news",
+      //         edit: "edit_news",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "3",
+      //         name: "Галереи",
+      //         to: "/galleries",
+      //         add: "add_galleries",
+      //         edit: "edit_galleries",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "4",
+      //         name: "F.A.Q",
+      //         to: "/faqs",
+      //         add: "add_faqs",
+      //         edit: "edit_faqs",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "7",
+      //         name: "Категории (F.A.Q)",
+      //         to: "/category_faqs",
+      //         add: "category_faqs",
+      //         edit: "category_faqs",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "6",
+      //         name: "Промо",
+      //         to: "/promos",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "5",
+      //         name: "Заявки",
+      //         to: "/applications",
+      //         show: true,
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     title: "Заказы",
+      //     sub: "3",
+      //     icon: require("../assets/svg/orderIcon.svg?raw"),
+      //     menuItems: [
+      //       {
+      //         name: "Все заказы",
+      //         index: "31",
+      //         to: "/orders/all-orders",
+      //         path: "orders-all-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Новые заказы",
+      //         index: "32",
+      //         to: "/orders/new-orders",
+      //         path: "orders-new-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Ожидание",
+      //         index: "34",
+      //         to: "/orders/expectation-orders",
+      //         path: "orders-expectation-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Принятые заказы",
+      //         index: "33",
+      //         to: "/orders/accepted-orders",
+      //         path: "orders-accepted-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Измененные",
+      //         index: "35",
+      //         to: "/orders/changed-orders",
+      //         path: "orders-changed-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Отмененные",
+      //         index: "38",
+      //         to: "/orders/canceled-orders",
+      //         path: "orders-canceled-orders",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //       {
+      //         name: "Календарь",
+      //         index: "39",
+      //         to: "/orders/calendar/0",
+      //         path: "orders-calendar",
+      //         disabled: false,
+      //         show: true,
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     title: "Клиенты",
+      //     sub: "4",
+      //     icon: require("../assets/svg/clients.svg?raw"),
+      //     menuItems: [
+      //       {
+      //         key: "41",
+      //         name: "Клиенты",
+      //         to: "/clients",
+      //         add: "clients",
+      //         edit: "clients",
+      //         show: true,
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     title: "Настройки сайта",
+      //     sub: "2",
+      //     icon: require("../assets/svg/settings.svg?raw"),
+      //     menuItems: [
+      //       {
+      //         key: "21",
+      //         name: "Переводы",
+      //         to: "/settings/translations",
+      //         add: "settings-translations",
+      //         edit: "settings-translations-group",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "22",
+      //         name: " Общие данные",
+      //         to: "/settings/site-info",
+      //         add: "settings-site-info",
+      //         edit: "settings-site-info",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "23",
+      //         name: "Создать роль",
+      //         to: "/settings/roles",
+      //         add: "settings-roles",
+      //         edit: "settings-roles",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "24",
+      //         name: "Пользователи",
+      //         to: "/settings/users",
+      //         add: "settings-users",
+      //         edit: "settings-users",
+      //         show: true,
+      //       },
+      //       {
+      //         key: "25",
+      //         name: "Youtube Videos",
+      //         to: "/settings/you-tube",
+      //         add: "settings-you-tube",
+      //         edit: "settings-you-tube",
+      //         show: true,
+      //       },
+      //     ],
+      //   },
+      // ],
     };
   },
 
@@ -231,14 +284,227 @@ export default {
       return this.$route.name;
     },
   },
-  mounted() {
+  async mounted() {
     this.$store.dispatch("getOrders");
-    this.checkDefaultOpen();
+    await this.$store.dispatch("getPermissions");
+    console.log(this.$store.state.permissions);
+
+    (this.menuData = [
+      {
+        title: "Главный",
+        sub: "1",
+        icon: require("../assets/svg/toolbar-catalog.svg?raw"),
+        menuItems: [
+          {
+            key: "1",
+            name: "Услуги",
+            to: "/",
+            add: "add_park_services",
+            edit: "edit_park_services",
+            show: this.checkShow("services"),
+          },
+          {
+            key: "2",
+            name: "Новости",
+            to: "/news",
+            add: "add_news",
+            edit: "edit_news",
+            show: this.checkShow("posts"),
+          },
+          {
+            key: "3",
+            name: "Галереи",
+            to: "/galleries",
+            add: "add_galleries",
+            edit: "edit_galleries",
+            show: this.checkShow("galleries"),
+          },
+          {
+            key: "4",
+            name: "F.A.Q",
+            to: "/faqs",
+            add: "add_faqs",
+            edit: "edit_faqs",
+            show: this.checkShow("faqs"),
+          },
+          {
+            key: "7",
+            name: "Категории (F.A.Q)",
+            to: "/category_faqs",
+            add: "category_faqs",
+            edit: "category_faqs",
+            show: this.checkShow("faq_categories"),
+          },
+          {
+            key: "6",
+            name: "Промо",
+            to: "/promos",
+            show: this.checkShow("promos"),
+          },
+          {
+            key: "5",
+            name: "Заявки",
+            to: "/applications",
+            show: this.checkShow("applications"),
+          },
+        ],
+      },
+      {
+        title: "Заказы",
+        sub: "3",
+        icon: require("../assets/svg/orderIcon.svg?raw"),
+        menuItems: [
+          {
+            name: "Все заказы",
+            index: "31",
+            to: "/orders/all-orders",
+            path: "orders-all-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Новые заказы",
+            index: "32",
+            to: "/orders/new-orders",
+            path: "orders-new-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Ожидание",
+            index: "34",
+            to: "/orders/expectation-orders",
+            path: "orders-expectation-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Принятые заказы",
+            index: "33",
+            to: "/orders/accepted-orders",
+            path: "orders-accepted-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Измененные",
+            index: "35",
+            to: "/orders/changed-orders",
+            path: "orders-changed-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Отмененные",
+            index: "38",
+            to: "/orders/canceled-orders",
+            path: "orders-canceled-orders",
+            disabled: false,
+            show: this.checkShow("orders"),
+          },
+          {
+            name: "Календарь",
+            index: "39",
+            to: "/orders/calendar/0",
+            path: "orders-calendar",
+            disabled: false,
+            show: this.checkShow("calendar/*"),
+          },
+        ],
+      },
+      {
+        title: "Клиенты",
+        sub: "4",
+        icon: require("../assets/svg/clients.svg?raw"),
+        menuItems: [
+          {
+            key: "41",
+            name: "Клиенты",
+            to: "/clients",
+            add: "clients",
+            edit: "clients",
+            show: this.checkShow("clients/all"),
+          },
+        ],
+      },
+      {
+        title: "Настройки сайта",
+        sub: "2",
+        icon: require("../assets/svg/settings.svg?raw"),
+        menuItems: [
+          {
+            key: "21",
+            name: "Переводы",
+            to: "/settings/translations",
+            add: "settings-translations",
+            edit: "settings-translations-group",
+            show: this.checkShow("translates"),
+          },
+          {
+            key: "22",
+            name: " Общие данные",
+            to: "/settings/site-info",
+            add: "settings-site-info",
+            edit: "settings-site-info",
+            show: this.checkShow("site_infos"),
+          },
+          {
+            key: "23",
+            name: "Создать роль",
+            to: "/settings/roles",
+            add: "settings-roles",
+            edit: "settings-roles",
+            // show: this.checkShow("roles"),
+            show: true,
+          },
+          {
+            key: "24",
+            name: "Пользователи",
+            to: "/settings/users",
+            add: "settings-users",
+            edit: "settings-users",
+            show: this.checkShow("users"),
+          },
+          {
+            key: "25",
+            name: "Youtube Videos",
+            to: "/settings/you-tube",
+            add: "settings-you-tube",
+            edit: "settings-you-tube",
+            show: this.checkShow("youtube_videos"),
+          },
+        ],
+      },
+    ]),
+      this.checkDefaultOpen();
+    if (localStorage.getItem("auth_token")) {
+      this.$store.commit("logIn");
+    } else {
+      this.$router.push("/admin/login");
+      this.$store.commit("logOut");
+    }
   },
 
   methods: {
+    checkShow(val) {
+      if (this.$store.state.permissions.length > 0) {
+        const target = this.$store.state.permissions.find((item) => item.url == val);
+        return target?.pivot?.actions.includes("get");
+      } else {
+        return true;
+      }
+    },
     onCollapse(collapsed, type) {
       this.collapsed = !this.collapsed;
+    },
+    async logOut() {
+      try {
+        const data = await this.$store.dispatch("fetchAuth/logOut");
+        await localStorage.removeItem("auth_token");
+        this.$router.push("/admin/login");
+      } catch (e) {
+        this.statusFunc(e);
+      }
     },
     checkDefaultOpen() {
       if (this.$route.name.includes("orders")) {

@@ -12,6 +12,7 @@
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="onSubmit"
+          v-if="checkAccess('posts', 'post')"
         >
           <span class="svg-icon"> </span>
           Добавить
@@ -60,26 +61,30 @@
               </a-form-model-item>
             </div>
             <span>
-            <div class="card_block main-table px-4 py-4">
-              <FormTitle title="Параметры" />
-              <div class="clearfix">
-                <a-upload
-                  action="https://api.safarpark.uz/api/files/upload"
-                  list-type="picture-card"
-                  :file-list="fileList"
-                  @preview="handlePreview"
-                  @change="handleChange"
-                >
-                  <div v-if="fileList.length < 1">
-                    <a-icon type="plus" />
-                    <div class="ant-upload-text">Upload</div>
-                  </div>
-                </a-upload>
-                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                  <img alt="example" style="width: 100%" :src="previewImage" />
-                </a-modal>
-              </div>
-              <!-- <a-form-model-item class="form-item mb-3" label="Instagram">
+              <div class="card_block main-table px-4 py-4">
+                <FormTitle title="Параметры" />
+                <div class="clearfix">
+                  <a-upload
+                    action="https://api.safarpark.uz/api/files/upload"
+                    list-type="picture-card"
+                    :file-list="fileList"
+                    @preview="handlePreview"
+                    @change="handleChange"
+                  >
+                    <div v-if="fileList.length < 1">
+                      <a-icon type="plus" />
+                      <div class="ant-upload-text">Upload</div>
+                    </div>
+                  </a-upload>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
+                <!-- <a-form-model-item class="form-item mb-3" label="Instagram">
                 <a-input v-model="form.instagram" placeholder="link" />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Telegram">
@@ -88,7 +93,7 @@
               <a-form-model-item class="form-item mb-3" label="Facebook">
                 <a-input v-model="form.facebook" placeholder="link" />
               </a-form-model-item> -->
-            </div>
+              </div>
             </span>
           </div>
         </div>
@@ -103,6 +108,8 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import status from "../mixins/status";
+import authAccess from "../mixins/authAccess";
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -112,7 +119,7 @@ function getBase64(file) {
   });
 }
 export default {
-  mixins: [status],
+  mixins: [status, authAccess],
   head: {
     title: "Новости",
   },

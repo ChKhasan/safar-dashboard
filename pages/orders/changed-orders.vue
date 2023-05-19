@@ -15,7 +15,7 @@
       <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
             <div class="input status-select w-100">
               <a-select v-model="secondCity">
                 <a-select-option v-for="city in cities" :key="city">
@@ -77,19 +77,21 @@
           </span>
           <span slot="btns" slot-scope="text">
             <span
+              v-if="checkAccess('orders', 'put')"
               class="action-btn"
               v-html="eyeIcon"
-              @click="$router.push(`/orders/order/1`)"
+              @click="$router.push(`/orders/order/${text}`)"
             >
             </span>
             <span
+              v-if="checkAccess('orders', 'put')"
               class="action-btn"
-              @click="$router.push('/orders/order/1')"
+              @click="$router.push(`/orders/order/${text}`)"
               v-html="editIcon"
             >
             </span>
-            <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
-            </span>
+            <!-- <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
+            </span> -->
           </span>
         </a-table>
         <div class="d-flex justify-content-between mt-4">
@@ -128,6 +130,8 @@ import TitleBlock from "../../components/Title-block.vue";
 import orderColumns from "../../mixins/orderColumns";
 import moment from "moment";
 import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
+
 import OrderBtns from "../../components/order-btns.vue";
 const provinceData = ["Zhejiang", "Jiangsu"];
 const cityData = {
@@ -136,7 +140,7 @@ const cityData = {
 };
 export default {
   layout: "toolbar",
-  mixins: [orderColumns, global],
+  mixins: [orderColumns, global, authAccess],
   data() {
     return {
       provinceData,
@@ -159,6 +163,7 @@ export default {
   },
   mounted() {
     this.getFirstData("/orders/all-orders", "__GET_ORDERS");
+    this.checkAllActions("orders");
   },
   methods: {
     changeSearch(val) {

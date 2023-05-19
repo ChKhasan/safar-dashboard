@@ -7,6 +7,7 @@
     >
       <div class="d-flex">
         <a-button
+          v-if="checkAccess('site_infos', 'put') && checkAccess('site_infos', 'post')"
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
           @click="onSubmit"
@@ -153,6 +154,8 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import status from "../../mixins/status";
+import authAccess from "../../mixins/authAccess";
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -162,7 +165,7 @@ function getBase64(file) {
   });
 }
 export default {
-  mixins: [status],
+  mixins: [status, authAccess],
   head: {
     title: "Новости",
   },
@@ -335,28 +338,30 @@ export default {
     async __GET_STATIC_INFO() {
       try {
         const data = await this.$store.dispatch("fetchStaticInfo/getStaticInfo");
-        this.form = { ...data.info };
-        if (this.form.sm_logo) {
-          this.fileListLogo = [
-            {
-              uid: "-1",
-              name: "image.png",
-              status: "done",
-              oldImg: true,
-              url: this.form.sm_logo,
-            },
-          ];
-        }
-        if (this.form.sm_favicon) {
-          this.fileListFavicon = [
-            {
-              uid: "-1",
-              name: "image.png",
-              status: "done",
-              oldImg: true,
-              url: this.form.sm_favicon,
-            },
-          ];
+        if (data.info) {
+          this.form = { ...data.info };
+          if (this.form.sm_logo) {
+            this.fileListLogo = [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                oldImg: true,
+                url: this.form.sm_logo,
+              },
+            ];
+          }
+          if (this.form.sm_favicon) {
+            this.fileListFavicon = [
+              {
+                uid: "-1",
+                name: "image.png",
+                status: "done",
+                oldImg: true,
+                url: this.form.sm_favicon,
+              },
+            ];
+          }
         }
       } catch (e) {
         this.statusFunc(e);

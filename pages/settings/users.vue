@@ -1,14 +1,24 @@
 <template>
   <div class="">
-    <TitleBlock title="Тарифы" :breadbrumb="['Главный']" lastLink="Тарифы">
-      <div class="d-flex"></div>
+    <TitleBlock title="Пользователи" :breadbrumb="['Главный']" lastLink="Пользователи">
+      <div class="d-flex">
+        <a-button
+          class="add-btn add-header-btn btn-primary d-flex align-items-center"
+          type="primary"
+          @click="$router.push('/settings/create-users')"
+          v-if="checkAccess('users', 'post')"
+        >
+          <span class="svg-icon" v-html="addIcon"> </span>
+          Добавить
+        </a-button>
+      </div>
     </TitleBlock>
-    <div class="container_xl app-container mt-4">
+    <div class="container_xl app-container pb-5 pt-5">
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <div></div>
             <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -20,34 +30,23 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="tariffs"
+          :data-source="posts"
+          :page-size="params.pageSize"
           :loading="loading"
         >
-          <span slot="indexId" slot-scope="text">#{{ text?.id }}</span>
-          <span slot="name" slot-scope="text">{{ text?.ru }}</span>
-          <span slot="subtitle" slot-scope="text" v-html="text?.ru"></span>
-          <span slot="schedule" slot-scope="text">
-            <span class="option-items d-flex" v-for="(desc, index) in text">
-              <span v-if="desc == null">Круглосутоно</span>
-              <span
-                v-if="desc !== null && desc"
-                style="margin-left: 8px"
-                v-for="(time, ind) in desc"
-              >
-                <span v-if="time == null">No date</span>
-                <span v-if="ind == 0 && time !== null">{{ week[index] }}:</span>
-                <span v-if="time !== null">{{ time }},</span>
-              </span>
-            </span>
-          </span>
+          <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
+          <span slot="name" slot-scope="text">{{ text ? text : "-----" }}</span>
+
           <span slot="id" slot-scope="text">
             <span
+              v-if="checkAccess('users', 'put')"
               class="action-btn"
               v-html="editIcon"
-              @click="$router.push(`/edit_tariff/${text}`)"
+              @click="$router.push(`/settings/edit-users/${text}`)"
             >
             </span>
             <a-popconfirm
+              v-if="checkAccess('users', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
@@ -62,7 +61,9 @@
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="($event) => changePageSizeGlobal($event, '/tariff', '__GET_TARIFF')"
+            @change="
+              ($event) => changePageSizeGlobal($event, '/settings/users', '__GET_USERS')
+            "
           >
             <a-select-option
               v-for="item in pageSizes"
@@ -86,13 +87,16 @@
 </template>
 
 <script>
-import SearchInput from "../components/form/Search-input.vue";
-import TitleBlock from "../components/Title-block.vue";
-import status from "../mixins/status";
-import global from "../mixins/global";
+import SearchInput from "../../components/form/Search-input.vue";
+import TitleBlock from "../../components/Title-block.vue";
+import status from "../../mixins/status";
+import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
+import moment from "moment";
+
 const columns = [
   {
-    title: "ID",
+    title: "№",
     key: "indexId",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "indexId" },
@@ -101,93 +105,99 @@ const columns = [
     width: 50,
   },
   {
-    title: "имя",
+    title: "Имя",
     dataIndex: "name",
     key: "name",
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    width: 200,
+    align: "left",
   },
   {
-    title: "подзаголовок",
-    dataIndex: "subtitle",
-    key: "subtitle",
+    title: "Имя пользователя",
+    dataIndex: "username",
+    key: "username",
+    slots: { title: "customTitle" },
     className: "column-name",
-    scopedSlots: { customRender: "subtitle" },
+    align: "left",
   },
-  {
-    title: "расписание",
-    dataIndex: "schedule",
-    key: "schedule",
-    className: "column-name",
-    scopedSlots: { customRender: "schedule" },
-  },
+
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
-    key: "id",
     dataIndex: "id",
+    key: "id",
     align: "right",
     scopedSlots: { customRender: "id" },
     width: 100,
   },
 ];
+
 export default {
   name: "IndexPage",
   head: {
-    title: "Тарифы",
+    title: "Пользователи",
   },
-  mixins: [status, global],
+  mixins: [status, global, authAccess],
   data() {
     return {
-      eyeIcon: require("../assets/svg/Eye.svg?raw"),
-      editIcon: require("../assets/svg/edit.svg?raw"),
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
-      addIcon: require("../assets/svg/add-icon.svg?raw"),
+      eyeIcon: require("../../assets/svg/Eye.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
+      addIcon: require("../../assets/svg/add-icon.svg?raw"),
       loading: false,
       search: "",
       columns,
-      tariffs: [],
-      week: ["пн", "вт", "ср", "чт", "пт", "сб"],
+      posts: [],
     };
   },
-  mounted() {
-    this.getFirstData("/tariff", "__GET_TARIFF");
+  async mounted() {
+    this.getFirstData("/settings/users", "__GET_USERS");
+    this.checkAllActions("users");
   },
   methods: {
+    moment,
     changeSearch(val) {
       this.search = val.target.value;
     },
     deleteAction(id) {
-      this.__DELETE_GLOBAL(
-        id,
-        "fetchTariff/deleteTariff",
-        "Тариф был успешно удален",
-        "__GET_TARIFF"
-      );
+      this.__DELETE_GLOBAL(id, "fetchRole/deleteUsers", "Успешно удален", "__GET_USERS");
     },
-    async __GET_TARIFF() {
+    async __GET_USERS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchTariff/getTariff");
+      const data = await this.$store.dispatch("fetchRole/getUsers", {
+        ...this.$route.query,
+      });
       this.loading = false;
-      this.tariffs = data?.tariffs?.data.map((item) => {
+      // this.posts = data?.users;
+      // const pageIndex = this.indexPage(data?.posts?.current_page, data?.posts?.per_page);
+      this.posts = data?.users.map((item, index) => {
         return {
           ...item,
-          key: item.id,
+          key: index + 1,
         };
       });
-      this.totalPage = data?.tariffs?.total;
+      console.log(this.posts);
+    },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
     },
   },
   watch: {
     async current(val) {
-      this.changePagination("/tariff", "__GET_TARIFF");
+      this.changePagination(val, "/settings/users", "__GET_USERS");
     },
   },
   components: { TitleBlock, SearchInput },
 };
 </script>
 <style lang="css">
-@import "../assets/css/pages/tariff.css";
+.prodduct-list-header-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr 40px;
+  grid-gap: 8px;
+}
+.card_header {
+  padding: 16.25px 0;
+}
 </style>

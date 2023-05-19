@@ -1,34 +1,59 @@
 export const actions = {
   async getTariff({}, payload) {
     try {
-      const res = await this.$axios.$get(`/tariffs`, { params: payload });
+      const res = await this.$axios.$get(`/tariffs`, {
+        params: payload,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+      });
       return res;
     } catch (e) {
       return e;
     }
   },
   async getAllTariff() {
-    const res = await this.$axios.$get(`/tariffs/all`);
+    const res = await this.$axios.$get(`/tariffs/all`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
     return res;
   },
   async getTariffById({}, id) {
     try {
-      const res = await this.$axios.$get(`/tariffs/${id}`);
+      const res = await this.$axios.$get(`/tariffs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+      });
       return res;
     } catch (e) {
       return e;
     }
   },
   async postTariff({}, data) {
-    const res = await this.$axios.$post(`/tariffs`, data);
+    const res = await this.$axios.$post(`/tariffs`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
     return res;
   },
   async editTariff({}, payload) {
-    const res = await this.$axios.$put(`/tariffs/${payload.id}`, payload.data);
+    const res = await this.$axios.$put(`/tariffs/${payload.id}`, payload.data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
     return res;
   },
   async deleteTariff({}, id) {
-    const res = await this.$axios.$delete(`/tariffs/${id}`);
+    const res = await this.$axios.$delete(`/tariffs/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
     return res;
   },
 };

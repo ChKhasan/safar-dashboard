@@ -19,6 +19,7 @@
             class="add-btn add-header-btn btn-primary d-flex align-items-center"
             type="primary"
             @click="onSubmit"
+            v-if="checkAccess('tariffs', 'post')"
           >
             <span class="svg-icon"> </span>
             Добавить
@@ -462,6 +463,8 @@ import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import moment from "moment";
 import status from "../../mixins/status";
+import authAccess from "../../mixins/authAccess";
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -559,7 +562,7 @@ const data = [
 ];
 export default {
   name: "IndexPage",
-  mixins: [status],
+  mixins: [status, authAccess],
   head: {
     title: "Тарифы",
   },

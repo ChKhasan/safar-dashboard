@@ -1,3 +1,5 @@
 export default function ({ store, redirect }) {
-  if (store.state.authenticated) redirect("/");
+  const token = localStorage.getItem("auth_token");
+
+  if (!!token) redirect("/");
 }

@@ -15,7 +15,7 @@
       <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск продукта" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
             <div class="input status-select w-100">
               <a-form-model-item
                 class="form-item mb-0"
@@ -87,12 +87,14 @@
           </span>
           <span slot="btns" slot-scope="text">
             <span
+              v-if="checkAccess('orders', 'put')"
               class="action-btn"
               v-html="eyeIcon"
               @click="$router.push(`/orders/order/${text}`)"
             >
             </span>
             <span
+              v-if="checkAccess('orders', 'put')"
               class="action-btn"
               @click="$router.push(`/orders/order/${text}`)"
               v-html="editIcon"
@@ -138,15 +140,13 @@ import TitleBlock from "../../components/Title-block.vue";
 import orderColumns from "../../mixins/orderColumns";
 import moment from "moment";
 import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
+
 import OrderBtns from "../../components/order-btns.vue";
-const provinceData = ["Zhejiang", "Jiangsu"];
-const cityData = {
-  Zhejiang: ["Hangzhou", "Ningbo", "Wenzhou"],
-  Jiangsu: ["Nanjing", "Suzhou", "Zhenjiang"],
-};
+
 export default {
   layout: "toolbar",
-  mixins: [orderColumns, global],
+  mixins: [orderColumns, global, authAccess],
   data() {
     return {
       services: [],
@@ -167,6 +167,8 @@ export default {
   },
   async mounted() {
     this.__GET_SERVICES();
+    this.checkAllActions("orders");
+
     if (
       !Object.keys(this.$route.query).includes("page") ||
       !Object.keys(this.$route.query).includes("per_page")

@@ -1,14 +1,18 @@
 <template>
   <div class="">
-    <TitleBlock title="Галереи" :breadbrumb="['Главный']" lastLink="Галереи">
+    <TitleBlock
+      title="Youtube Videos"
+      :breadbrumb="['Настройки сайта']"
+      lastLink="Youtube Videos"
+    >
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
           type="primary"
-          @click="addGalleries"
-          v-if="checkAccess('galleries', 'post')"
+          @click="addFaqs"
+          v-if="checkAccess('youtube_videos', 'post')"
         >
-          <span v-if="!loadingBtn" class="svg-icon" v-html="addIcon"></span>
+          <span class="svg-icon" v-html="addIcon"></span>
           Добавить
         </a-button>
       </div>
@@ -30,39 +34,31 @@
         <a-table
           :columns="columns"
           :pagination="false"
-          :data-source="galleries"
+          :data-source="videos"
           :loading="loading"
         >
-          <span slot="sm_files" slot-scope="text">
-            <img v-if="text.length > 0" class="table-image" :src="text[0]" />
-            <img
-              v-else
-              class="table-image"
-              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
-            />
-          </span>
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span slot="name" slot-scope="text">{{ text?.ru ? text?.ru : "-----" }}</span>
-          <span slot="subtitle" slot-scope="text">{{
-            text?.ru ? text?.ru : "-----"
-          }}</span>
+
           <span slot="desc" slot-scope="text">
             <span v-html="text?.ru ? text?.ru : '-----'"></span>
           </span>
+          <span slot="date" slot-scope="text">{{
+            moment(text).format("DD/MM/YYYY")
+          }}</span>
           <span slot="id" slot-scope="text">
             <span
               class="action-btn"
-              v-if="checkAccess('galleries', 'put')"
               v-html="editIcon"
+              v-if="checkAccess('youtube_videos', 'put')"
               @click="editAction(text)"
             >
             </span>
             <a-popconfirm
+              v-if="checkAccess('youtube_videos', 'delete')"
               title="Are you sure delete this row?"
               ok-text="Yes"
               cancel-text="No"
               @confirm="deleteAction(text)"
-              v-if="checkAccess('galleries', 'delete')"
             >
               <span class="action-btn" v-html="deleteIcon"> </span>
             </a-popconfirm>
@@ -74,12 +70,13 @@
             class="table-page-size"
             style="width: 120px"
             @change="
-              ($event) => changePageSizeGlobal($event, '/galleries', '__GET_GALLERIES')
+              ($event) =>
+                changePageSizeGlobal($event, '/settings/you-tube', '__GET_VIDEOS')
             "
           >
             <a-select-option
               v-for="item in pageSizes"
-              :key="item.value"
+              :key="item?.value"
               :label="item.label"
               :value="item.value"
               >{{ item.label }}
@@ -97,7 +94,7 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '5px' }"
+      :dialog-style="{ top: '50px' }"
       :title="title"
       :closable="false"
       width="720px"
@@ -106,10 +103,11 @@
       <div class="d-flex flex-column">
         <div class="form_tab mb-4 bottom_hr">
           <span
+            style="border-right: 0"
             v-for="(item, index) in formTabData"
             :key="index"
             @click="formTab = item.index"
-            :class="{ 'avtive-formTab': formTab == item.index }"
+            :class="{ 'avtive-formTabModal': formTab == item.index }"
           >
             {{ item.label }}
           </span>
@@ -120,45 +118,18 @@
           :key="index"
           v-if="formTab == item.index"
         >
-          <a-form-model
-            :model="form"
-            ref="ruleFormGalleries"
-            :rules="rules"
-            layout="vertical"
-          >
-            <a-form-model-item
-              class="form-item mb-3"
-              label="Заголовок"
-              :prop="item.index == 'ru' ? 'title.ru' : ''"
-            >
-              <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
+            <a-form-model-item class="form-item mb-3" label="Link" prop="link">
+              <a-input v-model="form.link" placeholder="Link" />
             </a-form-model-item>
             <a-form-model-item class="form-item mb-3" label="Описание">
               <quill-editor
-                class="product-editor mt-1"
                 v-model="form.desc[item.index]"
+                class="product-editor mt-1"
                 :options="editorOption"
               />
             </a-form-model-item>
           </a-form-model>
-          <div class="clearfix">
-            <a-upload
-              action="https://api.safarpark.uz/api/files/upload"
-              list-type="picture-card"
-              :file-list="fileList"
-              :multiple="true"
-              @preview="handlePreview"
-              @change="handleChange"
-            >
-              <div v-if="fileList.length < 8">
-                <a-icon type="plus" />
-                <div class="ant-upload-text">Upload</div>
-              </div>
-            </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-              <img alt="example" style="width: 100%" :src="previewImage" />
-            </a-modal>
-          </div>
         </div>
       </div>
       <template slot="footer">
@@ -172,7 +143,6 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
-            :loading="loadingBtn"
             @click="saveData"
           >
             Save
@@ -184,23 +154,16 @@
 </template>
 
 <script>
-import SearchInput from "../components/form/Search-input.vue";
-import TitleBlock from "../components/Title-block.vue";
-import status from "../mixins/status";
-import global from "../mixins/global";
-import authAccess from "../mixins/authAccess";
+import SearchInput from "../../components/form/Search-input.vue";
+import TitleBlock from "../../components/Title-block.vue";
+import status from "../../mixins/status";
+import global from "../../mixins/global";
+import authAccess from "../../mixins/authAccess";
 
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
+import moment from "moment";
 const columns = [
   {
     title: "№",
@@ -212,32 +175,21 @@ const columns = [
     width: 50,
   },
   {
-    title: "заголовок",
-    dataIndex: "sm_files",
-    key: "sm_files",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "sm_files" },
-    className: "column-name",
-    align: "left",
-    colSpan: 2,
-    width: 55,
-  },
-  {
-    dataIndex: "title",
-    key: "title",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "name" },
-    className: "column-name",
-    colSpan: 0,
-  },
-  {
-    title: "описание",
+    title: "Desc",
     dataIndex: "desc",
     key: "desc",
-    className: "column-subservice",
+    slots: { title: "customTitle" },
     scopedSlots: { customRender: "desc" },
+    className: "column-name",
+    width: "20%",
   },
-
+  {
+    title: "ДАТА",
+    dataIndex: "created_at",
+    key: "created_at",
+    className: "column-date",
+    scopedSlots: { customRender: "date" },
+  },
   {
     title: "ДЕЙСТВИЯ",
     className: "column-btns",
@@ -251,10 +203,10 @@ const columns = [
 
 export default {
   name: "IndexPage",
-  head: {
-    title: "Галереи",
-  },
   mixins: [status, global, authAccess],
+  head: {
+    title: "Youtube Videos",
+  },
   data() {
     return {
       editorOption: {
@@ -277,7 +229,6 @@ export default {
       editId: null,
       formTab: "ru",
       visible: false,
-      loadingBtn: false,
       formTabData: [
         {
           label: "Русский",
@@ -287,94 +238,99 @@ export default {
           label: "O'zbek",
           index: "uz",
         },
+        // {
+        //   label: "English",
+        //   index: "en",
+        // },
       ],
-      eyeIcon: require("../assets/svg/Eye.svg?raw"),
-      editIcon: require("../assets/svg/edit.svg?raw"),
-      deleteIcon: require("../assets/svg/delete.svg?raw"),
-      addIcon: require("../assets/svg/add-icon.svg?raw"),
+      eyeIcon: require("../../assets/svg/Eye.svg?raw"),
+      editIcon: require("../../assets/svg/edit.svg?raw"),
+      deleteIcon: require("../../assets/svg/delete.svg?raw"),
+      addIcon: require("../../assets/svg/add-icon.svg?raw"),
       loading: false,
       search: "",
       columns,
-      galleries: [],
-      previewVisible: false,
-      previewImage: "",
-      fileList: [],
+      videos: [],
+      categories: [],
       rules: {
-        title: {
-          ru: [{ required: true, message: "This field is required", trigger: "change" }],
-        },
+        link: [{ required: true, message: "This field is required", trigger: "change" }],
       },
       form: {
-        title: {
-          ru: "",
-          uz: "",
-        },
+        link: "",
         desc: {
           ru: "",
           uz: "",
+          en: "",
         },
-        files: [],
       },
     };
   },
   async mounted() {
-    this.getFirstData("/galleries", "__GET_GALLERIES");
-    this.checkAllActions("galleries");
+    this.getFirstData("/settings/you-tube", "__GET_VIDEOS");
+    this.checkAllActions("youtube_videos");
   },
   methods: {
+    moment,
     changeSearch(val) {
       this.search = val.target.value;
     },
     saveData() {
-      this.$refs["ruleFormGalleries"][0].validate((valid) => {
+      const data = {
+        ...this.form,
+      };
+      if (this.form.faq_category_id == "false") {
+        data.faq_category_id = null;
+      }
+      this.$refs["ruleFormFaq"][0].validate((valid) => {
         if (valid) {
           if (this.editId) {
-            this.__EDIT_GALLERIES(this.form);
+            this.__EDIT_VIDEOS(data);
           } else {
-            this.__POST_GALLERIES(this.form);
+            this.__POST_VIDEOS(data);
           }
         } else {
           return false;
         }
       });
     },
-
     editAction(id) {
       this.title = "Изменить";
       this.editId = id;
-      this.__GET_GALLERIES_BY_ID(id);
+      this.__GET_VIDOES_BY_ID(id);
     },
     deleteAction(id) {
       this.__DELETE_GLOBAL(
         id,
-        "fetchGalleries/deleteGalleries",
+        "fetchVideos/deleteVideos",
         "Успешно удален",
-        "__GET_GALLERIES"
+        "__GET_VIDEOS"
       );
     },
-    async __GET_GALLERIES() {
+    async __GET_VIDEOS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchGalleries/getGalleries", {
+      const data = await this.$store.dispatch("fetchVideos/getVideos", {
         ...this.$route.query,
       });
       this.loading = false;
       const pageIndex = this.indexPage(
-        data?.galleries?.current_page,
-        data?.galleries?.per_page
+        data?.videos?.current_page,
+        data?.videos?.per_page
       );
-      this.galleries = data?.galleries?.data.map((item, index) => {
+      this.videos = data?.videos?.data.map((item, index) => {
         return {
           ...item,
           key: index + pageIndex,
         };
       });
-      this.totalPage = data?.galleries?.total;
+      this.totalPage = data?.videos?.total;
     },
+
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
-    addGalleries() {
+    addFaqs() {
       this.title = "Добавить";
+
       this.fileList = [];
       this.editId = null;
       this.visible = true;
@@ -382,96 +338,55 @@ export default {
     handleOk() {
       this.visible = false;
     },
-    async __POST_GALLERIES(data) {
+    async __POST_VIDEOS(data) {
       try {
-        await this.$store.dispatch("fetchGalleries/postGalleries", data);
+        await this.$store.dispatch("fetchVideos/postVideos", data);
         this.notification("success", "success", "Успешно добавлен");
-        this.$router.push("/galleries");
         this.handleOk();
-        this.__GET_GALLERIES();
+        this.__GET_VIDEOS();
       } catch (e) {
         this.statusFunc(e);
       }
     },
-    async __GET_GALLERIES_BY_ID(id) {
+    async __GET_VIDOES_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch("fetchGalleries/getGalleriesById", id);
+        const data = await this.$store.dispatch("fetchVideos/getVideosById", id);
         this.visible = true;
-        this.form = data?.gallery;
-        this.fileList = [];
-        data?.gallery.sm_files.forEach((item, index) => {
-          data?.gallery.files.forEach((elem, ind) => {
-            if (index == ind) {
-              this.fileList.push({
-                uid: `-${index}`,
-                name: "image.png",
-                status: "done",
-                oldImg: true,
-                url: item,
-                response: {
-                  path: elem,
-                },
-              });
-            }
-          });
-        });
+        this.form = {
+          desc: data?.video?.desc,
+          link: data?.video?.link,
+        };
       } catch (e) {
         this.statusFunc(e);
       }
     },
     emptyData() {
       this.form = {
-        title: {
-          ru: "",
-          uz: "",
-        },
         desc: {
           ru: "",
           uz: "",
+          en: "",
         },
-        files: [],
+        link: "",
       };
     },
-    async __EDIT_GALLERIES(res) {
+    async __EDIT_VIDEOS(res) {
       try {
-        await this.$store.dispatch("fetchGalleries/editGalleries", {
+        await this.$store.dispatch("fetchVideos/editVideos", {
           id: this.editId,
           data: res,
         });
         this.handleOk();
-
-        this.__GET_GALLERIES();
+        this.__GET_VIDEOS();
         this.notification("success", "success", "Успешно изменена");
-        this.$router.push("/galleries");
       } catch (e) {
         this.statusFunc(e);
-      }
-    },
-    handleCancel() {
-      this.previewVisible = false;
-    },
-    async handlePreview(file) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj);
-      }
-      this.previewImage = file.url || file.preview;
-      this.previewVisible = true;
-    },
-    handleChange({ fileList }) {
-      this.loadingBtn = true;
-      this.fileList = fileList;
-      if (fileList[0]?.response?.path) {
-        this.form.files = fileList.map((item) => item?.response?.path);
-        this.loadingBtn = false;
-      } else if (fileList.length == 0 || this.form.files > fileList.length) {
-        this.form.files = fileList.map((item) => item?.response?.path);
-        this.loadingBtn = false;
       }
     },
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/galleries", "__GET_GALLERIES");
+      this.changePagination(val, "/settings/videos", "__GET_VIDEOS");
     },
     visible(val) {
       if (val == false) {

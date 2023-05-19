@@ -1,5 +1,5 @@
 export const state = () => ({
-  authenticated: true,
+  authenticated: false,
   services: [],
   orders: {
     new: "",
@@ -9,6 +9,7 @@ export const state = () => ({
     all: "",
     is_edited: "",
   },
+  permissions: [],
 });
 export const mutations = {
   logIn(state) {
@@ -33,10 +34,39 @@ export const mutations = {
     state.orders.canceled = payload.canceled;
     state.orders.is_edited = payload.edited;
   },
+  permissions(state, payload) {
+    if (payload) {
+      state.permissions = payload.map((item) => {
+        return {
+          ...item,
+          pivot: {
+            ...item.pivot,
+            actions: JSON.parse(item.pivot.actions),
+          },
+        };
+      });
+    }
+  },
+  findPermissions(state, payload) {
+    const target = state.permissions.find((item) => item.url == "services");
+    return target.pivot.actions.includes("get");
+  },
 };
 export const actions = {
   async getOrders({ commit }, payload) {
-    const res = await this.$axios.$get(`/orders/counts`);
+    const res = await this.$axios.$get(`/orders/counts`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
     commit("orders", res?.counts);
+  },
+  async getPermissions({ commit }, payload) {
+    const res = await this.$axios.$post(`/auth/me`,{}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
+    commit("permissions", res?.me?.role?.permissions);
   },
 };
