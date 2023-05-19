@@ -107,6 +107,7 @@
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
+                    :headers="headers"
                     :file-list="fileBanner"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'banner')"
@@ -130,6 +131,7 @@
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
+                    :headers="headers"
                     :file-list="fileForCard"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'for_card')"
@@ -155,6 +157,7 @@
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
                   :multiple="true"
+                  :headers="headers"
                   :file-list="fileGalleries"
                   @preview="handlePreview"
                   @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
@@ -201,6 +204,7 @@
                     <a-upload
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
+                      :headers="headers"
                       :file-list="card.imgList"
                       @preview="handlePreview"
                       @change="($event) => handleChangeCards($event, card.indexId)"
@@ -296,6 +300,7 @@
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
+                    :headers="headers"
                     :file-list="statistic.statisticFile"
                     @preview="handlePreview"
                     @change="($event) => handleChangeStatistic($event, statistic.indexId)"
@@ -563,6 +568,7 @@
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
+                  :headers="headers"
                   :file-list="feedback.feedbacksFile"
                   @preview="handlePreview"
                   @change="($event) => handleChangeComment($event, feedback.indexId)"
@@ -799,6 +805,9 @@ export default {
       },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       xIcon: require("../assets/svg/x.svg?raw"),
       plusIcon: require("../assets/svg/plus.svg?raw"),
       infoIcon: require("../assets/svg/info.svg?raw"),

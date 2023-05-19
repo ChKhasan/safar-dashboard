@@ -113,6 +113,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileBanner"
+                    :headers="headers"
                     :disabled="true"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'banner')"
@@ -137,6 +138,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileForCard"
+                    :headers="headers"
                     :disabled="true"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'for_card')"
@@ -162,6 +164,7 @@
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
                   :multiple="true"
+                  :headers="headers"
                   :disabled="true"
                   :file-list="fileGalleries"
                   @preview="handlePreview"
@@ -210,6 +213,7 @@
                       disabled
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
+                      :headers="headers"
                       :file-list="card.imgList"
                       @preview="handlePreview"
                       @change="($event) => handleChangeCards($event, card.indexId)"
@@ -307,6 +311,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :disabled="true"
+                    :headers="headers"
                     :file-list="statistic.statisticFile"
                     @preview="handlePreview"
                     @change="($event) => handleChangeStatistic($event, statistic.indexId)"
@@ -355,7 +360,11 @@
                 :key="tariff.id"
               />
             </div>
-            <div class="create-inner-variant" @click="addGroup"  v-if="checkAccess('tariffs', 'post')">
+            <div
+              class="create-inner-variant"
+              @click="addGroup"
+              v-if="checkAccess('tariffs', 'post')"
+            >
               <span> </span>
               Qo’shish
             </div>
@@ -592,6 +601,7 @@
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
                   :disabled="true"
+                  :headers="headers"
                   :file-list="feedback.feedbacksFile"
                   @preview="handlePreview"
                   @change="($event) => handleChangeComment($event, feedback.indexId)"
@@ -687,10 +697,13 @@ export default {
   head: {
     title: "Услуги",
   },
-  mixins: [status,authAccess],
+  mixins: [status, authAccess],
   data() {
     return {
       columns,
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       service: [],

@@ -387,6 +387,7 @@
                     <a-upload
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
+                      :headers="headers"
                       :file-list="statistic.statisticFile"
                       @preview="handlePreview"
                       @change="
@@ -428,6 +429,7 @@
                 action="https://api.safarpark.uz/api/files/upload"
                 list-type="picture-card"
                 :file-list="form.fileListStat"
+                :headers="headers"
                 :multiple="true"
                 @preview="handlePreview"
                 @change="handleChangeStat"
@@ -561,6 +563,9 @@ export default {
   mixins: [status,authAccess],
   data() {
     return {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       top: 10,
       moment,
       previewVisible: false,

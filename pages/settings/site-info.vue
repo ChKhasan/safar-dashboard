@@ -107,6 +107,7 @@
                     <a-upload
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
+                      :headers="headers"
                       :file-list="fileListLogo"
                       @preview="handlePreview"
                       @change="($event) => handleChange($event, 'logo')"
@@ -122,6 +123,7 @@
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
                       :file-list="fileListFavicon"
+                      :headers="headers"
                       @preview="handlePreview"
                       @change="($event) => handleChange($event, 'favicon')"
                     >
@@ -171,6 +173,9 @@ export default {
   },
   data() {
     return {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       editorOption: {
         theme: "snow",
         modules: {

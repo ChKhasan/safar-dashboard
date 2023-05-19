@@ -146,6 +146,7 @@
               action="https://api.safarpark.uz/api/files/upload"
               list-type="picture-card"
               :file-list="fileList"
+              :headers="headers"
               :multiple="true"
               @preview="handlePreview"
               @change="handleChange"
@@ -256,6 +257,9 @@ export default {
   mixins: [status, global, authAccess],
   data() {
     return {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       editorOption: {
         theme: "snow",
         modules: {

@@ -106,6 +106,7 @@
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
+                    :headers="headers"
                     :file-list="fileBanner"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'banner')"
@@ -130,6 +131,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="fileForCard"
+                    :headers="headers"
                     @preview="handlePreview"
                     @change="($event) => handleChangeServiceUpload($event, 'for_card')"
                   >
@@ -154,6 +156,7 @@
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
                   :multiple="true"
+                  :headers="headers"
                   :file-list="fileGalleries"
                   @preview="handlePreview"
                   @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
@@ -201,6 +204,7 @@
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
                       :file-list="card.imgList"
+                      :headers="headers"
                       @preview="handlePreview"
                       @change="($event) => handleChangeCards($event, card.indexId)"
                     >
@@ -295,6 +299,7 @@
                     action="https://api.safarpark.uz/api/files/upload"
                     list-type="picture-card"
                     :file-list="statistic.statisticFile"
+                    :headers="headers"
                     @preview="handlePreview"
                     @change="($event) => handleChangeStatistic($event, statistic.indexId)"
                   >
@@ -588,6 +593,7 @@
                   action="https://api.safarpark.uz/api/files/upload"
                   list-type="picture-card"
                   :file-list="feedback.feedbacksFile"
+                  :headers="headers"
                   @preview="handlePreview"
                   @change="($event) => handleChangeComment($event, feedback.indexId)"
                 >
@@ -762,6 +768,9 @@ export default {
   mixins: [status, authAccess],
   data() {
     return {
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
       title: "Добавить",
       formTabModal: "ru",
       formFaq: {
