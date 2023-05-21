@@ -17,9 +17,13 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="($event) => changeSearch($event, '/news', '__GET_POSTS')"
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/news', '__GET_POSTS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -186,9 +190,32 @@ export default {
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
+    // async changeSearch(val) {
+    //   this.searchVal = val.target.value;
+    //   if (val.target.value.length > 2) {
+    //     if (this.$route.query?.search != val.target.value)
+    //       await this.$router.replace({
+    //         path: "/",
+    //         query: { ...this.$route.query, search: val.target.value },
+    //       });
+    //     if (val.target.value == this.$route.query.search) this.__GET_SERVICES();
+    //   } else if (val.target.value.length == 0) {
+    //     this.clearQuery(val);
+    //   }
+    // },
+    // async clearQuery(val) {
+    //   this.value = "";
+    //   const query = { ...this.$route.query, page: 1 };
+    //   this.current = 1;
+    //   delete query.search;
+    //   if (this.$route.query?.search) {
+    //     await this.$router.replace({
+    //       path: "/",
+    //       query: { ...query },
+    //     });
+    //     this.__GET_SERVICES();
+    //   }
+    // },
     deleteAction(id) {
       this.__DELETE_GLOBAL(id, "fetchPosts/deletePosts", "Успешно удален", "__GET_POSTS");
     },

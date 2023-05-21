@@ -26,9 +26,37 @@ export default {
         page: 1,
         pageSize: 10,
       },
+      searchVal: "",
+      value: "",
     };
   },
   methods: {
+    async changeSearch(val, url, func) {
+      this.searchVal = val.target.value;
+      if (val.target.value.length > 2) {
+        if (this.$route.query?.search != val.target.value)
+          await this.$router.replace({
+            path: url,
+            query: { ...this.$route.query, search: val.target.value },
+          });
+        if (val.target.value == this.$route.query.search) this[func]();
+      } else if (val.target.value.length == 0) {
+        this.clearQuery(url, func);
+      }
+    },
+    async clearQuery(url, func) {
+      this.value = "";
+      const query = { ...this.$route.query, page: 1 };
+      this.current = 1;
+      delete query.search;
+      if (this.$route.query?.search) {
+        await this.$router.replace({
+          path: url,
+          query: { ...query },
+        });
+        this[func]();
+      }
+    },
     cancel(e) {
       this.$message.error("Click on No");
     },

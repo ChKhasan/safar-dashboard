@@ -17,9 +17,13 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="changeSearch($event, '/galleries', '__GET_GALLERIES')"
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/galleries', '__GET_GALLERIES')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -325,9 +329,6 @@ export default {
     this.checkAllActions("galleries");
   },
   methods: {
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     saveData() {
       this.$refs["ruleFormGalleries"][0].validate((valid) => {
         if (valid) {
@@ -389,7 +390,6 @@ export default {
       try {
         await this.$store.dispatch("fetchGalleries/postGalleries", data);
         this.notification("success", "success", "Успешно добавлен");
-        this.$router.push("/galleries");
         this.handleOk();
         this.__GET_GALLERIES();
       } catch (e) {

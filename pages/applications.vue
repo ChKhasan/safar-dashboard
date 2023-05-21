@@ -7,9 +7,15 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) => changeSearch($event, '/applications', '__GET_APPLICATIONS')
+              "
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/applications', '__GET_APPLICATIONS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -45,6 +51,32 @@
             </a-popconfirm>
           </span>
         </a-table>
+        <div class="d-flex justify-content-between mt-4">
+          <a-select
+            v-model="params.pageSize"
+            class="table-page-size"
+            style="width: 120px"
+            @change="
+              ($event) =>
+                changePageSizeGlobal($event, '/applications', '__GET_APPLICATIONS')
+            "
+          >
+            <a-select-option
+              v-for="item in pageSizes"
+              :key="item?.value"
+              :label="item.label"
+              :value="item.value"
+              >{{ item.label }}
+            </a-select-option>
+          </a-select>
+          <a-pagination
+            class="table-pagination"
+            :simple="false"
+            v-model.number="current"
+            :total="totalPage"
+            :page-size.sync="params.pageSize"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -54,6 +86,7 @@
 import SearchInput from "../components/form/Search-input.vue";
 import TitleBlock from "../components/Title-block.vue";
 import status from "../mixins/status";
+import global from "../mixins/global";
 import authAccess from "../mixins/authAccess";
 
 import moment from "moment";
@@ -115,7 +148,7 @@ export default {
   head: {
     title: "Applications",
   },
-  mixins: [status, authAccess],
+  mixins: [status, global, authAccess],
   data() {
     return {
       eyeIcon: require("../assets/svg/Eye.svg?raw"),
@@ -129,20 +162,18 @@ export default {
     };
   },
   mounted() {
-    this.__GET_APPLICATIONS();
+    this.getFirstData("/applications", "__GET_APPLICATIONS");
     this.checkAllActions("applications");
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
+
     deleteAction(id) {
       this.__DELETE_APPLICATIONS(id);
     },
     async __GET_APPLICATIONS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchApplications/getApplications");
+      const data = await this.$store.dispatch("fetchApplications/getApplications",{...this.$route.query});
       this.loading = false;
       const pageIndex = this.indexPage(
         data?.applications?.current_page,

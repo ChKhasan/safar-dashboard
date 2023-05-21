@@ -45,10 +45,11 @@
             <SearchInput
               placeholder="Поиск
             "
-              @changeSearch="changeSearch"
+              @changeSearch="changeSearch($event, '/settings/translations', '__GET_TRANSLATIONS')"
             />
             <div></div>
             <a-button
+              @click="clearQuery('/settings/translations', '__GET_TRANSLATIONS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -107,7 +108,7 @@
             style="width: 120px"
             @change="
               ($event) =>
-                changePageSizeGlobal($event, '/translations', '__GET_TRANSLATIONS')
+                changePageSizeGlobal($event, '/settings/translations', '__GET_TRANSLATIONS')
             "
           >
             <a-select-option
@@ -335,9 +336,6 @@ export default {
     this.checkAllActions("translates");
   },
   methods: {
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     async copyText(name) {
       await navigator.clipboard.writeText(name);
       this.$message.success("Copy");

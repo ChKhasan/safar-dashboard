@@ -6,9 +6,15 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
-            <div>{{ search }}</div>
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) => changeSearch($event, '/clients', '__GET_CLIENTS')
+              "
+            />
+            <div></div>
             <a-button
+              @click="clearQuery('/clients', '__GET_CLIENTS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -41,7 +47,7 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
+        <!-- <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -65,7 +71,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -158,9 +164,6 @@ export default {
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     showAction(id) {
       this.__GET_CLIENTS_BY_ID(id);
       // this.__DELETE_GLOBAL(
@@ -184,6 +187,7 @@ export default {
       const data = await this.$store.dispatch("fetchClients/getClients", {
         ...this.$route.query,
       });
+      console.log(data);
       this.loading = false;
       this.faqs = data?.clients.map((item, index) => {
         return {

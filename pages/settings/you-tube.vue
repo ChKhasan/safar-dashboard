@@ -21,9 +21,15 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) => changeSearch($event, '/settings/you-tube', '__GET_VIDEOS')
+              "
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/settings/you-tube', '__GET_VIDEOS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -271,9 +277,6 @@ export default {
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     saveData() {
       const data = {
         ...this.form,

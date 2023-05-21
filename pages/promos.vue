@@ -17,9 +17,13 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="($event) => changeSearch($event, '/promos', '__GET_PROMOS')"
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/promos', '__GET_PROMOS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -306,9 +310,6 @@ export default {
     this.checkAllActions("promos");
   },
   methods: {
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     saveData() {
       this.$refs["ruleFormFaq"].validate((valid) => {
         if (valid) {
@@ -352,7 +353,6 @@ export default {
         };
       });
       this.totalPage = data?.promos?.total;
-      console.log(this.promos);
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;

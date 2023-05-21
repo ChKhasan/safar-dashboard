@@ -164,7 +164,6 @@ export default {
     this.getFirstData("/orders/all-orders", "__GET_ORDERS");
     this.__GET_SERVICES();
     this.checkAllActions("orders");
-
   },
   methods: {
     changeSearch(val) {
@@ -205,15 +204,21 @@ export default {
         ...this.$route.query,
       });
       this.loading = false;
+      const pageIndex = this.indexPage(
+        data?.orders?.current_page,
+        data?.orders?.per_page
+      );
       this.orders = data?.orders?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + pageIndex,
         };
       });
       this.totalPage = data?.orders?.total;
-      // this.$store.commit("orders", this.orders);
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
+    },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
     },
     async __GET_SERVICES() {
       const data = await this.$store.dispatch("fetchServices/getServices");

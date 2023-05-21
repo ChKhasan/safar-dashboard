@@ -18,9 +18,10 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="$event => changeSearch($event, '/settings/roles', '__GET_ROLES')" />
             <div></div>
             <a-button
+            @click="clearQuery('/settings/roles', '__GET_ROLES')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -57,7 +58,7 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
+        <!-- <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -81,7 +82,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -172,7 +173,6 @@ export default {
         };
       });
       // this.totalPage = data?.posts?.total;
-      console.log(this.posts);
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;

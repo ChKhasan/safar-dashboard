@@ -51,9 +51,25 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid1 w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) =>
+                  changeSearch(
+                    $event,
+                    `/settings/translations-group/${$route.params.index}`,
+                    '__GET_TRANSLATIONS'
+                  )
+              "
+            />
             <div></div>
             <a-button
+              @click="
+                clearQuery(
+                  `/settings/translations-group/${$route.params.index}`,
+                  '__GET_TRANSLATIONS'
+                )
+              "
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -120,7 +136,11 @@
             style="width: 120px"
             @change="
               ($event) =>
-                changePageSizeGlobal($event, '/translations', '__GET_TRANSLATIONS')
+                changePageSizeGlobal(
+                  $event,
+                  `/settings/translations-group/${this.$route.params.index}`,
+                  '__GET_TRANSLATIONS'
+                )
             "
           >
             <a-select-option
@@ -352,9 +372,6 @@ export default {
     this.__GET_TRANSLATE_GROUPS();
   },
   methods: {
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     async copyText(name) {
       await navigator.clipboard.writeText(name);
       this.$message.success("Copy");

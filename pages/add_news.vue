@@ -130,7 +130,6 @@ export default {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
       editorOption: {
-        // Some Quill options...
         theme: "snow",
         modules: {
           toolbar: [
@@ -191,7 +190,6 @@ export default {
           ],
         },
       },
-
       formTab: "ru",
       formTabData: [
         {

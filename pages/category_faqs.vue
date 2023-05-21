@@ -21,9 +21,15 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) => changeSearch($event, '/category_faqs', '__GET_FAQS')
+              "
+            />
             <span></span>
             <a-button
+              @click="clearQuery('/category_faqs', '__GET_FAQS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -65,12 +71,14 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
+        <!-- <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="($event) => changePageSizeGlobal($event, '/faqs', '__GET_FAQS')"
+            @change="
+              ($event) => changePageSizeGlobal($event, '/category_faqs', '__GET_FAQS')
+            "
           >
             <a-select-option
               v-for="item in pageSizes"
@@ -87,7 +95,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div>
+        </div> -->
       </div>
     </div>
     <a-modal
@@ -260,9 +268,6 @@ export default {
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     saveData() {
       this.$refs["ruleFormFaq"][0].validate((valid) => {
         if (valid) {
@@ -294,6 +299,7 @@ export default {
       const data = await this.$store.dispatch("fetchFaqs/getFaqsCategories", {
         ...this.$route.query,
       });
+      console.log(data);
       this.loading = false;
       //   const pageIndex = this.indexPage(data?.categories?.current_page, data?.categories?.per_page);
       this.faqs = data?.categories.map((item, index) => {
@@ -360,7 +366,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/faqs", "__GET_FAQS");
+      this.changePagination(val, "/category_faqs", "__GET_FAQS");
     },
     visible(val) {
       if (val == false) {

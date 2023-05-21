@@ -17,9 +17,15 @@
       <div class="card_block main-table px-4 pb-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput
+              placeholder="Поиск"
+              @changeSearch="
+                ($event) => changeSearch($event, '/settings/users', '__GET_USERS')
+              "
+            />
             <div></div>
             <a-button
+              @click="clearQuery('/settings/users', '__GET_USERS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -56,7 +62,7 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
+        <!-- <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -80,7 +86,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -157,9 +163,6 @@ export default {
   },
   methods: {
     moment,
-    changeSearch(val) {
-      this.search = val.target.value;
-    },
     deleteAction(id) {
       this.__DELETE_GLOBAL(id, "fetchRole/deleteUsers", "Успешно удален", "__GET_USERS");
     },

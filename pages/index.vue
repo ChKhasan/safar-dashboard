@@ -174,7 +174,6 @@ export default {
     };
   },
   mounted() {
-    this.__GET_SERVICES();
     this.getFirstData("/", "__GET_SERVICES");
     this.checkAllActions("services");
   },
@@ -212,6 +211,7 @@ export default {
         ...this.$route.query,
       });
       this.loading = false;
+      console.log(data);
       this.services = data?.services.map((item, index) => {
         return {
           ...item,
