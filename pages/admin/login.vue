@@ -80,11 +80,9 @@ export default {
     async __AUTH(data) {
       try {
         const res = await this.$store.dispatch("fetchAuth/auth", data);
-        console.log(res);
         localStorage.setItem("auth_token", res.token);
         this.$store.commit("logIn");
         this.$router.push("/");
-        console.log(this.$store.state.authenticated);
       } catch (e) {
         this.showError = true;
       }

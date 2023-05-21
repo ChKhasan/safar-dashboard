@@ -1,6 +1,10 @@
 <template lang="html">
   <div class="posts">
-    <TitleBlock title="Заказ №565" :breadbrumb="['Заказы']" lastLink="Заказ №565">
+    <TitleBlock
+      :title="`Заказ №${this.$route.params.index}`"
+      :breadbrumb="['Заказы']"
+      :lastLink="`Заказ №${this.$route.params.index}`"
+    >
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -99,7 +103,7 @@
               <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
                 <FormTitle title="Описание" />
                 <div class="">
-                  <a-form-model-item class="form-item mb-0" >
+                  <a-form-model-item class="form-item mb-0">
                     <quill-editor
                       v-model="order.comments"
                       disabled
@@ -172,7 +176,7 @@ import BiletCard from "../../../components/cards/biletCard.vue";
 import moment from "moment";
 
 export default {
-  mixins: [status,authAccess],
+  mixins: [status, authAccess],
   head: {
     title: "Новости",
   },

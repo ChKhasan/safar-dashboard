@@ -37,14 +37,7 @@
           </span>
 
           <span slot="id" slot-scope="text">
-            <a-popconfirm
-              title="Are you sure delete this row?"
-              ok-text="Yes"
-              cancel-text="No"
-              @confirm="showAction(text)"
-            >
-              <span class="action-btn" v-html="eyeIcon"> </span>
-            </a-popconfirm>
+            <span class="action-btn" v-html="eyeIcon"> </span>
           </span>
         </a-table>
         <!-- <div class="d-flex justify-content-between mt-4">
@@ -166,18 +159,12 @@ export default {
     moment,
     showAction(id) {
       this.__GET_CLIENTS_BY_ID(id);
-      // this.__DELETE_GLOBAL(
-      //   id,
-      //   "fetchFaqs/deleteFaqsCategories",
-      //   "Услуга был успешно удален",
-      //   "__GET_CLIENTS"
-      // );
+      this.$router.push(`/show-client/${id}`);
     },
     async __GET_CLIENTS_BY_ID(id) {
       try {
         const data = await this.$store.dispatch("fetchClients/getClientsById", id);
         this.visible = true;
-        console.log(data);
       } catch (e) {
         this.statusFunc(e);
       }
@@ -187,7 +174,6 @@ export default {
       const data = await this.$store.dispatch("fetchClients/getClients", {
         ...this.$route.query,
       });
-      console.log(data);
       this.loading = false;
       this.faqs = data?.clients.map((item, index) => {
         return {

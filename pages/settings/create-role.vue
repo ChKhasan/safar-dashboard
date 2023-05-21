@@ -135,7 +135,6 @@ export default {
       } else {
         this.form.permissions.push({ id: obj.id, actions: [type] });
       }
-      console.log(this.form.permissions);
     },
     async __GET_PERMISSIONS() {
       const data = await this.$store.dispatch("fetchRole/getPermissions");

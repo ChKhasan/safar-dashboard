@@ -383,7 +383,6 @@ export default {
         const data = await this.$store.dispatch("fetchPromos/getPromosById", id);
         this.visible = true;
         this.form = data?.promo;
-        console.log(this.form);
       } catch (e) {
         this.statusFunc(e);
       }

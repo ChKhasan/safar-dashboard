@@ -287,7 +287,6 @@ export default {
   async mounted() {
     this.$store.dispatch("getOrders");
     await this.$store.dispatch("getPermissions");
-    console.log(this.$store.state.permissions);
 
     (this.menuData = [
       {
@@ -421,8 +420,8 @@ export default {
             key: "41",
             name: "Клиенты",
             to: "/clients",
-            add: "clients",
-            edit: "clients",
+            add: "/show-client",
+            edit: "/show-client",
             show: this.checkShow("clients/all"),
           },
         ],

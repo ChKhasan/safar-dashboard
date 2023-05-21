@@ -341,7 +341,6 @@ export default {
       this.$message.success("Copy");
     },
     putTranslation() {
-      console.log(this.$refs);
       this.$refs["ruleFormTrans"].validate((valid) => {
         if (valid) {
           this.__PUT_TRANSLATIONS(this.formTranlate);
@@ -360,7 +359,6 @@ export default {
       });
     },
     editAction(id) {
-      console.log(id);
       this.visibleTranslate = true;
       this.title = "Изменить";
       this.editIdTrans = id.id;

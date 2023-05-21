@@ -180,7 +180,6 @@ export default {
           key: index + 1,
         };
       });
-      console.log(this.posts);
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;

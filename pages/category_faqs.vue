@@ -299,7 +299,6 @@ export default {
       const data = await this.$store.dispatch("fetchFaqs/getFaqsCategories", {
         ...this.$route.query,
       });
-      console.log(data);
       this.loading = false;
       //   const pageIndex = this.indexPage(data?.categories?.current_page, data?.categories?.per_page);
       this.faqs = data?.categories.map((item, index) => {

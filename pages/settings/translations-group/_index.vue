@@ -458,7 +458,6 @@ export default {
       }
     },
     putTranslation() {
-      console.log(this.$refs);
       this.$refs["ruleFormTrans"].validate((valid) => {
         if (valid) {
           this.__PUT_TRANSLATIONS(this.formTranlate);

@@ -131,7 +131,6 @@ export default {
           role_id: data?.user?.role_id,
           username: data?.user?.username,
         };
-        console.log(this.form);
       } catch (e) {
         this.statusFunc(e);
       }
