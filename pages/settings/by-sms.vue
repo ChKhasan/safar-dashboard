@@ -90,7 +90,7 @@ export default {
             message: "This field is required",
             trigger: "change",
           },
-          { min: 12, message: "Length should be 3 to 5", trigger: "blur" },
+          { min: 12, message: "Min length 12", trigger: "blur" },
         ],
       },
       form: {
