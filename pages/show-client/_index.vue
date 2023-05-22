@@ -55,7 +55,7 @@
               </div>
 
               <div class="mt-5">
-                <FormTitle title="История" />
+                <FormTitle title="История заказов" />
               </div>
               <div class="card_block main-table px-4 py-4">
                 <div
