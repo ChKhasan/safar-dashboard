@@ -10,7 +10,7 @@
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
           @click="$router.go(-1)"
         >
-        Назад
+          Назад
         </div>
       </div>
     </TitleBlock>
@@ -57,13 +57,72 @@
               <div class="mt-5">
                 <FormTitle title="История" />
               </div>
-              <div class="order-bilets">
-                <!-- <BiletCard
-                  v-for="orderIn in order.orders"
-                  :key="orderIn.id"
-                  :orderIn="orderIn"
-                  :isPaid="order.is_paid"
-                /> -->
+              <div class="card_block main-table px-4 py-4">
+                <div
+                  class="d-flex justify-content-between align-items-center card_header"
+                >
+                  <div class="prodduct-list-header-grid w-100 align-items-center"></div>
+                </div>
+                <a-table
+                  :columns="columns"
+                  :data-source="client.general_orders"
+                  :pagination="false"
+                  :loading="loading"
+                  align="center"
+                >
+                  <!-- <span
+                    to="/orders/1232/details"
+                    slot="client"
+                    slot-scope="text"
+                    align="center"
+                  >
+                    {{ text }}
+                  </span> -->
+                  <a slot="amount" slot-scope="text">${{ text }}</a>
+                  <span slot="orders" slot-scope="text">{{
+                    text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
+                  }}</span>
+                  <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
+                  <!-- <span slot="client" slot-scope="text" class="column-client">{{
+                    text?.name ? text?.name : "----"
+                  }}</span> -->
+                  <span slot="dataAdd" slot-scope="text">{{
+                    moment(text).format("DD/MM/YYYY")
+                  }}</span>
+                  <span slot="customTitle"></span>
+
+                  <span
+                    slot="status"
+                    slot-scope="tags"
+                    class="tags-style"
+                    :class="{
+                      tag_success: tags == 'new',
+                      tag_inProgress: tags == 'in_process',
+                      tag_approved: tags == 'accepted',
+                      tag_rejected: tags == 'canceled',
+                    }"
+                  >
+                    {{ status[tags] }}
+                  </span>
+                  <span slot="btns" slot-scope="text">
+                    <!-- <span
+                      v-if="checkAccess('orders', 'put')"
+                      class="action-btn"
+                      v-html="eyeIcon"
+                      @click="$router.push(`/orders/order/${text}`)"
+                    >
+                    </span>
+                    <span
+                      v-if="checkAccess('orders', 'put')"
+                      class="action-btn"
+                      @click="$router.push(`/orders/order/${text}`)"
+                      v-html="editIcon"
+                    >
+                    </span> -->
+                    <!-- <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
+            </span> -->
+                  </span>
+                </a-table>
               </div>
             </div>
           </div>
@@ -91,6 +150,57 @@ export default {
   },
   data() {
     return {
+      status: {
+        new: "Новые",
+        in_process: "Ожидание",
+        accepted: "Принятые",
+        canceled: "Отмененные",
+      },
+      columns: [
+        {
+          title: "Заказ ID",
+          slots: { title: "customTitle" },
+          scopedSlots: { customRender: "orderId" },
+          className: "column-service",
+        },
+        {
+          title: "дата добавления",
+          dataIndex: "created_at",
+          key: "created_at",
+          scopedSlots: { customRender: "dataAdd" },
+          className: "column-date",
+        },
+        {
+          title: "Услуга",
+          dataIndex: "orders",
+          scopedSlots: { customRender: "orders" },
+          className: "column-name",
+          key: "orders",
+        },
+        {
+          title: "сумма",
+          dataIndex: "amount",
+          scopedSlots: { customRender: "amount" },
+          className: "column-name",
+          key: "amount",
+        },
+        {
+          title: "статус",
+          dataIndex: "status",
+          scopedSlots: { customRender: "status" },
+          className: "column-tags",
+          key: "status",
+        },
+        // {
+        //   title: "ДЕЙСТВИЯ",
+        //   key: "id",
+        //   dataIndex: "id",
+        //   scopedSlots: { customRender: "btns" },
+        //   className: "column-btns",
+        //   width: "100px",
+        //   align: "center",
+        // },
+      ],
       statusValue: "new",
       editorOption: {
         // Some Quill options...
@@ -217,7 +327,7 @@ export default {
           this.$route.params.index
         );
         this.visible = true;
-        
+
         this.client = data?.client;
       } catch (e) {
         this.statusFunc(e);

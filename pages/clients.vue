@@ -37,7 +37,7 @@
           </span>
 
           <span slot="id" slot-scope="text">
-            <span class="action-btn" v-html="eyeIcon"> </span>
+            <span class="action-btn" @click="showAction(text)" v-html="eyeIcon"> </span>
           </span>
         </a-table>
         <!-- <div class="d-flex justify-content-between mt-4">
@@ -158,7 +158,8 @@ export default {
   methods: {
     moment,
     showAction(id) {
-      this.__GET_CLIENTS_BY_ID(id);
+      console.log(id);
+      // this.__GET_CLIENTS_BY_ID(id);
       this.$router.push(`/show-client/${id}`);
     },
     async __GET_CLIENTS_BY_ID(id) {
