@@ -30,6 +30,11 @@ export default {
       value: "",
     };
   },
+  computed: {
+    routerSearch() {
+      return Object.keys(this.$route.query).includes("search");
+    },
+  },
   methods: {
     async changeSearch(val, url, func) {
       this.searchVal = val.target.value;
@@ -37,7 +42,7 @@ export default {
         if (this.$route.query?.search != val.target.value)
           await this.$router.replace({
             path: url,
-            query: { ...this.$route.query, search: val.target.value },
+            query: { ...this.$route.query, search: val.target.value,page: 1 },
           });
         if (val.target.value == this.$route.query.search) this[func]();
       } else if (val.target.value.length == 0) {
@@ -147,5 +152,12 @@ export default {
           this.notification("error", "Error", "Нет результатов запроса");
       }
     },
+  },
+  watch: {
+    routerSearch(val) {
+      if(val) {
+
+      }
+    }
   },
 };

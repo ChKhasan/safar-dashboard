@@ -137,7 +137,7 @@ export default {
     },
     async __GET_ROLES() {
       const data = await this.$store.dispatch("fetchRole/getRole");
-      this.roles = data?.roles;
+      this.roles = data?.roles?.data;
     },
     async __POST_USER(data) {
       try {

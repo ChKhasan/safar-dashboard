@@ -62,7 +62,7 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <!-- <div class="d-flex justify-content-between mt-4">
+        <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -86,7 +86,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -172,14 +172,15 @@ export default {
         ...this.$route.query,
       });
       this.loading = false;
-      // this.posts = data?.users;
-      // const pageIndex = this.indexPage(data?.posts?.current_page, data?.posts?.per_page);
-      this.posts = data?.users.map((item, index) => {
+      const pageIndex = this.indexPage(data?.users?.current_page, data?.users?.per_page);
+      console.log(pageIndex);
+      this.posts = data?.users?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + pageIndex,
         };
       });
+      this.totalPage = data?.users?.total;
     },
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
