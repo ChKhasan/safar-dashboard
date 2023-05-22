@@ -238,6 +238,10 @@
                 </div>
               </div>
             </a-form-model-item>
+            <a-form-model-item
+              class="form-item mb-0"
+              label="Основные моменты"
+            ></a-form-model-item>
             <div
               class="grid-with-btn"
               v-for="(moment, index) in form.moments"
@@ -245,13 +249,12 @@
             >
               <a-form-model-item
                 class="form-item mb-3"
-                :label="index == 0 ? 'Основные моменты' : ''"
               >
                 <a-input v-model="moment.title[item.index]" placeholder="Text" />
               </a-form-model-item>
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-start">
                 <div
-                  class="variant-btn variant-btn-delete mt-3"
+                  class="variant-btn variant-btn-delete"
                   v-html="xIcon"
                   @click="deleteMoments(moment.indexId)"
                 ></div>
@@ -1307,26 +1310,15 @@ export default {
       this.form.faqs = this.form.faqs.filter((item) => item.indexId != indexId);
     },
     deleteMoments(indexId) {
-      if (this.form.moments.length > 1)
-        this.form.moments = this.form.moments.filter((item) => item.indexId != indexId);
+      this.form.moments = this.form.moments.filter((item) => item.indexId != indexId);
     },
     deleteFeedbacks(indexId) {
-      if (this.form.feedbacks.length > 1)
-        this.form.feedbacks = this.form.feedbacks.filter(
-          (item) => item.indexId != indexId
-        );
-    },
-    deletePackageOption(indexId) {
-      if (this.form.package_options.length > 1)
-        this.form.package_options = this.form.package_options.filter(
-          (item) => item.indexId != indexId
-        );
+      this.form.feedbacks = this.form.feedbacks.filter((item) => item.indexId != indexId);
     },
     deleteServices(indexId) {
-      if (this.form.additional_services.length > 1)
-        this.form.additional_services = this.form.additional_services.filter(
-          (item) => item.indexId != indexId
-        );
+      this.form.additional_services = this.form.additional_services.filter(
+        (item) => item.indexId != indexId
+      );
     },
     deletePackageOption(indexId) {
       if (this.form.package_options.length > 1)
@@ -1372,7 +1364,10 @@ export default {
           ru: "",
           uz: "",
         },
-        indexId: Math.max(...this.form.moments.map((o) => o.indexId)) + 1,
+        indexId:
+          this.form.moments.length > 0
+            ? Math.max(...this.form.moments.map((o) => o.indexId)) + 1
+            : 1,
       });
     },
     addFaqs() {
@@ -1391,8 +1386,12 @@ export default {
         logo: "",
         feedbacksFile: [],
         id: 0,
-        indexId: Math.max(...this.form.feedbacks.map((o) => o.indexId)) + 1,
+        indexId:
+          this.form.feedbacks.length > 0
+            ? Math.max(...this.form.feedbacks.map((o) => o.indexId)) + 1
+            : 1,
       });
+      console.log(this.form.feedbacks);
     },
     addServices() {
       this.form.additional_services.push({
@@ -1402,7 +1401,10 @@ export default {
         },
         price: 0,
         id: 0,
-        indexId: Math.max(...this.form.additional_services.map((o) => o.indexId)) + 1,
+        indexId:
+          this.form.additional_services.length > 0
+            ? Math.max(...this.form.additional_services.map((o) => o.indexId)) + 1
+            : 1,
       });
     },
     addGroup() {

@@ -239,20 +239,21 @@
                 </div>
               </div>
             </a-form-model-item>
+            <a-form-model-item
+              class="form-item mb-0"
+              label="Основные моменты"
+            ></a-form-model-item>
             <div
               class="grid-with-btn"
               v-for="(moment, index) in form.moments"
               :key="moment.indexId"
             >
-              <a-form-model-item
-                class="form-item mb-3"
-                :label="index == 0 ? 'Основные моменты' : ''"
-              >
+              <a-form-model-item class="form-item mb-3">
                 <a-input v-model="moment.title[item.index]" placeholder="Text" />
               </a-form-model-item>
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-start">
                 <div
-                  class="variant-btn variant-btn-delete mt-3"
+                  class="variant-btn variant-btn-delete"
                   v-html="xIcon"
                   @click="deleteMoments(moment.indexId)"
                 ></div>
