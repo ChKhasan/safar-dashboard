@@ -10,6 +10,9 @@ export const state = () => ({
     is_edited: "",
   },
   permissions: [],
+  operator: {
+    name: "",
+  },
 });
 export const mutations = {
   logIn(state) {
@@ -51,6 +54,9 @@ export const mutations = {
     const target = state.permissions.find((item) => item.url == "services");
     return target.pivot.actions.includes("get");
   },
+  takeOperatorName(state, payload) {
+    state.operator = payload;
+  },
 };
 export const actions = {
   async getOrders({ commit }, payload) {
@@ -73,6 +79,7 @@ export const actions = {
         }
       );
       commit("permissions", res?.me?.role?.permissions);
+      commit("takeOperatorName", res?.me);
     } catch (e) {
       localStorage.removeItem("auth_token");
     }

@@ -147,13 +147,17 @@
                 </a-button>
                 <a-form-model-item class="form-item mb-3 mt-3" label="Принял оператор">
                   <a-input
-                    v-model="form.telegram"
+                    v-model="order.user.name"
                     placeholder="Принял оператор"
                     disabled
                   />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-3" label="Дата принайте">
-                  <a-input v-model="form.facebook" placeholder="Дата принайте" disabled />
+                  <a-input
+                    v-model="order.user.created_at"
+                    placeholder="Дата принайте"
+                    disabled
+                  />
                 </a-form-model-item>
               </div>
             </div>
@@ -265,6 +269,10 @@ export default {
           name: "",
           phone_number: "",
         },
+        user: {
+          name: "",
+          created_at: "",
+        },
       },
       rules: {
         title: {
@@ -289,6 +297,9 @@ export default {
         desc: {
           ru: "",
           uz: "",
+        },
+        user: {
+          name: "",
         },
         poster: "",
         instagram: "",
@@ -332,6 +343,9 @@ export default {
         this.order = data?.order;
         this.statusValue = data?.order?.status;
         this.order.created_at = moment(data?.order?.created_at).format(
+          "Do MMMM. YYYY hh:mm"
+        );
+        this.order.user.created_at = moment(data?.order?.user?.created_at).format(
           "Do MMMM. YYYY hh:mm"
         );
       } catch (e) {

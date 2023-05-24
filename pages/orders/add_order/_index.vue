@@ -137,7 +137,11 @@
                   Изменить статус
                 </a-button> -->
                 <a-form-model-item class="form-item mb-3 mt-3" label="Добавил операторр">
-                  <a-input v-model="form.telegram" placeholder="Добавил операторр" />
+                  <a-input
+                    disabled
+                    v-model="$store.state.operator.name"
+                    placeholder="Добавил операторр"
+                  />
                 </a-form-model-item>
               </div>
             </div>
