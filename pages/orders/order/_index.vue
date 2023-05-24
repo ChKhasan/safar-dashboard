@@ -22,15 +22,15 @@
               <div class="card_block main-table px-4 py-4">
                 <FormTitle title="Данные заказа" />
                 <div class="order-grid-2">
-                  <a-form-model-item class="form-item mb-0" label="Дата заказы">
+                  <a-form-model-item class="form-item mb-0" label="Дата заказа">
                     <a-input
-                      placeholder="Дата заказы"
+                      placeholder="Дата заказа"
                       v-model="order.created_at"
                       disabled
                     />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="№ заказы">
-                    <a-input placeholder="№ заказы" v-model="order.id" disabled />
+                  <a-form-model-item class="form-item mb-0" label="№ заказa">
+                    <a-input placeholder="№ заказa" v-model="order.id" disabled />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="Сумма">
                     <a-input-number
@@ -62,7 +62,7 @@
                   <a-form-model-item class="form-item mb-3" label="Способ оплаты">
                     <a-input
                       style="text-transform: capitalize"
-                      placeholder="Способ оплаты"
+                      placeholder="Наличные\Безналичные"
                       v-model="order.payment_method"
                       disabled
                     />
@@ -73,7 +73,7 @@
               <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
                 <FormTitle title="Клиент" />
                 <div class="order-client-grid-3">
-                  <a-form-model-item class="form-item mb-0" label="ID Клиент">
+                  <a-form-model-item class="form-item mb-0" label="ID клиента">
                     <a-input placeholder="ID" v-model="order.client.id" disabled />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="Имя Клиента">
@@ -211,10 +211,10 @@
                     disabled
                   />
                 </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Дата принайте">
+                <a-form-model-item class="form-item mb-3" label="Дата принятия">
                   <a-input
                     v-model="order.user.created_at"
-                    placeholder="Дата принайте"
+                    placeholder="Дата принятия"
                     disabled
                   />
                 </a-form-model-item>
@@ -283,14 +283,14 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="saveData"
           >
-          Сохранять
+            Сохранять
           </a-button>
         </div>
       </template>

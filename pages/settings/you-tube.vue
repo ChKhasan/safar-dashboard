@@ -125,8 +125,8 @@
           v-if="formTab == item.index"
         >
           <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item class="form-item mb-3" label="Link" prop="link">
-              <a-input v-model="form.link" placeholder="Link" />
+            <a-form-model-item class="form-item mb-3" label="Ссылка" prop="link">
+              <a-input v-model="form.link" placeholder="Ссылка..." />
             </a-form-model-item>
             <a-form-model-item class="form-item mb-3" label="Описание">
               <quill-editor

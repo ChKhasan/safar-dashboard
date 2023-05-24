@@ -19,7 +19,7 @@
       :class="{ 'active-orders': $route.path == '/orders/expectation-orders' }"
       to="/orders/expectation-orders"
     >
-      <span class="order-blue"></span> Ожидание ({{
+      <span class="order-blue"></span> В ожидании ({{
         `${$store.state.orders.in_process}`
       }})
     </nuxt-link>

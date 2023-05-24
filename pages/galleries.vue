@@ -101,7 +101,7 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '5px' }"
+      centered
       :title="title"
       :closable="false"
       width="720px"
@@ -157,7 +157,7 @@
             >
               <div v-if="fileList.length < 8">
                 <a-icon type="plus" />
-                <div class="ant-upload-text">Upload</div>
+                <div class="ant-upload-text">Загрузить</div>
               </div>
             </a-upload>
             <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -172,7 +172,7 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
@@ -180,7 +180,7 @@
             :loading="loadingBtn"
             @click="saveData"
           >
-          Сохранять
+            Сохранять
           </a-button>
         </div>
       </template>

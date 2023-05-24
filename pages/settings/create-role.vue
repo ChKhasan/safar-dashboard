@@ -29,7 +29,7 @@
                 <a-input v-model="form.name" placeholder="Имя..." />
               </a-form-model-item>
               <div class="permissions-container">
-                <div class="permissions-header"><h5>Доступы к меню</h5></div>
+                <div class="permissions-header"><h5>Доступы к разделам</h5></div>
                 <div
                   class="permissions-list"
                   v-for="permission in permissions"

@@ -114,7 +114,7 @@
                     >
                       <div v-if="fileListLogo.length < 1">
                         <a-icon type="plus" />
-                        <div class="ant-upload-text">Upload</div>
+                        <div class="ant-upload-text">Загрузить</div>
                       </div>
                     </a-upload>
                   </a-form-model-item>
@@ -129,7 +129,7 @@
                     >
                       <div v-if="fileListFavicon.length < 1">
                         <a-icon type="plus" />
-                        <div class="ant-upload-text">Upload</div>
+                        <div class="ant-upload-text">Загрузить</div>
                       </div>
                     </a-upload>
                   </a-form-model-item>

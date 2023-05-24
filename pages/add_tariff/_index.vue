@@ -50,18 +50,18 @@
             <div class="grid-2">
               <a-form-model-item
                 class="form-item mb-3 required inner"
-                label="Xizmat nomi"
+                label="Название"
                 prop="name.ru"
               >
-                <a-input v-model="form.name[item.index]" placeholder="Group name" />
+                <a-input v-model="form.name[item.index]" placeholder="Название..." />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 required inner" label="Tarif text">
-                <a-input v-model="form.subtitle[item.index]" placeholder="Group name" />
+              <a-form-model-item class="form-item mb-3 required inner" label="Подзаголовок">
+                <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок..." />
               </a-form-model-item>
             </div>
             <a-form-model-item
               class="form-item mb-3 inner"
-              label="Sub title (tight title)"
+              label="Описание"
             >
               <quill-editor
                 class="product-editor"
@@ -157,9 +157,9 @@
             :key="index2"
             v-if="formTab.tariff == item.index"
           >
-            <span class="px-4"><FormTitle title="Narxni kiritish" /></span>
+            <span class="px-4"><FormTitle title="Добавить цены" /></span>
             <div class="grid-3 px-4">
-              <a-form-model-item class="form-item inner mb-3" label="Turi">
+              <a-form-model-item class="form-item inner mb-3" label="Тип">
                 <a-select :default-value="services[0].value" v-model="form.type">
                   <a-select-option
                     v-for="(service, index) in services"
@@ -172,31 +172,31 @@
               <span v-if="form.type == 'by_count'">
                 <a-form-model-item
                   class="form-item inner mb-3"
-                  label="Minimal mijoz"
+                  label="Мин. кол-во клиентов"
                   prop="min_clients"
                 >
                   <a-input
                     type="number"
                     v-model="form.min_clients"
-                    placeholder="Min clients"
+                    placeholder="Мин. кол-во клиентов..."
                   />
                 </a-form-model-item>
               </span>
               <a-form-model-item
                 class="form-item inner mb-3"
-                label="Minimal mijoz"
+                label="Мин. кол-во клиентов"
                 v-if="form.min_clients == null"
               >
                 <a-input
                   type="number"
                   :disabled="form.min_clients == null"
-                  placeholder="Min clients"
+                  placeholder="Мин. кол-во клиентов"
                 />
               </a-form-model-item>
               <span v-if="form.type == 'by_count'">
                 <a-form-model-item
                   class="form-item inner mb-3"
-                  label="Maximal mijoz"
+                  label="Макс. кол-во клиентов"
                   prop="max_clients"
                 >
                   <a-input
@@ -209,13 +209,13 @@
               </span>
               <a-form-model-item
                 class="form-item inner mb-3"
-                label="Maximal mijoz"
+                label="Макс. кол-во клиентов"
                 v-else
               >
                 <a-input
                   type="number"
                   :disabled="form.max_clients == null"
-                  placeholder="Max clients"
+                  placeholder="Макс. кол-во клиентов"
                 />
               </a-form-model-item>
             </div>
@@ -355,7 +355,7 @@
               </div> -->
               <div class="create-inner-variant" @click="addPrices">
                 <span v-html="plusIcon"> </span>
-                Qo’shish
+                Добавить
               </div>
             </div>
           </div>
@@ -381,10 +381,10 @@
             :key="index"
             v-if="formTab.info == item.index"
           >
-            <FormTitle title="Xizmatimiz haqida ma’lumotlar" />
+            <FormTitle title="Информация об услуге" />
             <a-form-model-item
               class="form-item inner mb-0 pb-0"
-              label="Statistika qo’shish"
+              label="Добавить статистику"
             >
               <div class="mt-3 statistic-grid">
                 <div v-for="statistic in form.statistics" class="d-flex">
@@ -401,7 +401,7 @@
                     >
                       <div v-if="statistic.statisticFile.length < 1">
                         <a-icon type="plus" />
-                        <div class="ant-upload-text">Upload</div>
+                        <div class="ant-upload-text">Загрузить</div>
                       </div>
                     </a-upload>
                     <a-modal
@@ -422,7 +422,7 @@
                     <a-form-model-item class="form-item inner mb-3">
                       <a-input
                         v-model="statistic.name[item.index]"
-                        placeholder="Название статистики"
+                        placeholder="Название"
                       />
                     </a-form-model-item>
                   </div>
@@ -442,7 +442,7 @@
                 >
                   <div v-if="form.fileListStat.length < 20">
                     <a-icon type="plus" />
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">Загрузить</div>
                   </div>
                 </a-upload>
                 <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -477,7 +477,7 @@ function getBase64(file) {
 }
 const columns = [
   {
-    title: "Kalendar",
+    title: "Календарь",
     dataIndex: "name",
     key: "name",
     slots: { title: "customTitle" },
@@ -487,14 +487,14 @@ const columns = [
     fixed: "left",
   },
   {
-    title: "Times",
+    title: "Интервал",
     dataIndex: "time",
     key: "time",
     className: "column-times",
     scopedSlots: { customRender: "time" },
   },
   {
-    title: "Additional",
+    title: "Дополнительно",
     className: "column-additional",
     key: "id",
     align: "left",

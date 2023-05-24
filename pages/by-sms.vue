@@ -1,9 +1,9 @@
 <template lang="html">
   <div class="posts">
     <TitleBlock
-      title="Почтовый отправления"
+      title="СМС рассылка"
       :breadbrumb="['Главный']"
-      lastLink="Почтовый отправления"
+      lastLink="СМС рассылка"
     >
       <div class="d-flex">
         <div
@@ -78,7 +78,7 @@ import authAccess from "../mixins/authAccess";
 export default {
   mixins: [status, authAccess],
   head: {
-    title: "Почтовый отправления",
+    title: "СМС рассылка",
   },
   data() {
     return {

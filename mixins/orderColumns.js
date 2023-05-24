@@ -3,7 +3,7 @@ export default {
     return {
       columns: [
         {
-          title: "Заказ ID",
+          title: "ID заказа",
           slots: { title: "customTitle" },
           scopedSlots: { customRender: "orderId" },
           className: "column-service",

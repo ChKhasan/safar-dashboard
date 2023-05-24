@@ -26,8 +26,8 @@
               <div class="card_block main-table px-4 py-4">
                 <FormTitle title="Данные заказа" />
                 <div class="order-grid-1 mb-4">
-                  <a-form-model-item class="form-item mb-0" label="Дата заказы">
-                    <a-input placeholder="Дата заказы" disabled v-model="form.date" />
+                  <a-form-model-item class="form-item mb-0" label="Дата заказа">
+                    <a-input placeholder="Дата заказа" disabled v-model="form.date" />
                   </a-form-model-item>
                 </div>
                 <div>
@@ -121,7 +121,7 @@
               <div class="card_block main-table px-4 py-4">
                 <FormTitle title="Параметры" />
 
-                <a-form-model-item class="form-item mb-3" label="№ заказы">
+                <a-form-model-item class="form-item mb-3" label="№ заказa">
                   <a-select v-model="statusValue" disabled>
                     <a-select-option v-for="status in statusData" :key="status.value">
                       {{ status.label }}

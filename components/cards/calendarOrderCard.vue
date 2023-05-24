@@ -9,7 +9,7 @@
     </div>
     <div class="calendar-order-card-center">
       <span
-        >№ bileta
+        > no билета
         <p>{{ order?.id }}</p>
       </span>
       <h6>{{ order?.general_order?.client?.name }}</h6>

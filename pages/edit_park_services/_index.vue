@@ -83,25 +83,25 @@
           >
             <a-form-model-item
               class="form-item mb-3"
-              label="Xizmat nomi"
+              label="Название сервиса"
               :prop="item.index == 'ru' ? 'name.ru' : ''"
             >
-              <a-input v-model="form.name[item.index]" placeholder="Group name" />
+              <a-input v-model="form.name[item.index]" placeholder="Название сервиса..." />
             </a-form-model-item>
 
             <a-form-model-item
               class="form-item mb-0"
-              label="Xizmat bo’yicha kichik ma’lumot"
+              label="Краткая информация о сервисе"
             >
               <quill-editor
                 v-model="form.desc[item.index]"
                 class="product-editor mt-1"
                 :options="editorOption"
-                placeholder="Group name"
+                placeholder="Краткая информация о сервисе..."
               />
             </a-form-model-item>
             <div class="service-upload-container">
-              <a-form-model-item class="form-item mb-3 mt-3" label="Banner">
+              <a-form-model-item class="form-item mb-3 mt-3" label="Баннер">
                 <div class="service-upload">
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
@@ -113,7 +113,7 @@
                   >
                     <div v-if="fileBanner.length < 1">
                       <a-icon type="plus" />
-                      <div class="ant-upload-text">Upload</div>
+                      <div class="ant-upload-text">Загрузить</div>
                     </div>
                   </a-upload>
                   <a-modal
@@ -125,7 +125,7 @@
                   </a-modal>
                 </div>
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 mt-3" label="Image">
+              <a-form-model-item class="form-item mb-3 mt-3" label="Изображение">
                 <div class="service-upload">
                   <a-upload
                     action="https://api.safarpark.uz/api/files/upload"
@@ -137,7 +137,7 @@
                   >
                     <div v-if="fileForCard.length < 1">
                       <a-icon type="plus" />
-                      <div class="ant-upload-text">Upload</div>
+                      <div class="ant-upload-text">Загрузить</div>
                     </div>
                   </a-upload>
                   <a-modal
@@ -150,7 +150,7 @@
                 </div>
               </a-form-model-item>
             </div>
-            <a-form-model-item class="form-item mb-3" label="Galleries">
+            <a-form-model-item class="form-item mb-3" label="Галереи">
               <div class="service-galleries">
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
@@ -163,7 +163,7 @@
                 >
                   <div v-if="fileGalleries.length < 50">
                     <a-icon type="plus" />
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">Загрузить</div>
                   </div>
                 </a-upload>
                 <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -196,7 +196,7 @@
             :key="index"
             v-if="formTab.guarantee == item.index"
           >
-            <a-form-model-item class="form-item mb-0" label="Statistika qo’shish">
+            <a-form-model-item class="form-item mb-0" label="Добавить статистику">
               <div class="mt-3 statistic-grid">
                 <div v-for="card in form.cards" class="d-flex">
                   <div class="clearfix">
@@ -210,7 +210,7 @@
                     >
                       <div v-if="card.imgList.length < 1">
                         <a-icon type="plus" />
-                        <div class="ant-upload-text">Upload</div>
+                        <div class="ant-upload-text">Загрузить</div>
                       </div>
                     </a-upload>
                     <a-modal
@@ -225,13 +225,13 @@
                     <a-form-model-item class="form-item mb-3">
                       <a-input
                         v-model="card.name[item.index]"
-                        placeholder="Statistika nomi"
+                        placeholder="Название"
                       />
                     </a-form-model-item>
                     <!-- <a-form-model-item class="form-item mb-3">
                       <a-input
                         v-model="card.name[item.index]"
-                        placeholder="Statistika nomi"
+                        placeholder="Название"
                       />
                     </a-form-model-item> -->
                   </div>
@@ -262,7 +262,7 @@
             </div>
             <div class="create-inner-variant mt-4" @click="addMoments">
               <span v-html="plusIcon"> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div>
@@ -288,7 +288,7 @@
             :key="index"
             v-if="formTab.guarantee == item.index"
           >
-            <a-form-model-item class="form-item mb-0" label="Kafolatlarni kiritish">
+            <a-form-model-item class="form-item mb-0" label="Основная информация">
               <quill-editor
                 v-model="form.guarantee[item.index]"
                 class="product-editor mt-1"
@@ -308,7 +308,7 @@
                   >
                     <div v-if="statistic.statisticFile.length < 1">
                       <a-icon type="plus" />
-                      <div class="ant-upload-text">Upload</div>
+                      <div class="ant-upload-text">Загрузить</div>
                     </div>
                   </a-upload>
                   <a-modal
@@ -323,13 +323,13 @@
                   <a-form-model-item class="form-item mb-3">
                     <a-input
                       v-model="statistic.name[item.index]"
-                      placeholder="Statistika soni"
+                      placeholder="Число"
                     />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3">
                     <a-input
                       v-model="statistic.number[item.index]"
-                      placeholder="Statistika nomi"
+                      placeholder="Название"
                     />
                   </a-form-model-item>
                 </div>
@@ -354,7 +354,7 @@
               v-if="checkAccess('tariffs', 'post')"
             >
               <span> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div>
@@ -380,20 +380,20 @@
             :key="index"
             v-if="formTab.sub_service == item.index"
           >
-            <FormTitle title="Qo’shimcha xizmlatlar narxlari" />
+            <FormTitle title=" Цены на дополнительные услуги" />
             <div
               class="d-flex align-items-center"
               v-for="service in form.additional_services"
               :key="service.indexId"
             >
               <div class="grid-2 mb-4 w-100">
-                <a-form-model-item class="form-item mb-0" label="Qo’shimcha xizmatlar">
+                <a-form-model-item class="form-item mb-0" label="Дополнительные услуги">
                   <a-input
                     v-model="service.name[item.index]"
-                    placeholder="Service name"
+                    placeholder="Дополнительный сервис..."
                   />
                 </a-form-model-item>
-                <a-form-model-item class="form-item mb-0" label="Xizmatlar narxi">
+                <a-form-model-item class="form-item mb-0" label="Цена услуг">
                   <a-input
                     :max-length="8"
                     v-model="service.price"
@@ -409,7 +409,7 @@
             </div>
             <div class="create-inner-variant mt-0" @click="addServices">
               <span v-html="plusIcon"> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div>
@@ -435,7 +435,7 @@
             :key="index"
             v-if="formTab.faq == item.index"
           >
-            <FormTitle title="Ko’p so’raladigan savollarga javob yozish" />
+            <FormTitle title="Добавить частые вопросы" />
             <!-- <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
               <div class="d-flex align-items-center">
                 <a-form-model-item class="form-item w-100" label="Savol yozish">
@@ -481,7 +481,7 @@
             </a-table>
             <div class="create-inner-variant" @click="addFaqs">
               <span v-html="plusIcon"> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div>
@@ -529,7 +529,7 @@
             </span>
             <div class="create-inner-variant" @click="addPackageOption">
               <span v-html="plusIcon"> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div> -->
@@ -556,7 +556,7 @@
             v-if="formTab.feedback == item.index"
           >
             <div class="d-flex justify-content-between">
-              <FormTitle title="Komentariya" />
+              <FormTitle title="Отзывы" />
             </div>
             <div
               class="grid-with-img faqs-grid"
@@ -565,8 +565,8 @@
             >
               <div>
                 <div class="grid-with-btn">
-                  <a-form-model-item class="form-item mb-3" label="Foydalanuvchi">
-                    <a-input v-model="feedback.name[item.index]" placeholder="User" />
+                  <a-form-model-item class="form-item mb-3" label="Пользователь">
+                    <a-input v-model="feedback.name[item.index]" placeholder="Пользователь..." />
                   </a-form-model-item>
                   <!-- <a-form-model-item class="form-item mb-3" label="Brend">
                     <a-input
@@ -582,12 +582,12 @@
                     ></div>
                   </div>
                 </div>
-                <a-form-model-item class="form-item mb-0 mt-0" label="Matni">
+                <a-form-model-item class="form-item mb-0 mt-0" label="Текст">
                   <a-input
                     type="textarea"
                     v-model="feedback.feedback[item.index]"
                     rows="6"
-                    placeholder="Xabar yozing"
+                    placeholder="Текст..."
                   />
                 </a-form-model-item>
               </div>
@@ -602,7 +602,7 @@
                 >
                   <div v-if="feedback.feedbacksFile.length < 1">
                     <a-icon type="plus" />
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">Загрузить</div>
                   </div>
                 </a-upload>
                 <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -612,7 +612,7 @@
             </div>
             <div class="create-inner-variant" @click="addFeedbacks">
               <span v-html="plusIcon"> </span>
-              Qo’shish
+              Добавить
             </div>
           </div>
         </div>
@@ -623,7 +623,7 @@
             v-if="checkAccess('services', 'delete')"
             @click="showDeleteConfirm"
           >
-            Delete service
+            Удалить услугу
           </a-button>
         </div>
       </div>

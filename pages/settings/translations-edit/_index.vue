@@ -86,7 +86,7 @@
         </a-table>
         <div class="create-inner-variant" @click="addTranslate">
           <span v-html="plusIcon"> </span>
-          Qo’shish
+          Добавить
         </div>
         <div class="d-flex justify-content-between mt-4">
           <a-select

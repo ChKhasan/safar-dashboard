@@ -74,7 +74,7 @@
                   >
                     <div v-if="fileList.length < 1">
                       <a-icon type="plus" />
-                      <div class="ant-upload-text">Upload</div>
+                      <div class="ant-upload-text">Загрузить</div>
                     </div>
                   </a-upload>
                   <a-modal

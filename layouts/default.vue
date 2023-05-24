@@ -466,7 +466,7 @@ export default {
           },
           {
             key: "23",
-            name: "Создать роль",
+            name: "Роли",
             to: "/settings/roles",
             add: "settings-roles",
             edit: "settings-roles",
@@ -483,7 +483,7 @@ export default {
           },
           {
             key: "25",
-            name: "Youtube Videos",
+            name: "Youtube Видеоролики",
             to: "/settings/you-tube",
             add: "settings-you-tube",
             edit: "settings-you-tube",
