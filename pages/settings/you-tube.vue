@@ -151,7 +151,7 @@
             type="primary"
             @click="saveData"
           >
-            Save
+          Сохранять
           </a-button>
         </div>
       </template>
@@ -181,7 +181,7 @@ const columns = [
     width: 50,
   },
   {
-    title: "Desc",
+    title: "Описание",
     dataIndex: "desc",
     key: "desc",
     slots: { title: "customTitle" },

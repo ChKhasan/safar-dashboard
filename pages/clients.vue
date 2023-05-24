@@ -91,7 +91,7 @@ const columns = [
     width: 50,
   },
   {
-    title: "Name",
+    title: "Имя",
     dataIndex: "name",
     key: "name",
     slots: { title: "customTitle" },
@@ -100,7 +100,7 @@ const columns = [
     align: "left",
   },
   {
-    title: "Phone",
+    title: "Номер телефона",
     dataIndex: "phone_number",
     key: "phone_number",
     slots: { title: "customTitle" },
@@ -109,7 +109,7 @@ const columns = [
     align: "left",
   },
   {
-    title: "Email",
+    title: "Электронная почта",
     dataIndex: "email",
     key: "email",
     slots: { title: "customTitle" },

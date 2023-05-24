@@ -427,6 +427,23 @@ export default {
         ],
       },
       {
+        title: "Смс рассылка",
+        sub: "6",
+        icon: require("../assets/svg/sms-page.svg?raw"),
+        menuItems: [
+          {
+            key: "61",
+            name: "По SMS",
+            to: "/by-sms",
+            add: "by-sms",
+            edit: "by-sms",
+            show: this.$store.state.permissions
+              .find((item) => item.url == "mailing")
+              ?.pivot?.actions.includes("post"),
+          },
+        ],
+      },
+      {
         title: "Настройки сайта",
         sub: "2",
         icon: require("../assets/svg/settings.svg?raw"),
@@ -472,16 +489,16 @@ export default {
             edit: "settings-you-tube",
             show: this.checkShow("youtube_videos"),
           },
-          {
-            key: "26",
-            name: "По SMS",
-            to: "/settings/by-sms",
-            add: "settings-by-sms",
-            edit: "settings-by-sms",
-            show: this.$store.state.permissions
-              .find((item) => item.url == "mailing")
-              ?.pivot?.actions.includes("post"),
-          },
+          // {
+          //   key: "26",
+          //   name: "По SMS",
+          //   to: "/settings/by-sms",
+          //   add: "settings-by-sms",
+          //   edit: "settings-by-sms",
+          //   show: this.$store.state.permissions
+          //     .find((item) => item.url == "mailing")
+          //     ?.pivot?.actions.includes("post"),
+          // },
         ],
       },
     ]),
@@ -522,6 +539,8 @@ export default {
         this.openKeys = ["2"];
       } else if (this.$route.name.includes("clients")) {
         this.openKeys = ["4"];
+      } else if (this.$route.name.includes("by-sms")) {
+        this.openKeys = ["6"];
       } else {
         this.openKeys = ["1"];
       }

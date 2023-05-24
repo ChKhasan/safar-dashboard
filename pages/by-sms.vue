@@ -67,13 +67,13 @@
   </div>
 </template>
 <script>
-import FormTitle from "../../components/Form-title.vue";
-import TitleBlock from "../../components/Title-block.vue";
+import FormTitle from "../components/Form-title.vue";
+import TitleBlock from "../components/Title-block.vue";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
-import status from "../../mixins/status";
-import authAccess from "../../mixins/authAccess";
+import status from "../mixins/status";
+import authAccess from "../mixins/authAccess";
 
 export default {
   mixins: [status, authAccess],

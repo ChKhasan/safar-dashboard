@@ -116,13 +116,72 @@
               <div class="mt-5">
                 <FormTitle title="Билеты" />
               </div>
-              <div class="order-bilets">
-                <BiletCard
+              <div class="order-bilets" v-for="orderIn in order.orders" :key="orderIn.id">
+                <div class="bilet-card">
+                  <div class="bilet-card-header">
+                    <h5>{{ orderIn?.service?.name?.ru }}</h5>
+                    <div class="d-flex">
+                      <span class="bilet-card-header-text"
+                        >Номер билета:
+                        <p>{{ orderIn.id }}</p></span
+                      >
+                      <div class="column-btns">
+                        <span>
+                          <a
+                            :href="`https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`"
+                            class="action-btn"
+                            download
+                            v-if="order.is_paid"
+                            @click.prevent="
+                              downloadItem(
+                                `https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`
+                              )
+                            "
+                            v-html="ticketIcon"
+                          >
+                          </a>
+                          <span
+                            class="action-btn"
+                            @click="visible = true"
+                            v-html="editIcon"
+                          >
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="bilet-card-body flex-column">
+                    <div
+                      class="d-flex"
+                      v-for="(dataIn, index) in orderIn.data"
+                      :key="index"
+                    >
+                      <div class="bilet-card-services">
+                        <span>{{ dataIn?.name }}</span>
+                      </div>
+                      <p>
+                        <span>{{ dataIn.count }} x </span>
+                        {{ dataIn.price }} сум
+                      </p>
+                    </div>
+                  </div>
+                  <div class="bilet-card-footer">
+                    <div class="d-flex align-items-center">
+                      <span>Заказ на:</span>
+                      <div>
+                        {{ moment(orderIn.created_at).format("DD.MM.YYYY") }}
+                        <span v-if="orderIn.session">{{ orderIn.session }}</span>
+                      </div>
+                    </div>
+                    <h6>{{ orderIn.amount }} сум</h6>
+                  </div>
+                </div>
+                <!-- <BiletCard
                   v-for="orderIn in order.orders"
                   :key="orderIn.id"
                   :orderIn="orderIn"
                   :isPaid="order.is_paid"
-                />
+                /> -->
               </div>
             </div>
             <div>
@@ -165,6 +224,77 @@
         </div>
       </div>
     </a-form-model>
+    <a-modal
+      v-model="visible"
+      centered
+      title="Изменить заказ"
+      :closable="false"
+      width="720px"
+      @ok="handleOk"
+    >
+      <div class="d-flex flex-column">
+        <div class="d-flex flex-column">
+          <a-form-model
+            :model="formModal"
+            ref="ruleFormFaq"
+            :rules="rulesModal"
+            layout="vertical"
+          >
+            <a-form-model-item class="form-item mb-3" label="Дата">
+              <a-input type="date" v-model="formModal.name" />
+            </a-form-model-item>
+            <a-form-model-item
+              class="d-flex justify-content-start flex-column mb-3"
+              label="Сессия"
+            >
+              <span class="d-flex justify-content-start"
+                ><span class="time_picker position-relative" style="margin-right: 16px">
+                  <input
+                    v-model="formModal.name"
+                    type="time"
+                    id="time-input"
+                    name="time"
+                    min="00:00"
+                    max="23:59"
+                    pattern="[0-2][0-9]:[0-5][0-9]"
+                  />
+                  <span
+                    class="d-flex align-items-center"
+                    style="margin-left: 3px; margin-right: 3px"
+                    >-</span
+                  >
+                  <input
+                    v-model="formModal.name"
+                    type="time"
+                    id="time-input"
+                    name="time"
+                    min="00:00"
+                    max="23:59"
+                    pattern="[0-2][0-9]:[0-5][0-9]"
+                  /> </span
+              ></span>
+            </a-form-model-item>
+          </a-form-model>
+        </div>
+      </div>
+      <template slot="footer">
+        <div class="add_modal-footer d-flex justify-content-end">
+          <div
+            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="handleOk"
+          >
+          Отмена
+          </div>
+          <a-button
+            class="add-btn add-header-btn btn-primary"
+            type="primary"
+            @click="saveData"
+          >
+          Сохранять
+          </a-button>
+        </div>
+      </template>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -186,6 +316,9 @@ export default {
   },
   data() {
     return {
+      visible: false,
+      ticketIcon: require("../../../assets/svg/ticket.svg?raw"),
+      editIcon: require("../../../assets/svg/edit.svg?raw"),
       statusValue: "new",
       editorOption: {
         // Some Quill options...
@@ -285,6 +418,18 @@ export default {
           ],
         },
       },
+      rulesModal: {
+        name: [
+          {
+            required: true,
+            message: "This field is required",
+            trigger: "change",
+          },
+        ],
+      },
+      formModal: {
+        name: "",
+      },
       form: {
         title: {
           ru: "",
@@ -305,6 +450,7 @@ export default {
         instagram: "",
         telegram: "",
         facebook: "",
+        visible: false,
       },
     };
   },
@@ -318,9 +464,28 @@ export default {
   },
   methods: {
     moment,
+    downloadItem(url) {
+      this.$axios
+        .$get(url, { responseType: "blob" })
+        .then((response) => {
+          const blob = new Blob([response.data], { type: "application/pdf" });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "Safar park ticket";
+          link.click();
+          URL.revokeObjectURL(link.href);
+        })
+        .catch((err) => {
+          this.statusFunc(err);
+        });
+    },
     onSubmit() {
       this.__EDIT_CATEGORIES({ status: this.statusValue });
     },
+    handleOk() {
+      this.visible = false;
+    },
+    saveData() {},
     async __EDIT_CATEGORIES(res) {
       try {
         await this.$store.dispatch("fetchOrders/editOrders", {

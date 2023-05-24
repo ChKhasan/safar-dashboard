@@ -155,7 +155,7 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-            Cancel
+          Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
@@ -163,7 +163,7 @@
             @click="postGroup"
           >
             <span class="svg-icon" v-html="addIcon"></span>
-            Save
+            Сохранять
           </a-button>
         </div>
       </template>
@@ -205,14 +205,14 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOkTranslate"
           >
-            Cancel
+          Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="putTranslation"
           >
-            Save
+          Сохранять
           </a-button>
         </div>
       </template>
