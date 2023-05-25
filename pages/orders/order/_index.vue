@@ -488,10 +488,10 @@ export default {
   async mounted() {
     this.__GET_ORDERS_BY_ID();
     // this.__GET_EMPTY_DATE();
-    // await this.$store.dispatch("fetchOrders/editOrders", {
-    //   id: this.$route.params.index,
-    //   data: { status: "in_process" },
-    // });
+    await this.$store.dispatch("fetchOrders/editOrders", {
+      id: this.$route.params.index,
+      data: { status: "in_process" },
+    });
     this.$store.dispatch("getOrders");
   },
   methods: {
