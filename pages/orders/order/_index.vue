@@ -722,8 +722,7 @@ export default {
 .notes-month section {
   font-size: 28px;
 }
-.ant-fullcalendar-last-month-cell,
-.ant-fullcalendar-last-day-of-month {
+.ant-fullcalendar-last-month-cell  {
   pointer-events: none !important;
   background-color: rgba(0, 0, 0, 0.02) !important;
 }
@@ -737,5 +736,8 @@ export default {
 }
 .ant-fullcalendar-disabled-cell {
   background-color: rgba(0, 0, 0, 0.02) !important;
+}
+.ant-fullcalendar-fullscreen .ant-fullcalendar-header .ant-radio-group {
+  display: none !important;
 }
 </style>
