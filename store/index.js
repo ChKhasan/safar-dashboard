@@ -26,11 +26,7 @@ export const mutations = {
   },
   orders(state, payload) {
     state.orders.all =
-      payload.edited +
-      payload.in_process +
-      payload.accepted +
-      payload.canceled +
-      payload.new;
+      payload.in_process + payload.accepted + payload.canceled + payload.new;
     state.orders.new = payload.new;
     state.orders.in_process = payload.in_process;
     state.orders.accepted = payload.accepted;

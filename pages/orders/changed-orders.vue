@@ -162,7 +162,7 @@ export default {
     };
   },
   mounted() {
-    this.getFirstData("/orders/all-orders", "__GET_ORDERS");
+    this.getFirstData("/orders/changed-orders", "__GET_ORDERS");
     this.checkAllActions("orders");
   },
   methods: {
@@ -206,12 +206,14 @@ export default {
         data?.orders?.current_page,
         data?.orders?.per_page
       );
-      this.orders = data?.orders?.data.map((item, index) => {
-        return {
-          ...item,
-          key: index + pageIndex,
-        };
-      });
+      this.orders = data?.orders?.data
+        .map((item, index) => {
+          return {
+            ...item,
+            key: index + pageIndex,
+          };
+        })
+        .filter((elem) => elem.is_edited);
       this.totalPage = data?.orders?.total;
       this.orders.dataAdd = moment(data?.orders?.created_at).format("DD/MM/YYYY");
     },

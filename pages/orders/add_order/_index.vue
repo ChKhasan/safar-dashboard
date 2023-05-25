@@ -325,23 +325,31 @@ export default {
     },
     countUp(id) {
       const obj = this.form.data.find((item) => item.indexId == id);
+      const obj2 = this.form.data.filter((item) => item.count > 0 && item.indexId !== id);
+      console.log(obj2);
       let summ = 0;
       this.form.data.forEach((item) => {
         summ = summ + item.count;
       });
       summ = summ + this.countBooked;
+
       if (summ < this.tariff.max_clients) {
+        obj.count++;
+      } else if (summ == this.tariff.max_clients && obj2.length > 0) {
+        obj2[0].count--;
         obj.count++;
       }
     },
     countDown(id) {
       const obj = this.form.data.find((item) => item.indexId == id);
+
       let summ = 0;
       this.form.data.forEach((item) => {
         summ = summ + item.count;
       });
       if (obj.count > 0 && summ > this.tariff.min_clients) {
         obj.count--;
+        // obj2[0].count++;
       }
     },
     chooseActive(id) {

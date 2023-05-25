@@ -631,6 +631,7 @@ export default {
         this.__GET_ORDERS_BY_ID();
         this.visibleSessions = false;
         this.visible = false;
+        this.$store.dispatch("getOrders");
         this.notification("success", "success", "Успешно изменена");
       } catch (e) {
         this.statusFunc(e);
