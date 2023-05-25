@@ -227,7 +227,7 @@
     <a-modal
       v-model="visible"
       centered
-      title="Изменить заказ"
+      title="Изменить заказa"
       :closable="false"
       width="720px"
       @ok="handleOk"
@@ -274,7 +274,7 @@
     <a-modal
       v-model="visibleSessions"
       centered
-      title="Изменить заказ"
+      :title="targetTicket?.tariff?.name?.ru"
       :closable="false"
       width="720px"
       @ok="handleOk"
@@ -289,10 +289,10 @@
           <a-form-model-item
             class="form-item mb-3"
             :class="{ 'select-placeholder': formModal.session == null }"
-            label="Session"
+            label="Сессия"
             prop="session"
           >
-            <a-select v-model="formModal.session" placeholder="Session">
+            <a-select v-model="formModal.session" placeholder="Сессия">
               <a-select-option v-for="(session, index) in sessions" :key="session">
                 {{ session }}
               </a-select-option>
