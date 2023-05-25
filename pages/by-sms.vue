@@ -1,10 +1,6 @@
 <template lang="html">
   <div class="posts">
-    <TitleBlock
-      title="СМС рассылка"
-      :breadbrumb="['Главный']"
-      lastLink="СМС рассылка"
-    >
+    <TitleBlock title="СМС рассылка" :breadbrumb="['Главный']" lastLink="СМС рассылка">
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -126,7 +122,7 @@ export default {
       const data = await this.$store.dispatch("fetchClients/getClients", {
         ...this.$route.query,
       });
-      this.clients = data?.clients;
+      this.clients = data?.clients?.data;
     },
     async __POST_MAILING(data) {
       try {

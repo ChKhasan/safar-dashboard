@@ -40,7 +40,7 @@
             <span class="action-btn" @click="showAction(text)" v-html="eyeIcon"> </span>
           </span>
         </a-table>
-        <!-- <div class="d-flex justify-content-between mt-4">
+        <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -64,7 +64,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -176,12 +176,20 @@ export default {
         ...this.$route.query,
       });
       this.loading = false;
-      this.faqs = data?.clients.map((item, index) => {
+      const pageIndex = this.indexPage(
+        data?.clients?.current_page,
+        data?.clients?.per_page
+      );
+      this.faqs = data?.clients?.data.map((item, index) => {
         return {
           ...item,
-          key: index + 1,
+          key: index + pageIndex,
         };
       });
+      this.totalPage = data?.clients?.total;
+    },
+    indexPage(current_page, per_page) {
+      return (current_page * 1 - 1) * per_page + 1;
     },
   },
   watch: {

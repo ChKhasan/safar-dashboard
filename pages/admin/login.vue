@@ -10,6 +10,7 @@
             <label for="">Имя пользователя</label>
             <a-form-model-item prop="username" class="mb-0">
               <a-input
+                @keyup.enter="login"
                 type="text"
                 class="input"
                 placeholder="Username"
@@ -26,6 +27,7 @@
             <!-- <input type="password" class="input" v-model="form.password" /> -->
             <a-form-model-item prop="password" class="mb-0">
               <a-input-password
+                @keyup.enter="login"
                 placeholder="Password"
                 type="password"
                 class="input"
