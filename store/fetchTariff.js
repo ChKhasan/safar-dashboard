@@ -67,4 +67,15 @@ export const actions = {
     });
     return res;
   },
+  async getTariffSessions({}, data) {
+    const res = await this.$axios.$get(`/tickets/get_sessions`, {
+      params: {
+        ...data,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
+    return res;
+  },
 };

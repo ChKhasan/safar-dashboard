@@ -435,11 +435,11 @@ export default {
   },
   async mounted() {
     this.__GET_ORDERS_BY_ID();
-    this.__GET_EMPTY_DATE();
-    await this.$store.dispatch("fetchOrders/editOrders", {
-      id: this.$route.params.index,
-      data: { status: "in_process" },
-    });
+    // this.__GET_EMPTY_DATE();
+    // await this.$store.dispatch("fetchOrders/editOrders", {
+    //   id: this.$route.params.index,
+    //   data: { status: "in_process" },
+    // });
     this.$store.dispatch("getOrders");
   },
   methods: {
@@ -452,27 +452,35 @@ export default {
       }
     },
     changeCalendar(e) {
-      console.log(e);
       this.currentDay = e;
+      this.__GET_TARIFF_SESSIONS({
+        tariff_id: this.targetTicket.tariff.id,
+        date: moment(e).format("YYYY-MM-DD"),
+      });
     },
     async panelChange(e) {
       this.currentDay = await e;
       this.__GET_EMPTY_DATE();
     },
     async editTicket(data) {
-      await this.__GET_EMPTY_DATE();
       this.targetTicket = await data;
+      await this.__GET_EMPTY_DATE();
       let summ = 0;
       await this.targetTicket.data.forEach((elem) => {
         summ += elem.count;
       });
-      this.disabledDates = await this.emptyDate
-        .filter((item) => item.available > summ)
-        .map((elem) => {
+      const dates = await this.emptyDate.filter((item) => item.available < summ);
+      if (dates.length > 0) {
+        this.disabledDates = dates.map((elem) => {
           return `2023-05-${
-            JSON.stringify(elem.day).length == 1 ? `0${elem.day}` : elem.day
+            JSON.stringify(elem.day)?.length == 1 ? `0${elem.day}` : elem.day
           }`;
         });
+      } else {
+        this.disabledDates = dates;
+      }
+
+      console.log(this.targetTicket);
       this.visible = true;
     },
     getListData(value) {
@@ -494,7 +502,7 @@ export default {
           } else {
             listData = [
               {
-                type: "danger",
+                type: "error",
                 content: `${item.available}`,
               },
             ];
@@ -569,9 +577,17 @@ export default {
         const data = await this.$store.dispatch("fetchTariff/getEmptyDate", {
           month: moment(this.currentDay).format("MM"),
           year: moment(this.currentDay).format("YYYY"),
-          tariff_id: 1,
+          tariff_id: this.targetTicket?.tariff?.id,
         });
         this.emptyDate = data?.days;
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
+    async __GET_TARIFF_SESSIONS(data1) {
+      try {
+        const data = await this.$store.dispatch("fetchTariff/getTariffSessions", data1);
+        this.sessions = data;
       } catch (e) {
         this.statusFunc(e);
       }
