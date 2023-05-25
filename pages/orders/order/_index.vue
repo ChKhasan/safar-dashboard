@@ -722,20 +722,22 @@ export default {
 .notes-month section {
   font-size: 28px;
 }
-.ant-fullcalendar-last-month-cell  {
+.ant-fullcalendar-last-month-cell {
   pointer-events: none !important;
-  background-color: rgba(0, 0, 0, 0.02) !important;
+  opacity: 0;
+
+  background-color: rgba(0, 0, 0, 0.06) !important;
 }
 .ant-fullcalendar-next-month-btn-day,
 .ant-fullcalendar-last-month-btn-day {
   pointer-events: none !important;
-  background-color: rgba(0, 0, 0, 0.02) !important;
+  opacity: 0;
 }
 .ant-fullcalendar td {
   overflow: hidden;
 }
 .ant-fullcalendar-disabled-cell {
-  background-color: rgba(0, 0, 0, 0.02) !important;
+  background-color: rgba(0, 0, 0, 0.06) !important;
 }
 .ant-fullcalendar-fullscreen .ant-fullcalendar-header .ant-radio-group {
   display: none !important;
