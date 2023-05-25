@@ -48,6 +48,14 @@ export const actions = {
     });
     return res;
   },
+  async editTicket({}, payload) {
+    const res = await this.$axios.$put(`/tickets`, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
+    return res;
+  },
   async deleteTariff({}, id) {
     const res = await this.$axios.$delete(`/tariffs/${id}`, {
       headers: {

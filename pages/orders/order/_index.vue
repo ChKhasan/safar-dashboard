@@ -169,7 +169,7 @@
                     <div class="d-flex align-items-center">
                       <span>Заказ на:</span>
                       <div>
-                        {{ moment(orderIn.created_at).format("DD.MM.YYYY") }}
+                        {{ moment(orderIn.date).format("DD.MM.YYYY") }}
                         <span v-if="orderIn.session">{{ orderIn.session }}</span>
                       </div>
                     </div>
@@ -263,6 +263,54 @@
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
+            :disabled="disabledBtn"
+            @click="saveCalendar"
+          >
+            Сохранять
+          </a-button>
+        </div>
+      </template>
+    </a-modal>
+    <a-modal
+      v-model="visibleSessions"
+      centered
+      title="Изменить заказ"
+      :closable="false"
+      width="720px"
+      @ok="handleOk"
+    >
+      <div class="d-flex flex-column">
+        <a-form-model
+          :model="formModal"
+          ref="ruleFormSession"
+          :rules="rulesModal"
+          layout="vertical"
+        >
+          <a-form-model-item
+            class="form-item mb-3"
+            :class="{ 'select-placeholder': formModal.session == null }"
+            label="Session"
+            prop="session"
+          >
+            <a-select v-model="formModal.session" placeholder="Session">
+              <a-select-option v-for="(session, index) in sessions" :key="session">
+                {{ session }}
+              </a-select-option>
+            </a-select>
+          </a-form-model-item>
+        </a-form-model>
+      </div>
+      <template slot="footer">
+        <div class="add_modal-footer d-flex justify-content-end">
+          <div
+            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="(visible = true), (visibleSessions = false)"
+          >
+            Отмена
+          </div>
+          <a-button
+            class="add-btn add-header-btn btn-primary"
+            type="primary"
             @click="saveData"
           >
             Сохранять
@@ -292,8 +340,10 @@ export default {
   data() {
     return {
       visible: false,
+      visibleSessions: false,
       emptyDate: [],
       currentDay: new Date(),
+      disabledBtn: true,
       targetTicket: {},
       disabledDates: [],
       ticketIcon: require("../../../assets/svg/ticket.svg?raw"),
@@ -398,7 +448,7 @@ export default {
         },
       },
       rulesModal: {
-        name: [
+        session: [
           {
             required: true,
             message: "This field is required",
@@ -408,6 +458,8 @@ export default {
       },
       formModal: {
         name: "",
+        order_id: null,
+        session: null,
       },
       form: {
         title: {
@@ -444,55 +496,59 @@ export default {
   },
   methods: {
     disabledDate(current) {
-      if (this.disabledDates.length > 0) {
-        console.log(this.disabledDates);
-        return this.disabledDates.find(
-          (date) => date === moment(current).format("YYYY-MM-DD")
-        );
-      }
+      return (
+        (current && current.valueOf() < Date.now()) ||
+        this.disabledDates.find((date) => date === moment(current).format("YYYY-MM-DD"))
+      );
     },
-    changeCalendar(e) {
+    async changeCalendar(e) {
       this.currentDay = e;
+      this.disabledDays();
       this.__GET_TARIFF_SESSIONS({
         tariff_id: this.targetTicket.tariff.id,
         date: moment(e).format("YYYY-MM-DD"),
+        guests_count: this.countSumm(),
       });
+    },
+    countSumm() {
+      let summ = 0;
+      this.targetTicket.data.forEach((elem) => {
+        summ += elem.count;
+      });
+      return summ;
     },
     async panelChange(e) {
       this.currentDay = await e;
-      this.__GET_EMPTY_DATE();
+      await this.__GET_EMPTY_DATE();
+      await this.disabledDays();
     },
     async editTicket(data) {
       this.targetTicket = await data;
       await this.__GET_EMPTY_DATE();
-      let summ = 0;
-      await this.targetTicket.data.forEach((elem) => {
-        summ += elem.count;
-      });
-      const dates = await this.emptyDate.filter((item) => item.available < summ);
+      await this.disabledDays();
+      this.visible = true;
+    },
+    disabledDays() {
+      const dates = this.emptyDate.filter((item) => item.available < this.countSumm());
       if (dates.length > 0) {
         this.disabledDates = dates.map((elem) => {
-          return `2023-05-${
+          return `${moment(this.currentDay).format("YYYY")}-${moment(
+            this.currentDay
+          ).format("MM")}-${
             JSON.stringify(elem.day)?.length == 1 ? `0${elem.day}` : elem.day
           }`;
         });
       } else {
         this.disabledDates = dates;
       }
-
-      console.log(this.targetTicket);
-      this.visible = true;
+      console.log(this.disabledDates);
     },
     getListData(value) {
       let listData;
-      let summ = 0;
 
-      this.targetTicket.data.forEach((elem) => {
-        summ += elem.count;
-      });
       this.emptyDate.forEach((item) => {
         if (value.date() == item.day) {
-          if (Number(item.available) >= Number(summ)) {
+          if (Number(item.available) >= Number(this.countSumm())) {
             listData = [
               {
                 type: "success",
@@ -540,7 +596,18 @@ export default {
     handleOk() {
       this.visible = false;
     },
-    saveData() {},
+    saveCalendar() {
+      this.__EDIT_ORDER();
+    },
+    saveData() {
+      this.$refs["ruleFormSession"].validate((valid) => {
+        if (valid) {
+          this.__EDIT_ORDER();
+        } else {
+          return false;
+        }
+      });
+    },
     async __EDIT_CATEGORIES(res) {
       try {
         await this.$store.dispatch("fetchOrders/editOrders", {
@@ -550,6 +617,21 @@ export default {
         this.$store.dispatch("getOrders");
         this.$router.go(-1);
         this.notification("success", "success", "Заказ успешно изменена");
+      } catch (e) {
+        this.statusFunc(e);
+      }
+    },
+    async __EDIT_ORDER(res) {
+      try {
+        await this.$store.dispatch("fetchTariff/editTicket", {
+          order_id: this.targetTicket.id,
+          date: moment(this.currentDay).format("YYYY-MM-DD"),
+          session: this.formModal.session,
+        });
+        this.__GET_ORDERS_BY_ID();
+        this.visibleSessions = false;
+        this.visible = false;
+        this.notification("success", "success", "Успешно изменена");
       } catch (e) {
         this.statusFunc(e);
       }
@@ -587,7 +669,15 @@ export default {
     async __GET_TARIFF_SESSIONS(data1) {
       try {
         const data = await this.$store.dispatch("fetchTariff/getTariffSessions", data1);
-        this.sessions = data;
+        this.sessions = data.sessions;
+        this.formModal.session = null;
+        if (this.sessions == null) {
+          this.disabledBtn = false;
+        } else if (this.sessions.length > 0) {
+          this.disabledBtn = true;
+          this.visibleSessions = true;
+          this.visible = false;
+        }
       } catch (e) {
         this.statusFunc(e);
       }
@@ -631,5 +721,21 @@ export default {
 }
 .notes-month section {
   font-size: 28px;
+}
+.ant-fullcalendar-last-month-cell,
+.ant-fullcalendar-last-day-of-month {
+  pointer-events: none !important;
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+.ant-fullcalendar-next-month-btn-day,
+.ant-fullcalendar-last-month-btn-day {
+  pointer-events: none !important;
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+.ant-fullcalendar td {
+  overflow: hidden;
+}
+.ant-fullcalendar-disabled-cell {
+  background-color: rgba(0, 0, 0, 0.02) !important;
 }
 </style>
