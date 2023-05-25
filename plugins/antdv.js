@@ -26,12 +26,16 @@ import {
   Empty,
   Avatar,
   Alert,
+  Calendar,
+  Badge
 } from "ant-design-vue";
 const { info, success, error, warning, confirm } = Modal;
 Vue.prototype.$notification = notification;
 Vue.prototype.$message = message;
 Vue.prototype.$confirm = confirm;
 
+Vue.use(Badge);
+Vue.use(Calendar);
 Vue.use(Avatar);
 Vue.use(Alert);
 Vue.use(Empty);

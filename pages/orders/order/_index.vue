@@ -142,7 +142,7 @@
                           </a>
                           <span
                             class="action-btn"
-                            @click="visible = true"
+                            @click="editTicket(orderIn)"
                             v-html="editIcon"
                           >
                           </span>
@@ -233,49 +233,24 @@
       @ok="handleOk"
     >
       <div class="d-flex flex-column">
-        <div class="d-flex flex-column">
-          <a-form-model
-            :model="formModal"
-            ref="ruleFormFaq"
-            :rules="rulesModal"
-            layout="vertical"
-          >
-            <a-form-model-item class="form-item mb-3" label="Дата">
-              <a-input type="date" v-model="formModal.name" />
-            </a-form-model-item>
-            <a-form-model-item
-              class="d-flex justify-content-start flex-column mb-3"
-              label="Сессия"
-            >
-              <span class="d-flex justify-content-start"
-                ><span class="time_picker position-relative" style="margin-right: 16px">
-                  <input
-                    v-model="formModal.name"
-                    type="time"
-                    id="time-input"
-                    name="time"
-                    min="00:00"
-                    max="23:59"
-                    pattern="[0-2][0-9]:[0-5][0-9]"
-                  />
-                  <span
-                    class="d-flex align-items-center"
-                    style="margin-left: 3px; margin-right: 3px"
-                    >-</span
-                  >
-                  <input
-                    v-model="formModal.name"
-                    type="time"
-                    id="time-input"
-                    name="time"
-                    min="00:00"
-                    max="23:59"
-                    pattern="[0-2][0-9]:[0-5][0-9]"
-                  /> </span
-              ></span>
-            </a-form-model-item>
-          </a-form-model>
-        </div>
+        <a-calendar
+          mode="month"
+          :disabled-date="disabledDate"
+          @change="changeCalendar"
+          @panelChange="panelChange"
+        >
+          <ul slot="dateCellRender" slot-scope="value" class="events">
+            <li v-for="item in getListData(value)" :key="item.content">
+              <a-badge :status="item.type" :text="item.content" />
+            </li>
+          </ul>
+          <template slot="monthCellRender" slot-scope="value">
+            <div v-if="getMonthData(value)" class="notes-month">
+              <section>{{ getMonthData(value) }}</section>
+              <span>Backlog number</span>
+            </div>
+          </template>
+        </a-calendar>
       </div>
       <template slot="footer">
         <div class="add_modal-footer d-flex justify-content-end">
@@ -317,6 +292,10 @@ export default {
   data() {
     return {
       visible: false,
+      emptyDate: [],
+      currentDay: new Date(),
+      targetTicket: {},
+      disabledDates: [],
       ticketIcon: require("../../../assets/svg/ticket.svg?raw"),
       editIcon: require("../../../assets/svg/edit.svg?raw"),
       statusValue: "new",
@@ -456,6 +435,7 @@ export default {
   },
   async mounted() {
     this.__GET_ORDERS_BY_ID();
+    this.__GET_EMPTY_DATE();
     await this.$store.dispatch("fetchOrders/editOrders", {
       id: this.$route.params.index,
       data: { status: "in_process" },
@@ -463,6 +443,73 @@ export default {
     this.$store.dispatch("getOrders");
   },
   methods: {
+    disabledDate(current) {
+      if (this.disabledDates.length > 0) {
+        console.log(this.disabledDates);
+        return this.disabledDates.find(
+          (date) => date === moment(current).format("YYYY-MM-DD")
+        );
+      }
+    },
+    changeCalendar(e) {
+      console.log(e);
+      this.currentDay = e;
+    },
+    async panelChange(e) {
+      this.currentDay = await e;
+      this.__GET_EMPTY_DATE();
+    },
+    async editTicket(data) {
+      await this.__GET_EMPTY_DATE();
+      this.targetTicket = await data;
+      let summ = 0;
+      await this.targetTicket.data.forEach((elem) => {
+        summ += elem.count;
+      });
+      this.disabledDates = await this.emptyDate
+        .filter((item) => item.available > summ)
+        .map((elem) => {
+          return `2023-05-${
+            JSON.stringify(elem.day).length == 1 ? `0${elem.day}` : elem.day
+          }`;
+        });
+      this.visible = true;
+    },
+    getListData(value) {
+      let listData;
+      let summ = 0;
+
+      this.targetTicket.data.forEach((elem) => {
+        summ += elem.count;
+      });
+      this.emptyDate.forEach((item) => {
+        if (value.date() == item.day) {
+          if (Number(item.available) >= Number(summ)) {
+            listData = [
+              {
+                type: "success",
+                content: `${item.available}`,
+              },
+            ];
+          } else {
+            listData = [
+              {
+                type: "danger",
+                content: `${item.available}`,
+              },
+            ];
+          }
+        }
+      });
+
+      return listData || [];
+    },
+
+    getMonthData(value) {
+      if (value.month() === 8) {
+        return 1394;
+      }
+    },
     moment,
     downloadItem(url) {
       this.$axios
@@ -517,11 +564,14 @@ export default {
         this.statusFunc(e);
       }
     },
-    async __POST_POSTS(data) {
+    async __GET_EMPTY_DATE(data) {
       try {
-        await this.$store.dispatch("fetchPosts/postPosts", data);
-        this.notification("success", "success", "Успешно добавлен");
-        this.$router.push("/news");
+        const data = await this.$store.dispatch("fetchTariff/getEmptyDate", {
+          month: moment(this.currentDay).format("MM"),
+          year: moment(this.currentDay).format("YYYY"),
+          tariff_id: 1,
+        });
+        this.emptyDate = data?.days;
       } catch (e) {
         this.statusFunc(e);
       }
@@ -532,6 +582,10 @@ export default {
 </script>
 <style lang="css">
 @import "../../../assets/css/pages/order.css";
+.ant-fullcalendar-fullscreen .ant-fullcalendar-month,
+.ant-fullcalendar-fullscreen .ant-fullcalendar-date {
+  height: 70px !important;
+}
 .posts-grid {
   display: grid;
   grid-gap: 13px;
@@ -542,5 +596,24 @@ export default {
 .posts .ant-upload-list-picture-card-container {
   width: 100% !important;
   height: 150px !important;
+}
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.events .ant-badge-status {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.notes-month {
+  text-align: center;
+  font-size: 28px;
+}
+.notes-month section {
+  font-size: 28px;
 }
 </style>

@@ -56,4 +56,15 @@ export const actions = {
     });
     return res;
   },
+  async getEmptyDate({}, data) {
+    const res = await this.$axios.$get(`/tickets/empty_date`, {
+      params: {
+        ...data,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+      },
+    });
+    return res;
+  },
 };
