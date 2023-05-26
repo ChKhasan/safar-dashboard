@@ -289,13 +289,17 @@ export default {
     };
   },
   mounted() {
-    this.$route.query.session
-      ? (this.form.date = moment(
-          `${this.$route.query.date} ${this.$route.query.session}`
-        ).format("Do MMMM. YYYY hh:mm-hh:mm"))
-      : (this.form.date = moment(moment(this.$route.query.date, "DD-MM-YYYY")).format(
-          "Do MMMM. YYYY"
-        ));
+    if (this.$route.query.session) {
+      this.form.date = moment(moment(this.$route.query.date, "DD-MM-YYYY")).format(
+        "Do MMMM. YYYY"
+      );
+      this.form.date = `${this.form.date} ${this.$route.query.session}`;
+    } else {
+      this.form.date = moment(moment(this.$route.query.date, "DD-MM-YYYY")).format(
+        "Do MMMM. YYYY"
+      );
+    }
+
     this.__GET_TARIFF_BY_ID();
   },
   methods: {

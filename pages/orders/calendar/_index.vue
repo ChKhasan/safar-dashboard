@@ -293,6 +293,7 @@ export default {
 }
 .bounce-leave-active {
   animation: bounce-in 0.2s reverse;
+  color: rgb(24, 144, 255);
 }
 @keyframes bounce-in {
   0% {

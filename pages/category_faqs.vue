@@ -100,7 +100,7 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '50px' }"
+      centered
       :title="title"
       :closable="false"
       width="720px"
@@ -137,7 +137,7 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"

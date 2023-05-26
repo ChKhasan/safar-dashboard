@@ -92,7 +92,7 @@
     </div>
     <a-modal
       v-model="visible"
-      :dialog-style="{ top: '50px' }"
+      centered
       :title="title"
       :closable="false"
       width="720px"
@@ -100,8 +100,13 @@
     >
       <div class="d-flex flex-column">
         <div class="d-flex flex-column">
-          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item class="form-item mb-3" label="Заголовок">
+          <a-form-model
+            :model="form"
+            ref="ruleFormPromo"
+            :rules="rules"
+            layout="vertical"
+          >
+            <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title">
               <a-input
                 type="text"
                 class="w-100 promo-date"
@@ -122,6 +127,7 @@
               class="form-item mb-3"
               :class="{ 'select-placeholder': form.service_id == null }"
               label="Услуга"
+              prop="service_id"
             >
               <a-select v-model="form.service_id" placeholder="Услуга">
                 <a-select-option v-for="(service, index) in services" :key="service?.id">
@@ -130,7 +136,7 @@
               </a-select>
             </a-form-model-item>
 
-            <a-form-model-item class="form-item mb-3" label="Количество">
+            <a-form-model-item class="form-item mb-3" label="Количество" prop="amount">
               <a-input-number
                 v-model="form.amount"
                 :formatter="
@@ -155,7 +161,7 @@
             <a-form-model-item class="form-item mb-3" label="Дата">
               <input type="date" class="w-100 promo-date" v-model="form.date" />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Промо">
+            <a-form-model-item class="form-item mb-3" label="Промо" prop="promo">
               <a-input v-model="form.promo" placeholder="Промо" />
             </a-form-model-item>
           </a-form-model>
@@ -167,14 +173,14 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="saveData"
           >
-          Сохранять
+            Сохранять
           </a-button>
         </div>
       </template>
@@ -293,7 +299,37 @@ export default {
       services: [],
       columns,
       promos: [],
-      rules: {},
+      rules: {
+        title: [
+          {
+            required: true,
+            message: "This field is required",
+
+            trigger: "blur",
+          },
+        ],
+        amount: [
+          {
+            required: true,
+            message: "This field is required",
+            trigger: "blur",
+          },
+        ],
+        service_id: [
+          {
+            required: true,
+            message: "This field is required",
+            trigger: "blur",
+          },
+        ],
+        promo: [
+          {
+            required: true,
+            message: "This field is required",
+            trigger: "blur",
+          },
+        ],
+      },
       form: {
         title: "",
         service_id: null,
@@ -311,7 +347,7 @@ export default {
   },
   methods: {
     saveData() {
-      this.$refs["ruleFormFaq"].validate((valid) => {
+      this.$refs["ruleFormPromo"].validate((valid) => {
         if (valid) {
           if (this.editId) {
             this.__EDIT_PROMOS(this.form);

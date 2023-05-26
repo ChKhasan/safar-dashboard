@@ -414,7 +414,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   transition: 0.3s ease;
 }
 .calendar-day-card-body .calendar-day-card-body-list:hover {
-  background: rgb(0, 0, 0, 0.03);
+  background: rgb(24, 144, 255, 0.1);
 }
 .calendar-day-card-body .calendar-day-card-body-list .time {
   font-family: "Inter";
