@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <TitleBlock title="F.A.Q" :breadbrumb="['Главный']" lastLink="F.A.Q">
+    <TitleBlock title="Партнеры" :breadbrumb="['Главный']" lastLink="Партнеры">
       <div class="d-flex">
         <a-button
           class="add-btn add-header-btn btn-primary d-flex align-items-center"
@@ -19,11 +19,11 @@
           <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput
               placeholder="Поиск"
-              @changeSearch="($event) => changeSearch($event, '/faqs', '__GET_FAQS')"
+              @changeSearch="($event) => changeSearch($event, '/partners', '__GET_FAQS')"
             />
             <div></div>
             <a-button
-              @click="clearQuery('/faqs', '__GET_FAQS')"
+              @click="clearQuery('/partners', '__GET_FAQS')"
               type="primary"
               class="d-flex align-items-center justify-content-center"
               style="height: 38px"
@@ -38,17 +38,15 @@
           :loading="loading"
         >
           <span slot="indexId" slot-scope="text">#{{ text?.key }}</span>
-          <span
-            slot="answer"
-            slot-scope="text"
-            v-html="text?.ru ? text?.ru : '-----'"
-          ></span>
-          <span slot="question" slot-scope="text">
-            <span>{{ text?.ru ? text?.ru : "-----" }}</span>
+          <span slot="sm_img" slot-scope="text">
+            <img v-if="text != null" class="table-image" :src="text" />
+            <img
+              v-else
+              class="table-image"
+              src="../assets/images/photo_2023-03-04_13-28-58.jpg"
+            />
           </span>
-          <span slot="category" slot-scope="text">
-            <span>{{ text ? text?.title.ru : "-----" }}</span>
-          </span>
+          <span slot="link" slot-scope="text">{{ text ? text : "-----" }}</span>
 
           <span slot="id" slot-scope="text">
             <!-- <span class="action-btn" v-html="eyeIcon"> </span> -->
@@ -75,7 +73,7 @@
             v-model="params.pageSize"
             class="table-page-size"
             style="width: 120px"
-            @change="($event) => changePageSizeGlobal($event, '/faqs', '__GET_FAQS')"
+            @change="($event) => changePageSizeGlobal($event, '/partners', '__GET_FAQS')"
           >
             <a-select-option
               v-for="item in pageSizes"
@@ -104,54 +102,35 @@
       @ok="handleOk"
     >
       <div class="d-flex flex-column">
-        <div class="form_tab mb-4 bottom_hr">
-          <span
-            style="border-right: 0"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            @click="formTab = item.index"
-            :class="{ 'avtive-formTabModal': formTab == item.index }"
+        <div class="d-flex flex-column">
+          <a-form-model
+            :model="form"
+            ref="ruleFormPartners"
+            :rules="rules"
+            layout="vertical"
           >
-            {{ item.label }}
-          </span>
-        </div>
-        <div
-          class="d-flex flex-column"
-          v-for="(item, index) in formTabData"
-          :key="index"
-          v-if="formTab == item.index"
-        >
-          <a-form-model :model="form" ref="ruleFormFaq" :rules="rules" layout="vertical">
-            <a-form-model-item
-              class="form-item mb-3"
-              :class="{ 'select-placeholder': form.faq_category_id == null }"
-              label="Категории (F.A.Q)"
-            >
-              <a-select v-model="form.faq_category_id" placeholder="Категории (F.A.Q)">
-                <a-select-option
-                  v-for="(category, index) in categories"
-                  :key="category?.id"
-                >
-                  {{ category?.title?.ru }}
-                </a-select-option>
-              </a-select>
+            <a-form-model-item class="form-item mb-3" label="Link" prop="link">
+              <a-input v-model="form.link" placeholder="link" />
             </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Вопрос" prop="question.ru">
-              <a-input
-                type="textarea"
-                rows="5"
-                v-model="form.question[item.index]"
-                placeholder="Вопрос"
-              />
-            </a-form-model-item>
-            <a-form-model-item class="form-item mb-3" label="Ответ" prop="answer.ru">
-              <a-input
-                type="textarea"
-                rows="5"
-                v-model="form.answer[item.index]"
-                placeholder="Ответ"
-              />
-            </a-form-model-item>
+            <div class="clearfix">
+              <a-upload
+                action="https://api.safarpark.uz/api/files/upload"
+                list-type="picture-card"
+                :file-list="fileList"
+                :headers="headers"
+                :multiple="true"
+                @preview="handlePreview"
+                @change="handleChange"
+              >
+                <div v-if="fileList.length < 8">
+                  <a-icon type="plus" />
+                  <div class="ant-upload-text">Загрузить</div>
+                </div>
+              </a-upload>
+              <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                <img alt="example" style="width: 100%" :src="previewImage" />
+              </a-modal>
+            </div>
           </a-form-model>
         </div>
       </div>
@@ -164,6 +143,7 @@
             Отмена
           </div>
           <a-button
+            :loading="loadingBtn"
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="saveData"
@@ -186,6 +166,14 @@ import authAccess from "../mixins/authAccess";
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 const columns = [
   {
     title: "№",
@@ -197,31 +185,23 @@ const columns = [
     width: 50,
   },
   {
-    title: "Категории",
-    dataIndex: "category",
-    key: "category",
+    dataIndex: "sm_img",
+    key: "sm_img",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "category" },
+    scopedSlots: { customRender: "sm_img" },
     className: "column-service",
-    width: "20%",
+    width: "55px",
+    colSpan: 0,
   },
   {
-    title: "вопрос",
-    dataIndex: "question",
-    key: "question",
+    title: "Партнеры",
+    dataIndex: "link",
+    key: "link",
     slots: { title: "customTitle" },
-    scopedSlots: { customRender: "question" },
+    scopedSlots: { customRender: "link" },
     className: "column-name",
     align: "left",
-    width: "30%",
-  },
-  {
-    title: "ответ",
-    dataIndex: "answer",
-    key: "answer",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "answer" },
-    className: "column-service",
+    colSpan: 2,
   },
 
   {
@@ -239,26 +219,17 @@ export default {
   name: "IndexPage",
   mixins: [status, global, authAccess],
   head: {
-    title: "F.A.Q",
+    title: "Партнеры",
   },
   data() {
     return {
-      editorOption: {
-        theme: "snow",
-        modules: {
-          toolbar: [
-            [
-              {
-                size: [],
-              },
-            ],
-            ["bold", "italic", "underline", "strike"],
-
-            ["image"],
-            ["code-block"],
-          ],
-        },
+      headers: {
+        authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
+      loadingBtn: false,
+      previewVisible: false,
+      previewImage: "",
+      fileList: [],
       title: "Добавить",
       editId: null,
       formTab: "ru",
@@ -283,39 +254,16 @@ export default {
       faqs: [],
       categories: [],
       rules: {
-        faq_category_id: [
-          { required: true, message: "This field is required", trigger: "change" },
-        ],
-        question: {
-          ru: [{ required: true, message: "This field is required", trigger: "change" }],
-        },
-        answer: {
-          ru: [
-            {
-              required: true,
-              message: "This field is required",
-              trigger: "change",
-            },
-          ],
-        },
+        link: [{ required: true, message: "This field is required", trigger: "change" }],
       },
       form: {
-        question: {
-          ru: "",
-          uz: "",
-        },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        faq_category_id: null,
-        service_id: null,
+        img: "",
+        link: "",
       },
     };
   },
   async mounted() {
-    this.getFirstData("/faqs", "__GET_FAQS");
-    this.__GET_FAQS_CATEGORIES();
+    this.getFirstData("/partners", "__GET_FAQS");
     this.checkAllActions("faqs");
   },
   methods: {
@@ -323,15 +271,17 @@ export default {
       const data = {
         ...this.form,
       };
-      if (this.form.faq_category_id == "false") {
-        data.faq_category_id = null;
-      }
-      this.$refs["ruleFormFaq"][0].validate((valid) => {
+
+      this.$refs["ruleFormPartners"].validate((valid) => {
         if (valid) {
-          if (this.editId) {
-            this.__EDIT_FAQS(data);
+          if (!data.img) {
+            this.notification("error", "error", "Img is required");
           } else {
-            this.__POST_FAQS(data);
+            if (this.editId) {
+              this.__EDIT_FAQS(data);
+            } else {
+              this.__POST_FAQS(data);
+            }
           }
         } else {
           return false;
@@ -344,37 +294,32 @@ export default {
       this.__GET_FAQS_BY_ID(id);
     },
     deleteAction(id) {
-      this.__DELETE_GLOBAL(id, "fetchFaqs/deleteFaqs", "Успешно удален", "__GET_FAQS");
+      this.__DELETE_GLOBAL(
+        id,
+        "fetchPartners/deletePartners",
+        "Успешно удален",
+        "__GET_FAQS"
+      );
     },
     async __GET_FAQS() {
       this.loading = true;
-      const data = await this.$store.dispatch("fetchFaqs/getFaqs", {
+      const data = await this.$store.dispatch("fetchPartners/getPartners", {
         ...this.$route.query,
       });
       this.loading = false;
-      const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
-      this.faqs = data?.faqs?.data.map((item, index) => {
+      const pageIndex = this.indexPage(
+        data?.partners?.current_page,
+        data?.partners?.per_page
+      );
+      this.faqs = data?.partners?.data.map((item, index) => {
         return {
           ...item,
           key: index + pageIndex,
         };
       });
-      this.totalPage = data?.faqs?.total;
+      this.totalPage = data?.partners?.total;
     },
-    async __GET_FAQS_CATEGORIES() {
-      this.loading = true;
-      const data = await this.$store.dispatch("fetchFaqs/getFaqsCategoriesAll");
-      this.loading = false;
-      // const pageIndex = this.indexPage(data?.faqs?.current_page, data?.faqs?.per_page);
-      this.categories = data?.categories;
-      // this.totalPage = data?.faqs?.total;
-      this.categories.unshift({
-        title: {
-          ru: "Без категории",
-        },
-        id: "false",
-      });
-    },
+
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
@@ -390,7 +335,7 @@ export default {
     },
     async __POST_FAQS(data) {
       try {
-        await this.$store.dispatch("fetchFaqs/postFaqs", data);
+        await this.$store.dispatch("fetchPartners/postPartners", data);
         this.notification("success", "success", "Успешно добавлен");
         this.handleOk();
         this.__GET_FAQS();
@@ -400,44 +345,70 @@ export default {
     },
     async __GET_FAQS_BY_ID(id) {
       try {
-        const data = await this.$store.dispatch("fetchFaqs/getFaqsById", id);
+        const data = await this.$store.dispatch("fetchPartners/getPartnersById", id);
         this.visible = true;
-        this.form = data?.faq;
+        this.form = data?.partner;
+        this.fileList = [];
+        this.fileList.push({
+          uid: `-1`,
+          name: "image.png",
+          status: "done",
+          oldImg: true,
+          url: data?.partner?.sm_img,
+          response: {
+            path: data?.partner?.img,
+          },
+        });
+        console.log(this.fileList);
       } catch (e) {
         this.statusFunc(e);
       }
     },
     emptyData() {
       this.form = {
-        question: {
-          ru: "",
-          uz: "",
-        },
-        answer: {
-          ru: "",
-          uz: "",
-        },
-        service_id: null,
+        link: "",
+        img: "",
       };
     },
     async __EDIT_FAQS(res) {
       try {
-        await this.$store.dispatch("fetchFaqs/editFaqs", {
+        await this.$store.dispatch("fetchPartners/editPartners", {
           id: this.editId,
           data: res,
         });
         this.handleOk();
         this.__GET_FAQS();
         this.notification("success", "success", "Успешно изменена");
-        this.$router.push("/faqs");
+        this.$router.push("/partners");
       } catch (e) {
         this.statusFunc(e);
+      }
+    },
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
+      this.previewVisible = true;
+    },
+    handleChange({ fileList }) {
+      this.loadingBtn = true;
+      this.fileList = fileList;
+      if (fileList[0]?.response?.path) {
+        this.form.img = fileList[0]?.response?.path;
+        this.loadingBtn = false;
+      } else if (fileList.length == 0 || this.form.img > fileList.length) {
+        this.form.img = fileList[0]?.response?.path;
+        this.loadingBtn = false;
       }
     },
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/faqs", "__GET_FAQS");
+      this.changePagination(val, "/partners", "__GET_FAQS");
     },
     visible(val) {
       if (val == false) {
