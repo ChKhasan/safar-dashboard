@@ -220,9 +220,9 @@
                       disabled
                     />
                   </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3" label="Дата принятия">
+                  <a-form-model-item v-if="order.date_of_adoption" class="form-item mb-3" label="Дата принятия">
                     <a-input
-                      v-model="order.user.created_at"
+                      v-model="order.date_of_adoption"
                       placeholder="Дата принятия"
                       disabled
                     />
