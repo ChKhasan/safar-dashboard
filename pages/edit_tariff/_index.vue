@@ -32,261 +32,265 @@
           </a-button>
         </div>
       </TitleBlock>
-      <div class="services-grid pb-5 pt-5">
-        <div class="container_xl app-container d-flex flex-column">
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.name = item.index"
-                :class="{ 'avtive-formTab': formTab.name == item.index }"
-              >
-                {{ item.label }}
-              </span>
-            </div>
-          </div>
-          <div
-            class="card_block px-4 py-4 border-left-radius"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.name == item.index"
-          >
-            <div class="grid-2">
-              <a-form-model-item
-                class="form-item mb-3 required"
-                label="Название"
-                prop="name.ru"
-              >
-                <a-input v-model="form.name[item.index]" placeholder="Название..." />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 required" label="Подзаголовок">
-                <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок..." />
-              </a-form-model-item>
-            </div>
-            <a-form-model-item class="form-item mb-3" label="Описание">
-              <quill-editor
-                class="product-editor"
-                :options="editorOption"
-                v-model="form.desc[item.index]"
-              />
-            </a-form-model-item>
-          </div>
-        </div>
-        <div class="container_xl app-container">
-          <div class="card_block mt-4 service-table px-4 py-3">
-            <a-table :columns="columns" :pagination="false" :data-source="data">
-              <span slot="customTitle"><a-icon type="smile-o" /> Name</span>a
-              <span slot="time" slot-scope="text">
-                <div class="d-flex flex-wrap">
-                  <span
-                    class="time_picker"
-                    style="margin-right: 16px"
-                    v-for="(timePicker, ind) in form.schedule[text - 1]"
-                    :class="{ disabledTime: timePicker.disabled }"
-                  >
-                    <span
-                      @click="deleteTimePicker(text - 1, timePicker.id)"
-                      class="delete-time-picker"
-                      v-html="xIcon"
-                    ></span>
-                    <input
-                      v-model="timePicker.start"
-                      type="time"
-                      id="time-input"
-                      name="time"
-                      min="00:00"
-                      max="23:59"
-                      :class="{ disabledTime: timePicker.disabled }"
-                      :disabled="timePicker.disabled"
-                      pattern="[0-2][0-9]:[0-5][0-9]"
-                    />
-                    <span
-                      class="d-flex align-items-center"
-                      style="margin-left: 3px; margin-right: 3px"
-                      >-</span
-                    >
-                    <input
-                      v-model="timePicker.end"
-                      type="time"
-                      :class="{ disabledTime: timePicker.disabled }"
-                      :disabled="timePicker.disabled"
-                      id="time-input"
-                      name="time"
-                      min="00:00"
-                      max="23:59"
-                      pattern="[0-2][0-9]:[0-5][0-9]"
-                    />
-                  </span>
-                  <div
-                    class="outline-btn time-add-btn"
-                    v-if="form.schedule.length > 0"
-                    :class="{ disabledTime: form.schedule[text - 1][0].disabled }"
-                    @click="addTimePicker(text - 1)"
-                  >
-                    <span v-html="plusIcon"> </span>
-                  </div>
-                </div>
-              </span>
-              <span slot="id" slot-scope="text">
+      <a-spin :spinning="spinning" :delay="delayTime">
+        <div class="services-grid pb-5 pt-5">
+          <div class="container_xl app-container d-flex flex-column">
+            <div class="form_tab">
+              <div>
                 <span
-                  >Круглосутоно
-                  <a-checkbox
-                    class="mx-3"
-                    v-if="form.schedule.length > 0"
-                    :checked="form.schedule[text - 1][0].disabled"
-                    @change="($event) => onChangeDay($event, text - 1)"
-                  >
-                  </a-checkbox
-                ></span>
-              </span>
-            </a-table>
-          </div>
-        </div>
-        <div class="container_xl app-container mt-4 d-flex flex-column">
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.tariff = item.index"
-                :class="{ 'avtive-formTab': formTab.tariff == item.index }"
-              >
-                {{ item.label }}
-              </span>
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.name = item.index"
+                  :class="{ 'avtive-formTab': formTab.name == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="card_block px-4 py-4 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.name == item.index"
+            >
+              <div class="grid-2">
+                <a-form-model-item
+                  class="form-item mb-3 required"
+                  label="Название"
+                  prop="name.ru"
+                >
+                  <a-input v-model="form.name[item.index]" placeholder="Название..." />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 required" label="Подзаголовок">
+                  <a-input
+                    v-model="form.subtitle[item.index]"
+                    placeholder="Подзаголовок..."
+                  />
+                </a-form-model-item>
+              </div>
+              <a-form-model-item class="form-item mb-3" label="Описание">
+                <quill-editor
+                  class="product-editor"
+                  :options="editorOption"
+                  v-model="form.desc[item.index]"
+                />
+              </a-form-model-item>
             </div>
           </div>
-          <div
-            class="card_block py-4 border-left-radius"
-            v-for="(item, index2) in formTabData"
-            :key="index2"
-            v-if="formTab.tariff == item.index"
-          >
-            <span class="px-4"><FormTitle title="Добавить цены" /></span>
-            <div class="grid-3 px-4">
-              <a-form-model-item class="form-item mb-3" label="Тип">
-                <a-select
-                  :default-value="services[0].value"
-                  v-model="form.type"
-                  @change="changeTariff"
+          <div class="container_xl app-container">
+            <div class="card_block mt-4 service-table px-4 py-3">
+              <a-table :columns="columns" :pagination="false" :data-source="data">
+                <span slot="customTitle"><a-icon type="smile-o" /> Name</span>a
+                <span slot="time" slot-scope="text">
+                  <div class="d-flex flex-wrap">
+                    <span
+                      class="time_picker"
+                      style="margin-right: 16px"
+                      v-for="(timePicker, ind) in form.schedule[text - 1]"
+                      :class="{ disabledTime: timePicker.disabled }"
+                    >
+                      <span
+                        @click="deleteTimePicker(text - 1, timePicker.id)"
+                        class="delete-time-picker"
+                        v-html="xIcon"
+                      ></span>
+                      <input
+                        v-model="timePicker.start"
+                        type="time"
+                        id="time-input"
+                        name="time"
+                        min="00:00"
+                        max="23:59"
+                        :class="{ disabledTime: timePicker.disabled }"
+                        :disabled="timePicker.disabled"
+                        pattern="[0-2][0-9]:[0-5][0-9]"
+                      />
+                      <span
+                        class="d-flex align-items-center"
+                        style="margin-left: 3px; margin-right: 3px"
+                        >-</span
+                      >
+                      <input
+                        v-model="timePicker.end"
+                        type="time"
+                        :class="{ disabledTime: timePicker.disabled }"
+                        :disabled="timePicker.disabled"
+                        id="time-input"
+                        name="time"
+                        min="00:00"
+                        max="23:59"
+                        pattern="[0-2][0-9]:[0-5][0-9]"
+                      />
+                    </span>
+                    <div
+                      class="outline-btn time-add-btn"
+                      v-if="form.schedule.length > 0"
+                      :class="{ disabledTime: form.schedule[text - 1][0].disabled }"
+                      @click="addTimePicker(text - 1)"
+                    >
+                      <span v-html="plusIcon"> </span>
+                    </div>
+                  </div>
+                </span>
+                <span slot="id" slot-scope="text">
+                  <span
+                    >Круглосутоно
+                    <a-checkbox
+                      class="mx-3"
+                      v-if="form.schedule.length > 0"
+                      :checked="form.schedule[text - 1][0].disabled"
+                      @change="($event) => onChangeDay($event, text - 1)"
+                    >
+                    </a-checkbox
+                  ></span>
+                </span>
+              </a-table>
+            </div>
+          </div>
+          <div class="container_xl app-container mt-4 d-flex flex-column">
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.tariff = item.index"
+                  :class="{ 'avtive-formTab': formTab.tariff == item.index }"
                 >
-                  <a-select-option
-                    v-for="(service, index) in services"
-                    :key="service.value"
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="card_block py-4 border-left-radius"
+              v-for="(item, index2) in formTabData"
+              :key="index2"
+              v-if="formTab.tariff == item.index"
+            >
+              <span class="px-4"><FormTitle title="Добавить цены" /></span>
+              <div class="grid-3 px-4">
+                <a-form-model-item class="form-item mb-3" label="Тип">
+                  <a-select
+                    :default-value="services[0].value"
+                    v-model="form.type"
+                    @change="changeTariff"
                   >
-                    {{ service.name }}
-                  </a-select-option>
-                </a-select>
-              </a-form-model-item>
-              <span v-if="form.type == 'by_count'">
+                    <a-select-option
+                      v-for="(service, index) in services"
+                      :key="service.value"
+                    >
+                      {{ service.name }}
+                    </a-select-option>
+                  </a-select>
+                </a-form-model-item>
+                <span v-if="form.type == 'by_count'">
+                  <a-form-model-item
+                    class="form-item inner mb-3"
+                    label="Мин. кол-во клиентов"
+                    prop="min_clients"
+                  >
+                    <a-input
+                      type="number"
+                      v-model="form.min_clients"
+                      placeholder="Мин. кол-во клиентов"
+                    />
+                  </a-form-model-item>
+                </span>
                 <a-form-model-item
                   class="form-item inner mb-3"
                   label="Мин. кол-во клиентов"
-                  prop="min_clients"
+                  v-if="form.min_clients == null"
                 >
                   <a-input
                     type="number"
-                    v-model="form.min_clients"
+                    :disabled="form.min_clients == null"
                     placeholder="Мин. кол-во клиентов"
                   />
                 </a-form-model-item>
-              </span>
-              <a-form-model-item
-                class="form-item inner mb-3"
-                label="Мин. кол-во клиентов"
-                v-if="form.min_clients == null"
-              >
-                <a-input
-                  type="number"
-                  :disabled="form.min_clients == null"
-                  placeholder="Мин. кол-во клиентов"
-                />
-              </a-form-model-item>
-              <span v-if="form.type == 'by_count'">
+                <span v-if="form.type == 'by_count'">
+                  <a-form-model-item
+                    class="form-item inner mb-3"
+                    label="Макс. кол-во клиентов"
+                    prop="max_clients"
+                  >
+                    <a-input
+                      type="number"
+                      v-model="form.max_clients"
+                      :disabled="form.max_clients == null"
+                      placeholder="Макс. кол-во клиентов"
+                    />
+                  </a-form-model-item>
+                </span>
                 <a-form-model-item
                   class="form-item inner mb-3"
                   label="Макс. кол-во клиентов"
-                  prop="max_clients"
+                  v-else
                 >
                   <a-input
                     type="number"
-                    v-model="form.max_clients"
                     :disabled="form.max_clients == null"
                     placeholder="Макс. кол-во клиентов"
                   />
                 </a-form-model-item>
-              </span>
-              <a-form-model-item
-                class="form-item inner mb-3"
-                label="Макс. кол-во клиентов"
-                v-else
-              >
-                <a-input
-                  type="number"
-                  :disabled="form.max_clients == null"
-                  placeholder="Макс. кол-во клиентов"
-                />
-              </a-form-model-item>
-            </div>
-            <div class="px-4 from_hr_top pt-3">
-              <a-form-model-item class="form-item mb-3" v-if="form.type == 'tariff'">
-                <a-input
-                  v-model="form.tab_start_text[item.index]"
-                  placeholder="Введите параметр (текст)"
-                />
-              </a-form-model-item>
-              <div
-                v-for="(price, index) in form.prices"
-                :key="price.id"
-                v-if="form.type !== 'multi'"
-              >
-                <!-- <a-form-model-item class="form-item mb-3" v-if="form.type == 'multi'">
+              </div>
+              <div class="px-4 from_hr_top pt-3">
+                <a-form-model-item class="form-item mb-3" v-if="form.type == 'tariff'">
+                  <a-input
+                    v-model="form.tab_start_text[item.index]"
+                    placeholder="Введите параметр (текст)"
+                  />
+                </a-form-model-item>
+                <div
+                  v-for="(price, index) in form.prices"
+                  :key="price.id"
+                  v-if="form.type !== 'multi'"
+                >
+                  <!-- <a-form-model-item class="form-item mb-3" v-if="form.type == 'multi'">
                   <a-input v-model="price.name" placeholder="Введите параметр (текст)" />
                 </a-form-model-item> -->
-                <div class="grid-3-with-2delete">
-                  <a-form-model-item class="form-item mb-3">
-                    <a-input
-                      v-model="price.name"
-                      placeholder="Введите параметр (текст)"
-                    />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3">
-                    <a-input-number
-                      v-model="price.price"
-                      :default-value="1000"
-                      :formatter="
-                        (value) => {
-                          if (Number(value)) {
-                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-                          } else {
-                            var num = [];
-                            value.split('').forEach((item) => {
-                              if (Number(item) || item == 0) {
-                                num.push(item);
-                              }
-                            });
-                            return `${num.join('')}`.replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ' '
-                            );
+                  <div class="grid-3-with-2delete">
+                    <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="price.name"
+                        placeholder="Введите параметр (текст)"
+                      />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-3">
+                      <a-input-number
+                        v-model="price.price"
+                        :default-value="1000"
+                        :formatter="
+                          (value) => {
+                            if (Number(value)) {
+                              return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                            } else {
+                              var num = [];
+                              value.split('').forEach((item) => {
+                                if (Number(item) || item == 0) {
+                                  num.push(item);
+                                }
+                              });
+                              return `${num.join('')}`.replace(
+                                /\B(?=(\d{3})+(?!\d))/g,
+                                ' '
+                              );
+                            }
                           }
-                        }
-                      "
-                      placeholder="Введите сумму"
-                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
-                    />
-                  </a-form-model-item>
+                        "
+                        placeholder="Введите сумму"
+                        :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                      />
+                    </a-form-model-item>
 
-                  <div class="d-flex align-items-center mb-2">
-                    <div
-                      class="variant-btn variant-btn-delete"
-                      v-html="xIcon"
-                      @click="deletePrices(price.id)"
-                    ></div>
+                    <div class="d-flex align-items-center mb-2">
+                      <div
+                        class="variant-btn variant-btn-delete"
+                        v-html="xIcon"
+                        @click="deletePrices(price.id)"
+                      ></div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- <div
+                <!-- <div
                 v-for="(price2, index) in form.prices"
                 :key="price2.id"
                 v-if="form.type == 'multi'"
@@ -352,100 +356,101 @@
                   </div>
                 </div>
               </div> -->
-              <div class="create-inner-variant" @click="addPrices">
-                <span v-html="plusIcon"> </span>
-                Добавить
+                <div class="create-inner-variant" @click="addPrices">
+                  <span v-html="plusIcon"> </span>
+                  Добавить
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div class="container_xl app-container d-flex flex-column mt-4">
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.info = item.index"
-                :class="{ 'avtive-formTab': formTab.info == item.index }"
-              >
-                {{ item.label }}
-              </span>
-            </div>
-          </div>
-          <div
-            class="card_block border-left-radius px-4 py-4 mt-0"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.info == item.index"
-          >
-            <FormTitle title="Информация об услуге" />
-            <a-form-model-item class="form-item mb-0 pb-0" label="Добавить статистику">
-              <div class="mt-3 statistic-grid">
-                <div v-for="statistic in form.statistics" class="d-flex">
-                  <div class="clearfix">
-                    <a-upload
-                      action="https://api.safarpark.uz/api/files/upload"
-                      list-type="picture-card"
-                      :headers="headers"
-                      :file-list="statistic.statisticFile"
-                      @preview="handlePreview"
-                      @change="
-                        ($event) => handleChangeStatistic($event, statistic.indexId)
-                      "
-                    >
-                      <div v-if="statistic.statisticFile.length < 1">
-                        <a-icon type="plus" />
-                        <div class="ant-upload-text">Загрузить</div>
-                      </div>
-                    </a-upload>
-                    <a-modal
-                      :visible="previewVisible"
-                      :footer="null"
-                      @cancel="handleCancel"
-                    >
-                      <img alt="example" style="width: 100%" :src="previewImage" />
-                    </a-modal>
-                  </div>
-                  <div class="d-flex flex-column justify-content-between w-100">
-                    <a-form-model-item class="form-item mb-3">
-                      <a-input
-                        v-model="statistic.number[item.index]"
-                        placeholder="Количество статистики"
-                      />
-                    </a-form-model-item>
-                    <a-form-model-item class="form-item mb-3">
-                      <a-input
-                        v-model="statistic.name[item.index]"
-                        placeholder="Название"
-                      />
-                    </a-form-model-item>
-                  </div>
-                </div>
+          <div class="container_xl app-container d-flex flex-column mt-4">
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.info = item.index"
+                  :class="{ 'avtive-formTab': formTab.info == item.index }"
+                >
+                  {{ item.label }}
+                </span>
               </div>
-            </a-form-model-item>
-            <div class="clearfix">
-              <a-upload
-                action="https://api.safarpark.uz/api/files/upload"
-                list-type="picture-card"
-                :file-list="form.fileListStat"
-                :headers="headers"
-                :multiple="true"
-                @preview="handlePreview"
-                @change="handleChangeStat"
-              >
-                <div v-if="form.fileListStat.length < 20">
-                  <a-icon type="plus" />
-                  <div class="ant-upload-text">Загрузить</div>
+            </div>
+            <div
+              class="card_block border-left-radius px-4 py-4 mt-0"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.info == item.index"
+            >
+              <FormTitle title="Информация об услуге" />
+              <a-form-model-item class="form-item mb-0 pb-0" label="Добавить статистику">
+                <div class="mt-3 statistic-grid">
+                  <div v-for="statistic in form.statistics" class="d-flex">
+                    <div class="clearfix">
+                      <a-upload
+                        action="https://api.safarpark.uz/api/files/upload"
+                        list-type="picture-card"
+                        :headers="headers"
+                        :file-list="statistic.statisticFile"
+                        @preview="handlePreview"
+                        @change="
+                          ($event) => handleChangeStatistic($event, statistic.indexId)
+                        "
+                      >
+                        <div v-if="statistic.statisticFile.length < 1">
+                          <a-icon type="plus" />
+                          <div class="ant-upload-text">Загрузить</div>
+                        </div>
+                      </a-upload>
+                      <a-modal
+                        :visible="previewVisible"
+                        :footer="null"
+                        @cancel="handleCancel"
+                      >
+                        <img alt="example" style="width: 100%" :src="previewImage" />
+                      </a-modal>
+                    </div>
+                    <div class="d-flex flex-column justify-content-between w-100">
+                      <a-form-model-item class="form-item mb-3">
+                        <a-input
+                          v-model="statistic.number[item.index]"
+                          placeholder="Количество статистики"
+                        />
+                      </a-form-model-item>
+                      <a-form-model-item class="form-item mb-3">
+                        <a-input
+                          v-model="statistic.name[item.index]"
+                          placeholder="Название"
+                        />
+                      </a-form-model-item>
+                    </div>
+                  </div>
                 </div>
-              </a-upload>
-              <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                <img alt="example" style="width: 100%" :src="previewImage" />
-              </a-modal>
+              </a-form-model-item>
+              <div class="clearfix">
+                <a-upload
+                  action="https://api.safarpark.uz/api/files/upload"
+                  list-type="picture-card"
+                  :file-list="form.fileListStat"
+                  :headers="headers"
+                  :multiple="true"
+                  @preview="handlePreview"
+                  @change="handleChangeStat"
+                >
+                  <div v-if="form.fileListStat.length < 20">
+                    <a-icon type="plus" />
+                    <div class="ant-upload-text">Загрузить</div>
+                  </div>
+                </a-upload>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </a-modal>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </a-spin>
     </a-form-model>
   </div>
 </template>
@@ -560,9 +565,11 @@ export default {
   head: {
     title: "Тарифы",
   },
-  mixins: [status,authAccess],
+  mixins: [status, authAccess],
   data() {
     return {
+      delayTime: 0,
+      spinning: false,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
@@ -899,6 +906,7 @@ export default {
       });
     },
     async __GET_TARIFF_BY_ID() {
+      this.spinning = true;
       const data = await this.$store.dispatch(
         "fetchTariff/getTariffById",
         this.$route.params.index
@@ -991,6 +999,7 @@ export default {
           },
         };
       });
+      this.spinning = false;
     },
     async __EDIT_TARIFF(data) {
       try {

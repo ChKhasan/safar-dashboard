@@ -113,6 +113,27 @@
 .product-editor .ql-container {
   height: 173px !important;
 }
+.status-style label {
+  position: relative;
+}
+.status-style label::before {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  right: -19px;
+}
+
+.status-inactive label::before {
+  background-color: #f1416c;
+}
+.status-process label::before {
+  background-color: #fce83a;
+}
+.status-accepted label::before {
+  background-color: #18b3bd;
+}
 @media (max-width: 1440px) {
   .ql-container {
     height: 200px !important;

@@ -16,212 +16,222 @@
     </TitleBlock>
     <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
       <div class="pb-5 pt-5">
-        <div class="container_xl app-container d-flex flex-column">
-          <div class="order-grid">
-            <div>
-              <div class="card_block main-table px-4 py-4">
-                <FormTitle title="Данные заказа" />
-                <div class="order-grid-2">
-                  <a-form-model-item class="form-item mb-0" label="Дата заказа">
-                    <a-input
-                      placeholder="Дата заказа"
-                      v-model="order.created_at"
-                      disabled
-                    />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="№ заказa">
-                    <a-input placeholder="№ заказa" v-model="order.id" disabled />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="Сумма">
-                    <a-input-number
-                      disabled
-                      style="background: #f5f5f5"
-                      placeholder="Сумма"
-                      v-model="order.amount"
-                      :formatter="
-                        (value) => {
-                          if (Number(value)) {
-                            return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-                          } else {
-                            var num = [];
-                            value.split('').forEach((item) => {
-                              if (Number(item) || item == 0) {
-                                num.push(item);
-                              }
-                            });
-                            return `${num.join('')}`.replace(
-                              /\B(?=(\d{3})+(?!\d))/g,
-                              ' '
-                            );
+        <a-spin :spinning="spinning" :delay="delayTime">
+          <div class="container_xl app-container d-flex flex-column spin-content">
+            <div class="order-grid">
+              <div>
+                <div class="card_block main-table px-4 py-4">
+                  <FormTitle title="Данные заказа" />
+                  <div class="order-grid-2">
+                    <a-form-model-item class="form-item mb-0" label="Дата заказа">
+                      <a-input
+                        placeholder="Дата заказа"
+                        v-model="order.created_at"
+                        disabled
+                      />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-0" label="№ заказa">
+                      <a-input placeholder="№ заказa" v-model="order.id" disabled />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-0" label="Сумма">
+                      <a-input-number
+                        disabled
+                        style="background: #f5f5f5"
+                        placeholder="Сумма"
+                        v-model="order.amount"
+                        :formatter="
+                          (value) => {
+                            if (Number(value)) {
+                              return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+                            } else {
+                              var num = [];
+                              value.split('').forEach((item) => {
+                                if (Number(item) || item == 0) {
+                                  num.push(item);
+                                }
+                              });
+                              return `${num.join('')}`.replace(
+                                /\B(?=(\d{3})+(?!\d))/g,
+                                ' '
+                              );
+                            }
                           }
-                        }
-                      "
-                      :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
-                    />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3" label="Способ оплаты">
-                    <a-input
-                      style="text-transform: capitalize"
-                      placeholder="Наличные\Безналичные"
-                      v-model="order.payment_method"
-                      disabled
-                    />
-                  </a-form-model-item>
-                </div>
-              </div>
-
-              <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
-                <FormTitle title="Клиент" />
-                <div class="order-client-grid-3">
-                  <a-form-model-item class="form-item mb-0" label="ID клиента">
-                    <a-input placeholder="ID" v-model="order.client.id" disabled />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="Имя Клиента">
-                    <a-input
-                      placeholder="Имя Клиента"
-                      v-model="order.client.name"
-                      disabled
-                    />
-                  </a-form-model-item>
-
-                  <a-form-model-item
-                    class="form-item mb-0 disabled_input"
-                    label="Номер клиента "
-                  >
-                    <the-mask
-                      disabled
-                      class="w-100"
-                      type="text"
-                      placeholder="(___) ___-____"
-                      :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
-                      v-model="order.client.phone_number"
-                      label-position="top"
-                    />
-                  </a-form-model-item>
-                </div>
-              </div>
-              <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
-                <FormTitle title="Описание" />
-                <div class="">
-                  <a-form-model-item class="form-item mb-0">
-                    <quill-editor
-                      v-model="order.comments"
-                      disabled
-                      class="product-editor mt-1"
-                      :options="editorOption"
-                    />
-                  </a-form-model-item>
-                </div>
-              </div>
-              <div class="mt-5">
-                <FormTitle title="Билеты" />
-              </div>
-              <div class="order-bilets" v-for="orderIn in order.orders" :key="orderIn.id">
-                <div class="bilet-card">
-                  <div class="bilet-card-header">
-                    <h5>{{ orderIn?.service?.name?.ru }}</h5>
-                    <div class="d-flex">
-                      <span class="bilet-card-header-text"
-                        >Номер билета:
-                        <p>{{ orderIn.id }}</p></span
-                      >
-                      <div class="column-btns">
-                        <span>
-                          <a
-                            :href="`https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`"
-                            class="action-btn"
-                            download
-                            v-if="order.is_paid"
-                            @click.prevent="
-                              downloadItem(
-                                `https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`
-                              )
-                            "
-                            v-html="ticketIcon"
-                          >
-                          </a>
-                          <span
-                            class="action-btn"
-                            @click="editTicket(orderIn)"
-                            v-html="editIcon"
-                          >
-                          </span>
-                        </span>
-                      </div>
-                    </div>
+                        "
+                        :parser="(value) => value.replace(/\$\s?|( *)/g, '')"
+                      />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-3" label="Способ оплаты">
+                      <a-input
+                        style="text-transform: capitalize"
+                        placeholder="Наличные\Безналичные"
+                        v-model="order.payment_method"
+                        disabled
+                      />
+                    </a-form-model-item>
                   </div>
-                  <div class="bilet-card-body flex-column">
-                    <div
-                      class="d-flex"
-                      v-for="(dataIn, index) in orderIn.data"
-                      :key="index"
+                </div>
+
+                <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
+                  <FormTitle title="Клиент" />
+                  <div class="order-client-grid-3">
+                    <a-form-model-item class="form-item mb-0" label="ID клиента">
+                      <a-input placeholder="ID" v-model="order.client.id" disabled />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-0" label="Имя Клиента">
+                      <a-input
+                        placeholder="Имя Клиента"
+                        v-model="order.client.name"
+                        disabled
+                      />
+                    </a-form-model-item>
+
+                    <a-form-model-item
+                      class="form-item mb-0 disabled_input"
+                      label="Номер клиента "
                     >
-                      <div class="bilet-card-services">
-                        <span>{{ dataIn?.name }}</span>
-                      </div>
-                      <p>
-                        <span>{{ dataIn.count }} x </span>
-                        {{ dataIn.price }} сум
-                      </p>
-                    </div>
-                  </div>
-                  <div class="bilet-card-footer">
-                    <div class="d-flex align-items-center">
-                      <span>Заказ на:</span>
-                      <div>
-                        {{ moment(orderIn.date).format("DD.MM.YYYY") }}
-                        <span v-if="orderIn.session">{{ orderIn.session }}</span>
-                      </div>
-                    </div>
-                    <h6>{{ orderIn.amount }} сум</h6>
+                      <the-mask
+                        disabled
+                        class="w-100"
+                        type="text"
+                        placeholder="(___) ___-____"
+                        :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
+                        v-model="order.client.phone_number"
+                        label-position="top"
+                      />
+                    </a-form-model-item>
                   </div>
                 </div>
-                <!-- <BiletCard
+                <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
+                  <FormTitle title="Описание" />
+                  <div class="">
+                    <a-form-model-item class="form-item mb-0">
+                      <quill-editor
+                        v-model="order.comments"
+                        disabled
+                        class="product-editor mt-1"
+                        :options="editorOption"
+                      />
+                    </a-form-model-item>
+                  </div>
+                </div>
+                <div class="mt-5">
+                  <FormTitle title="Билеты" />
+                </div>
+                <div
+                  class="order-bilets"
+                  v-for="orderIn in order.orders"
+                  :key="orderIn.id"
+                >
+                  <div class="bilet-card">
+                    <div class="bilet-card-header">
+                      <h5>{{ orderIn?.service?.name?.ru }}</h5>
+                      <div class="d-flex">
+                        <span class="bilet-card-header-text"
+                          >Номер билета:
+                          <p>{{ orderIn.id }}</p></span
+                        >
+                        <div class="column-btns">
+                          <span>
+                            <a
+                              :href="`https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`"
+                              class="action-btn"
+                              download
+                              v-if="order.is_paid"
+                              @click.prevent="
+                                downloadItem(
+                                  `https://api.safarpark.uz/api/orders/${orderIn.id}/get_ticket`
+                                )
+                              "
+                              v-html="ticketIcon"
+                            >
+                            </a>
+                            <span
+                              class="action-btn"
+                              @click="editTicket(orderIn)"
+                              v-html="editIcon"
+                            >
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="bilet-card-body flex-column">
+                      <div
+                        class="d-flex"
+                        v-for="(dataIn, index) in orderIn.data"
+                        :key="index"
+                      >
+                        <div class="bilet-card-services">
+                          <span>{{ dataIn?.name }}</span>
+                        </div>
+                        <p>
+                          <span>{{ dataIn.count }} x </span>
+                          {{ dataIn.price }} сум
+                        </p>
+                      </div>
+                    </div>
+                    <div class="bilet-card-footer">
+                      <div class="d-flex align-items-center">
+                        <span>Заказ на:</span>
+                        <div>
+                          {{ moment(orderIn.date).format("DD.MM.YYYY") }}
+                          <span v-if="orderIn.session">{{ orderIn.session }}</span>
+                        </div>
+                      </div>
+                      <h6>{{ orderIn.amount }} сум</h6>
+                    </div>
+                  </div>
+                  <!-- <BiletCard
                   v-for="orderIn in order.orders"
                   :key="orderIn.id"
                   :orderIn="orderIn"
                   :isPaid="order.is_paid"
                 /> -->
+                </div>
               </div>
-            </div>
-            <div>
-              <div class="card_block main-table px-4 py-4">
-                <FormTitle title="Параметры" />
+              <div>
+                <div class="card_block main-table px-4 py-4">
+                  <FormTitle title="Параметры" />
 
-                <a-form-model-item class="form-item mb-3" label="Статус">
-                  <a-select v-model="statusValue" placeholder="Tags Mode">
-                    <a-select-option v-for="elem in statusData" :key="elem.value">
-                      {{ elem.label }}
-                    </a-select-option>
-                  </a-select>
-                </a-form-model-item>
-                <a-button
-                  class="py-3 add-btn btn-primary d-flex justify-content-center align-items-center"
-                  style="height: 42px"
-                  type="primary"
-                  @click="onSubmit"
-                  v-if="checkAccess('orders', 'put')"
-                >
-                  Изменить статус
-                </a-button>
-                <a-form-model-item class="form-item mb-3 mt-3" label="Принял оператор">
-                  <a-input
-                    v-model="order.user.name"
-                    placeholder="Принял оператор"
-                    disabled
-                  />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Дата принятия">
-                  <a-input
-                    v-model="order.user.created_at"
-                    placeholder="Дата принятия"
-                    disabled
-                  />
-                </a-form-model-item>
+                  <a-form-model-item
+                    class="form-item mb-3 status-style"
+                    :class="classObject"
+                    label="Статус"
+                  >
+                    <a-select v-model="statusValue" placeholder="Tags Mode">
+                      <a-select-option v-for="elem in statusData" :key="elem.value">
+                        {{ elem.label }}
+                      </a-select-option>
+                    </a-select>
+                  </a-form-model-item>
+                  <a-button
+                    class="py-3 add-btn btn-primary d-flex justify-content-center align-items-center"
+                    style="height: 42px"
+                    type="primary"
+                    @click="onSubmit"
+                    v-if="checkAccess('orders', 'put')"
+                  >
+                    Изменить статус
+                  </a-button>
+                  <a-form-model-item class="form-item mb-3 mt-3" label="Принял оператор">
+                    <a-input
+                      v-model="order.user.name"
+                      placeholder="Принял оператор"
+                      disabled
+                    />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3" label="Дата принятия">
+                    <a-input
+                      v-model="order.user.created_at"
+                      placeholder="Дата принятия"
+                      disabled
+                    />
+                  </a-form-model-item>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </a-spin>
       </div>
     </a-form-model>
     <a-modal
@@ -341,6 +351,8 @@ export default {
     return {
       visible: false,
       visibleSessions: false,
+      spinning: true,
+      delayTime: 0,
       emptyDate: [],
       currentDay: new Date(),
       disabledBtn: true,
@@ -483,9 +495,21 @@ export default {
         facebook: "",
         visible: false,
       },
+      sessions: {},
     };
   },
+  computed: {
+    classObject: function () {
+      return {
+        "status-process": this.statusValue == "in_process",
+        "status-inactive": this.statusValue == "canceled",
+        "status-accepted": this.statusValue == "accepted",
+      };
+    },
+  },
   async mounted() {
+    this.spinning = await true;
+    console.log(this.spinning);
     this.__GET_ORDERS_BY_ID();
     // this.__GET_EMPTY_DATE();
     // await this.$store.dispatch("fetchOrders/editOrders", {
@@ -651,6 +675,7 @@ export default {
         this.order.user.created_at = moment(data?.order?.user?.created_at).format(
           "Do MMMM. YYYY hh:mm"
         );
+        this.spinning = false;
       } catch (e) {
         this.statusFunc(e);
       }
@@ -670,6 +695,7 @@ export default {
     async __GET_TARIFF_SESSIONS(data1) {
       try {
         const data = await this.$store.dispatch("fetchTariff/getTariffSessions", data1);
+        console.log(data);
         this.sessions = data.sessions;
         this.formModal.session = null;
         if (this.sessions == null) {

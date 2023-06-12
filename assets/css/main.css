@@ -58,6 +58,6 @@ ul {
   z-index: 2000 !important;
 }
 .ant-input-number-disabled input,
-.disabled_input input{
+.disabled_input input {
   background: #f5f5f5;
 }

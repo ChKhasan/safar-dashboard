@@ -154,11 +154,12 @@ import CalendarCard from "../../../components/cards/calendarCard.vue";
 import CalendarCardEmpty from "../../../components/cards/calendarCardEmpty.vue";
 import CalendarOrderCard from "../../../components/cards/calendarOrderCard.vue";
 import authAccess from "../../../mixins/authAccess";
+import status from "../../../mixins/status";
 
 import moment from "moment";
 export default {
   transitions: 'home',
-  mixins: [authAccess],
+  mixins: [authAccess,status],
 
   data() {
     return {
@@ -254,13 +255,19 @@ export default {
       this.__GET_CALENDAR();
     },
     async __GET_CALENDAR() {
-      this.calendarLoading = true;
-      const data = await this.$store.dispatch("fetchOrders/getCalendar", {
-        query: this.$route.query,
-        id: this.$route.params.index,
-      });
-      this.calendarLoading = false;
-      this.calendar = data?.days;
+      try {
+
+        this.calendarLoading = true;
+        const data = await this.$store.dispatch("fetchOrders/getCalendar", {
+          query: this.$route.query,
+          id: this.$route.params.index,
+        });
+        this.calendarLoading = false;
+        this.calendar = data?.days;
+      } catch(e) {
+        this.statusFunc(e);
+        this.calendarLoading = false;
+      }
     },
     async __GET_SERVICES() {
       const data = await this.$store.dispatch("fetchServices/getServices");

@@ -63,162 +63,271 @@
       layout="vertical"
       :wrapper-col="wrapperCol"
     >
-      <div class="services-grid pb-5 mt-5">
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '' || $route.hash == '#total_info'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.name = item.index"
-                :class="{ 'avtive-formTab': formTab.name == item.index }"
-              >
-                {{ item.label }}
-              </span>
-            </div>
-          </div>
+      <a-spin :spinning="spinning" :delay="delayTime">
+        <div class="services-grid pb-5 mt-5">
           <div
-            class="card_block px-4 py-4 border-left-radius"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.name == item.index"
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '' || $route.hash == '#total_info'"
           >
-            <a-form-model-item class="form-item mb-3" label="Название сервиса">
-              <a-input
-                v-model="form.name[item.index]"
-                placeholder="Название сервиса..."
-                disabled
-              />
-            </a-form-model-item>
-
-            <a-form-model-item
-              class="form-item mb-0"
-              label="Краткая информация о сервисе"
-            >
-              <quill-editor
-                v-model="form.desc[item.index]"
-                class="product-editor mt-1"
-                :options="editorOption"
-                disabled
-                placeholder="Краткая информация о сервисе..."
-              />
-            </a-form-model-item>
-            <div class="service-upload-container">
-              <a-form-model-item class="form-item mb-3 mt-3" label="Баннер">
-                <div class="service-upload">
-                  <a-upload
-                    action="https://api.safarpark.uz/api/files/upload"
-                    list-type="picture-card"
-                    :file-list="fileBanner"
-                    :headers="headers"
-                    :disabled="true"
-                    @preview="handlePreview"
-                    @change="($event) => handleChangeServiceUpload($event, 'banner')"
-                  >
-                    <div v-if="fileBanner.length < 1">
-                      <a-icon type="plus" />
-                      <div class="ant-upload-text">Загрузить</div>
-                    </div>
-                  </a-upload>
-                  <a-modal
-                    :visible="previewVisible"
-                    :footer="null"
-                    @cancel="handleCancel"
-                  >
-                    <img alt="example" style="width: 100%" :src="previewImage" />
-                  </a-modal>
-                </div>
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 mt-3" label="Изображение">
-                <div class="service-upload">
-                  <a-upload
-                    action="https://api.safarpark.uz/api/files/upload"
-                    list-type="picture-card"
-                    :file-list="fileForCard"
-                    :headers="headers"
-                    :disabled="true"
-                    @preview="handlePreview"
-                    @change="($event) => handleChangeServiceUpload($event, 'for_card')"
-                  >
-                    <div v-if="fileForCard.length < 1">
-                      <a-icon type="plus" />
-                      <div class="ant-upload-text">Загрузить</div>
-                    </div>
-                  </a-upload>
-                  <a-modal
-                    :visible="previewVisible"
-                    :footer="null"
-                    @cancel="handleCancel"
-                  >
-                    <img alt="example" style="width: 100%" :src="previewImage" />
-                  </a-modal>
-                </div>
-              </a-form-model-item>
-            </div>
-            <a-form-model-item class="form-item mb-3" label="Галереи">
-              <div class="service-galleries">
-                <a-upload
-                  action="https://api.safarpark.uz/api/files/upload"
-                  list-type="picture-card"
-                  :multiple="true"
-                  :headers="headers"
-                  :disabled="true"
-                  :file-list="fileGalleries"
-                  @preview="handlePreview"
-                  @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.name = item.index"
+                  :class="{ 'avtive-formTab': formTab.name == item.index }"
                 >
-                  <div v-if="fileGalleries.length < 1">
-                    <a-icon type="plus" />
-                    <div class="ant-upload-text">Загрузить</div>
-                  </div>
-                </a-upload>
-                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                  <img alt="example" style="width: 100%" :src="previewImage" />
-                </a-modal>
+                  {{ item.label }}
+                </span>
               </div>
-            </a-form-model-item>
-          </div>
-        </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '' || $route.hash == '#total_info'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.guarantee = item.index"
-                :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
-              >
-                {{ item.label }}
-              </span>
             </div>
-          </div>
+            <div
+              class="card_block px-4 py-4 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.name == item.index"
+            >
+              <a-form-model-item class="form-item mb-3" label="Название сервиса">
+                <a-input
+                  v-model="form.name[item.index]"
+                  placeholder="Название сервиса..."
+                  disabled
+                />
+              </a-form-model-item>
 
-          <div
-            class="card_block border-left-radius px-4 py-4 mt-0"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.guarantee == item.index"
-          >
-            <a-form-model-item class="form-item mb-0" label="Добавить статистику">
-              <div class="mt-3 statistic-grid">
-                <div v-for="card in form.cards" class="d-flex">
-                  <div class="clearfix">
+              <a-form-model-item
+                class="form-item mb-0"
+                label="Краткая информация о сервисе"
+              >
+                <quill-editor
+                  v-model="form.desc[item.index]"
+                  class="product-editor mt-1"
+                  :options="editorOption"
+                  disabled
+                  placeholder="Краткая информация о сервисе..."
+                />
+              </a-form-model-item>
+              <div class="service-upload-container">
+                <a-form-model-item class="form-item mb-3 mt-3" label="Баннер">
+                  <div class="service-upload">
                     <a-upload
-                      disabled
                       action="https://api.safarpark.uz/api/files/upload"
                       list-type="picture-card"
+                      :file-list="fileBanner"
                       :headers="headers"
-                      :file-list="card.imgList"
+                      :disabled="true"
                       @preview="handlePreview"
-                      @change="($event) => handleChangeCards($event, card.indexId)"
+                      @change="($event) => handleChangeServiceUpload($event, 'banner')"
                     >
-                      <div v-if="card.imgList.length < 1">
+                      <div v-if="fileBanner.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 mt-3" label="Изображение">
+                  <div class="service-upload">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileForCard"
+                      :headers="headers"
+                      :disabled="true"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeServiceUpload($event, 'for_card')"
+                    >
+                      <div v-if="fileForCard.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                </a-form-model-item>
+              </div>
+              <a-form-model-item class="form-item mb-3" label="Галереи">
+                <div class="service-galleries">
+                  <a-upload
+                    action="https://api.safarpark.uz/api/files/upload"
+                    list-type="picture-card"
+                    :multiple="true"
+                    :headers="headers"
+                    :disabled="true"
+                    :file-list="fileGalleries"
+                    @preview="handlePreview"
+                    @change="($event) => handleChangeGalleriesUpload($event, 'banner')"
+                  >
+                    <div v-if="fileGalleries.length < 1">
+                      <a-icon type="plus" />
+                      <div class="ant-upload-text">Загрузить</div>
+                    </div>
+                  </a-upload>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
+              </a-form-model-item>
+            </div>
+          </div>
+          <div
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '' || $route.hash == '#total_info'"
+          >
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.guarantee = item.index"
+                  :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+
+            <div
+              class="card_block border-left-radius px-4 py-4 mt-0"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.guarantee == item.index"
+            >
+              <a-form-model-item class="form-item mb-0" label="Добавить статистику">
+                <div class="mt-3 statistic-grid">
+                  <div v-for="card in form.cards" class="d-flex">
+                    <div class="clearfix">
+                      <a-upload
+                        disabled
+                        action="https://api.safarpark.uz/api/files/upload"
+                        list-type="picture-card"
+                        :headers="headers"
+                        :file-list="card.imgList"
+                        @preview="handlePreview"
+                        @change="($event) => handleChangeCards($event, card.indexId)"
+                      >
+                        <div v-if="card.imgList.length < 1">
+                          <a-icon type="plus" />
+                          <div class="ant-upload-text">Загрузить</div>
+                        </div>
+                      </a-upload>
+                      <a-modal
+                        :visible="previewVisible"
+                        :footer="null"
+                        @cancel="handleCancel"
+                      >
+                        <img alt="example" style="width: 100%" :src="previewImage" />
+                      </a-modal>
+                    </div>
+                    <div class="d-flex flex-column justify-content-between w-100">
+                      <a-form-model-item class="form-item mb-3">
+                        <a-input
+                          disabled
+                          v-model="card.name[item.index]"
+                          placeholder="Название"
+                        />
+                      </a-form-model-item>
+                      <!-- <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="card.name[item.index]"
+                        placeholder="Название"
+                      />
+                    </a-form-model-item> -->
+                    </div>
+                  </div>
+                </div>
+              </a-form-model-item>
+              <div
+                class="grid-with-btn"
+                v-for="(moment, index) in form.moments"
+                :key="moment.indexId"
+              >
+                <a-form-model-item
+                  class="form-item mb-3"
+                  :label="index == 0 ? 'Основные моменты' : ''"
+                >
+                  <a-input
+                    disabled
+                    v-model="moment.title[item.index]"
+                    placeholder="Text"
+                  />
+                </a-form-model-item>
+                <!-- <div class="d-flex align-items-center">
+                <div
+                  class="variant-btn variant-btn-delete mt-3"
+                  v-html="xIcon"
+                  @click="deleteMoments(moment.indexId)"
+                ></div>
+              </div> -->
+              </div>
+              <!-- <div class="create-inner-variant mt-4" @click="addMoments">
+              <span v-html="plusIcon"> </span>
+              Добавить
+            </div> -->
+            </div>
+          </div>
+          <div
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '' || $route.hash == '#total_info'"
+          >
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.guarantee = item.index"
+                  :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="card_block border-left-radius px-4 py-4 mt-0"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.guarantee == item.index"
+            >
+              <a-form-model-item class="form-item mb-0" label="Основная информация">
+                <quill-editor
+                  v-model="form.guarantee[item.index]"
+                  class="product-editor mt-1"
+                  disabled
+                  :options="editorOption"
+                />
+              </a-form-model-item>
+              <div class="mt-3 statistic-grid">
+                <div v-for="statistic in form.statistics" class="d-flex">
+                  <div class="clearfix">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :disabled="true"
+                      :headers="headers"
+                      :file-list="statistic.statisticFile"
+                      @preview="handlePreview"
+                      @change="
+                        ($event) => handleChangeStatistic($event, statistic.indexId)
+                      "
+                    >
+                      <div v-if="statistic.statisticFile.length < 1">
                         <a-icon type="plus" />
                         <div class="ant-upload-text">Загрузить</div>
                       </div>
@@ -234,223 +343,128 @@
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
                       <a-input
+                        v-model="statistic.name[item.index]"
                         disabled
-                        v-model="card.name[item.index]"
+                        placeholder="Число"
+                      />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-3">
+                      <a-input
+                        v-model="statistic.number[item.index]"
+                        disabled
                         placeholder="Название"
                       />
                     </a-form-model-item>
-                    <!-- <a-form-model-item class="form-item mb-3">
-                      <a-input
-                        v-model="card.name[item.index]"
-                        placeholder="Название"
-                      />
-                    </a-form-model-item> -->
                   </div>
                 </div>
               </div>
-            </a-form-model-item>
-            <div
-              class="grid-with-btn"
-              v-for="(moment, index) in form.moments"
-              :key="moment.indexId"
-            >
-              <a-form-model-item
-                class="form-item mb-3"
-                :label="index == 0 ? 'Основные моменты' : ''"
-              >
-                <a-input disabled v-model="moment.title[item.index]" placeholder="Text" />
-              </a-form-model-item>
-              <!-- <div class="d-flex align-items-center">
-                <div
-                  class="variant-btn variant-btn-delete mt-3"
-                  v-html="xIcon"
-                  @click="deleteMoments(moment.indexId)"
-                ></div>
-              </div> -->
-            </div>
-            <!-- <div class="create-inner-variant mt-4" @click="addMoments">
-              <span v-html="plusIcon"> </span>
-              Добавить
-            </div> -->
-          </div>
-        </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '' || $route.hash == '#total_info'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.guarantee = item.index"
-                :class="{ 'avtive-formTab': formTab.guarantee == item.index }"
-              >
-                {{ item.label }}
-              </span>
             </div>
           </div>
           <div
-            class="card_block border-left-radius px-4 py-4 mt-0"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.guarantee == item.index"
+            class="container_xl app-container"
+            v-if="$route.hash == '#sessions_tariffs'"
           >
-            <a-form-model-item class="form-item mb-0" label="Основная информация">
-              <quill-editor
-                v-model="form.guarantee[item.index]"
-                class="product-editor mt-1"
-                disabled
-                :options="editorOption"
-              />
-            </a-form-model-item>
-            <div class="mt-3 statistic-grid">
-              <div v-for="statistic in form.statistics" class="d-flex">
-                <div class="clearfix">
-                  <a-upload
-                    action="https://api.safarpark.uz/api/files/upload"
-                    list-type="picture-card"
-                    :disabled="true"
-                    :headers="headers"
-                    :file-list="statistic.statisticFile"
-                    @preview="handlePreview"
-                    @change="($event) => handleChangeStatistic($event, statistic.indexId)"
-                  >
-                    <div v-if="statistic.statisticFile.length < 1">
-                      <a-icon type="plus" />
-                      <div class="ant-upload-text">Загрузить</div>
-                    </div>
-                  </a-upload>
-                  <a-modal
-                    :visible="previewVisible"
-                    :footer="null"
-                    @cancel="handleCancel"
-                  >
-                    <img alt="example" style="width: 100%" :src="previewImage" />
-                  </a-modal>
-                </div>
-                <div class="d-flex flex-column justify-content-between w-100">
-                  <a-form-model-item class="form-item mb-3">
-                    <a-input
-                      v-model="statistic.name[item.index]"
-                      disabled
-                      placeholder="Число"
-                    />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3">
-                    <a-input
-                      v-model="statistic.number[item.index]"
-                      disabled
-                      placeholder="Название"
-                    />
-                  </a-form-model-item>
-                </div>
+            <div class="card_block px-4 py-4 mt-0" v-if="checkAccess('tariffs', 'get')">
+              <FormTitle title="Тарифы" />
+              <div class="tariff-card-grid">
+                <TariffCard
+                  v-for="tariff in form.tariffs"
+                  :tariff="tariff"
+                  :reloadTariff="reloadTariff"
+                  :key="tariff.id"
+                />
               </div>
-            </div>
-          </div>
-        </div>
-        <div class="container_xl app-container" v-if="$route.hash == '#sessions_tariffs'">
-          <div class="card_block px-4 py-4 mt-0" v-if="checkAccess('tariffs', 'get')">
-            <FormTitle title="Тарифы" />
-            <div class="tariff-card-grid">
-              <TariffCard
-                v-for="tariff in form.tariffs"
-                :tariff="tariff"
-                :reloadTariff="reloadTariff"
-                :key="tariff.id"
-              />
-            </div>
-            <div
-              class="create-inner-variant"
-              @click="addGroup"
-              v-if="checkAccess('tariffs', 'post')"
-            >
-              <span> </span>
-              Добавить
-            </div>
-          </div>
-        </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#sessions_tariffs'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.sub_service = item.index"
-                :class="{ 'avtive-formTab': formTab.sub_service == item.index }"
+              <div
+                class="create-inner-variant"
+                @click="addGroup"
+                v-if="checkAccess('tariffs', 'post')"
               >
-                {{ item.label }}
-              </span>
+                <span> </span>
+                Добавить
+              </div>
             </div>
           </div>
           <div
-            class="card_block px-4 py-4 mt-0 border-left-radius"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.sub_service == item.index"
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '#sessions_tariffs'"
           >
-            <FormTitle title=" Цены на дополнительные услуги" />
-            <div
-              class="d-flex align-items-center"
-              v-for="service in form.additional_services"
-              :key="service.indexId"
-            >
-              <div class="grid-2 mb-4 w-100">
-                <a-form-model-item class="form-item mb-0" label="Дополнительные услуги">
-                  <a-input
-                    v-model="service.name[item.index]"
-                    placeholder="Дополнительный сервис..."
-                    disabled
-                  />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-0" label="Цена услуг">
-                  <a-input
-                    :max-length="8"
-                    v-model="service.price"
-                    placeholder="Service price"
-                    disabled
-                  />
-                </a-form-model-item>
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.sub_service = item.index"
+                  :class="{ 'avtive-formTab': formTab.sub_service == item.index }"
+                >
+                  {{ item.label }}
+                </span>
               </div>
-              <!-- <div
+            </div>
+            <div
+              class="card_block px-4 py-4 mt-0 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.sub_service == item.index"
+            >
+              <FormTitle title=" Цены на дополнительные услуги" />
+              <div
+                class="d-flex align-items-center"
+                v-for="service in form.additional_services"
+                :key="service.indexId"
+              >
+                <div class="grid-2 mb-4 w-100">
+                  <a-form-model-item class="form-item mb-0" label="Дополнительные услуги">
+                    <a-input
+                      v-model="service.name[item.index]"
+                      placeholder="Дополнительный сервис..."
+                      disabled
+                    />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-0" label="Цена услуг">
+                    <a-input
+                      :max-length="8"
+                      v-model="service.price"
+                      placeholder="Service price"
+                      disabled
+                    />
+                  </a-form-model-item>
+                </div>
+                <!-- <div
                 class="variant-btn variant-btn-delete mt-3 mx-2"
                 v-html="xIcon"
                 @click="deleteServices(service.indexId)"
               ></div> -->
-            </div>
-            <!-- <div class="create-inner-variant mt-0" @click="addServices">
+              </div>
+              <!-- <div class="create-inner-variant mt-0" @click="addServices">
               <span v-html="plusIcon"> </span>
               Добавить
             </div> -->
-          </div>
-        </div>
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#faq'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.faq = item.index"
-                :class="{ 'avtive-formTab': formTab.faq == item.index }"
-              >
-                {{ item.label }}
-              </span>
             </div>
           </div>
           <div
-            class="card_block px-4 py-4 mt-0 border-left-radius main-table"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.faq == item.index"
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '#faq'"
           >
-            <FormTitle title="Добавить частые вопросы" />
-            <!-- <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.faq = item.index"
+                  :class="{ 'avtive-formTab': formTab.faq == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="card_block px-4 py-4 mt-0 border-left-radius main-table"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.faq == item.index"
+            >
+              <FormTitle title="Добавить частые вопросы" />
+              <!-- <div v-for="faq in form.faqs" :key="faq.indexId" class="faqs-grid">
               <div class="d-flex align-items-center">
                 <a-form-model-item class="form-item w-100" label="Savol yozish">
                   <a-input
@@ -471,30 +485,30 @@
                 />
               </a-form-model-item>
             </div> -->
-            <a-table :columns="columns" :pagination="false" :data-source="form.faqs">
-              <span slot="indexId" slot-scope="text">#{{ text.indexId }}</span>
-              <span
-                slot="answer"
-                slot-scope="text"
-                v-html="text?.ru ? text?.ru : '-----'"
-              ></span>
-              <span slot="question" slot-scope="text">
-                <span>{{ text?.ru ? text?.ru : "-----" }}</span>
-              </span>
+              <a-table :columns="columns" :pagination="false" :data-source="form.faqs">
+                <span slot="indexId" slot-scope="text">#{{ text.indexId }}</span>
+                <span
+                  slot="answer"
+                  slot-scope="text"
+                  v-html="text?.ru ? text?.ru : '-----'"
+                ></span>
+                <span slot="question" slot-scope="text">
+                  <span>{{ text?.ru ? text?.ru : "-----" }}</span>
+                </span>
 
-              <span slot="id" slot-scope="text">
-                <span class="action-btn" v-html="editIcon"> </span>
+                <span slot="id" slot-scope="text">
+                  <span class="action-btn" v-html="editIcon"> </span>
 
-                <span class="action-btn" v-html="deleteIcon"> </span>
-              </span>
-            </a-table>
-            <!-- <div class="create-inner-variant" @click="addFaqs">
+                  <span class="action-btn" v-html="deleteIcon"> </span>
+                </span>
+              </a-table>
+              <!-- <div class="create-inner-variant" @click="addFaqs">
               <span v-html="plusIcon"> </span>
               Добавить
             </div> -->
+            </div>
           </div>
-        </div>
-        <!-- <div
+          <!-- <div
           class="container_xl app-container d-flex flex-column"
           v-if="$route.hash == '' || $route.hash == '#total_info'"
         >
@@ -533,106 +547,111 @@
             </span>
           </div>
         </div> -->
-        <div
-          class="container_xl app-container d-flex flex-column"
-          v-if="$route.hash == '#reviews'"
-        >
-          <div class="form_tab">
-            <div>
-              <span
-                v-for="(item, index) in formTabData"
-                :key="index"
-                @click="formTab.feedback = item.index"
-                :class="{ 'avtive-formTab': formTab.feedback == item.index }"
-              >
-                {{ item.label }}
-              </span>
-            </div>
-          </div>
           <div
-            class="card_block px-4 py-4 mt-0 border-left-radius"
-            v-for="(item, index) in formTabData"
-            :key="index"
-            v-if="formTab.feedback == item.index"
+            class="container_xl app-container d-flex flex-column"
+            v-if="$route.hash == '#reviews'"
           >
-            <div class="d-flex justify-content-between">
-              <FormTitle title="Отзывы" />
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab.feedback = item.index"
+                  :class="{ 'avtive-formTab': formTab.feedback == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
             </div>
             <div
-              class="grid-with-img faqs-grid"
-              v-for="(feedback, i) in form.feedbacks"
-              :key="feedback.indexId"
+              class="card_block px-4 py-4 mt-0 border-left-radius"
+              v-for="(item, index) in formTabData"
+              :key="index"
+              v-if="formTab.feedback == item.index"
             >
-              <div>
-                <div class="grid-with-btn">
-                  <a-form-model-item class="form-item mb-3" label="Пользователь">
-                    <a-input
-                      v-model="feedback.name[item.index]"
-                      disabled
-                      placeholder="Пользователь..."
-                    />
-                  </a-form-model-item>
-                  <!-- <a-form-model-item class="form-item mb-3" label="Brend">
+              <div class="d-flex justify-content-between">
+                <FormTitle title="Отзывы" />
+              </div>
+              <div
+                class="grid-with-img faqs-grid"
+                v-for="(feedback, i) in form.feedbacks"
+                :key="feedback.indexId"
+              >
+                <div>
+                  <div class="grid-with-btn">
+                    <a-form-model-item class="form-item mb-3" label="Пользователь">
+                      <a-input
+                        v-model="feedback.name[item.index]"
+                        disabled
+                        placeholder="Пользователь..."
+                      />
+                    </a-form-model-item>
+                    <!-- <a-form-model-item class="form-item mb-3" label="Brend">
                     <a-input
                       v-model="feedback.feedback[item.index]"
                       placeholder="Brand"
                     />
                   </a-form-model-item> -->
-                  <!-- <div class="d-flex align-items-center">
+                    <!-- <div class="d-flex align-items-center">
                     <div
                       @click="deleteFeedbacks(feedback.indexId)"
                       class="variant-btn variant-btn-delete mt-3"
                       v-html="xIcon"
                     ></div>
                   </div> -->
-                </div>
-                <a-form-model-item class="form-item mb-0 mt-0" label="Текст">
-                  <a-input
-                    type="textarea"
-                    disabled
-                    v-model="feedback.feedback[item.index]"
-                    rows="6"
-                    placeholder="Текст..."
-                  />
-                </a-form-model-item>
-              </div>
-              <div class="clearfix">
-                <a-upload
-                  action="https://api.safarpark.uz/api/files/upload"
-                  list-type="picture-card"
-                  :disabled="true"
-                  :headers="headers"
-                  :file-list="feedback.feedbacksFile"
-                  @preview="handlePreview"
-                  @change="($event) => handleChangeComment($event, feedback.indexId)"
-                >
-                  <div v-if="feedback.feedbacksFile.length < 1">
-                    <a-icon type="plus" />
-                    <div class="ant-upload-text">Загрузить</div>
                   </div>
-                </a-upload>
-                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                  <img alt="example" style="width: 100%" :src="previewImage" />
-                </a-modal>
+                  <a-form-model-item class="form-item mb-0 mt-0" label="Текст">
+                    <a-input
+                      type="textarea"
+                      disabled
+                      v-model="feedback.feedback[item.index]"
+                      rows="6"
+                      placeholder="Текст..."
+                    />
+                  </a-form-model-item>
+                </div>
+                <div class="clearfix">
+                  <a-upload
+                    action="https://api.safarpark.uz/api/files/upload"
+                    list-type="picture-card"
+                    :disabled="true"
+                    :headers="headers"
+                    :file-list="feedback.feedbacksFile"
+                    @preview="handlePreview"
+                    @change="($event) => handleChangeComment($event, feedback.indexId)"
+                  >
+                    <div v-if="feedback.feedbacksFile.length < 1">
+                      <a-icon type="plus" />
+                      <div class="ant-upload-text">Загрузить</div>
+                    </div>
+                  </a-upload>
+                  <a-modal
+                    :visible="previewVisible"
+                    :footer="null"
+                    @cancel="handleCancel"
+                  >
+                    <img alt="example" style="width: 100%" :src="previewImage" />
+                  </a-modal>
+                </div>
               </div>
-            </div>
-            <!-- <div class="create-inner-variant" @click="addFeedbacks">
+              <!-- <div class="create-inner-variant" @click="addFeedbacks">
               <span v-html="plusIcon"> </span>
               Добавить
             </div> -->
+            </div>
+          </div>
+          <div class="container_xl d-flex justify-content-end">
+            <a-button
+              class="add-btn add-header-btn btn-primary d-flex align-items-center"
+              type="danger"
+              @click="showDeleteConfirm(visible)"
+              v-if="checkAccess('services', 'delete')"
+            >
+              Удалить услугу
+            </a-button>
           </div>
         </div>
-        <div class="container_xl d-flex justify-content-end">
-          <a-button
-            class="add-btn add-header-btn btn-primary d-flex align-items-center"
-            type="danger"
-            @click="showDeleteConfirm(visible)"
-            v-if="checkAccess('services', 'delete')"
-          >
-            Удалить услугу
-          </a-button>
-        </div>
-      </div>
+      </a-spin>
     </a-form-model>
   </div>
 </template>
@@ -700,6 +719,8 @@ export default {
   mixins: [status, authAccess],
   data() {
     return {
+      delayTime: 0,
+      spinning: false,
       columns,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -1005,6 +1026,7 @@ export default {
       }
     },
     async __GET_SERVICES_BY_ID() {
+      this.spinning = true;
       const data = await this.$store.dispatch(
         "fetchServices/getServicesById",
         this.$route.params.index
@@ -1162,6 +1184,7 @@ export default {
           imgList: [],
         });
       }
+      this.spinning = false;
     },
     handleCancel() {
       this.previewVisible = false;

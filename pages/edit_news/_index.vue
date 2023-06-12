@@ -19,73 +19,81 @@
         </a-button>
       </div>
     </TitleBlock>
-    <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
-      <div class="pt-5 pb-5">
-        <div class="container_xl app-container d-flex flex-column">
-          <div class="form_tab">
-            <div>
-              <span
+    <a-spin :spinning="spinning" :delay="delayTime">
+      <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+        <div class="pt-5 pb-5">
+          <div class="container_xl app-container d-flex flex-column">
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab = item.index"
+                  :class="{ 'avtive-formTab': formTab == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div class="posts-grid">
+              <div
+                class="card_block main-table px-4 py-4 border-left-radius"
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab = item.index"
-                :class="{ 'avtive-formTab': formTab == item.index }"
+                v-if="formTab == item.index"
               >
-                {{ item.label }}
-              </span>
-            </div>
-          </div>
-          <div class="posts-grid">
-            <div
-              class="card_block main-table px-4 py-4 border-left-radius"
-              v-for="(item, index) in formTabData"
-              :key="index"
-              v-if="formTab == item.index"
-            >
-              <FormTitle title="Новости" />
-              <a-form-model-item class="form-item mb-3" label="Заголовок" prop="title.ru">
-                <a-input
-                  v-model="form.title[item.index]"
-                  placeholder="Заголовок"
+                <FormTitle title="Новости" />
+                <a-form-model-item
+                  class="form-item mb-3"
+                  label="Заголовок"
                   prop="title.ru"
-                />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Подзаголовок">
-                <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок" />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Описание">
-                <quill-editor
-                  v-model="form.desc[item.index]"
-                  class="product-editor mt-1"
-                  :options="editorOption"
-                />
-              </a-form-model-item>
-            </div>
-            <span>
-              <div class="card_block main-table px-4 py-4">
-                <FormTitle title="Параметры" />
-                <div class="clearfix">
-                  <a-upload
-                    action="https://api.safarpark.uz/api/files/upload"
-                    list-type="picture-card"
-                    :file-list="fileList"
-                    :headers="headers"
-                    @preview="handlePreview"
-                    @change="handleChange"
-                  >
-                    <div v-if="fileList.length < 1">
-                      <a-icon type="plus" />
-                      <div class="ant-upload-text">Загрузить</div>
-                    </div>
-                  </a-upload>
-                  <a-modal
-                    :visible="previewVisible"
-                    :footer="null"
-                    @cancel="handleCancel"
-                  >
-                    <img alt="example" style="width: 100%" :src="previewImage" />
-                  </a-modal>
-                </div>
-                <!-- <a-form-model-item class="form-item mb-3" label="Instagram">
+                >
+                  <a-input
+                    v-model="form.title[item.index]"
+                    placeholder="Заголовок"
+                    prop="title.ru"
+                  />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Подзаголовок">
+                  <a-input
+                    v-model="form.subtitle[item.index]"
+                    placeholder="Подзаголовок"
+                  />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Описание">
+                  <quill-editor
+                    v-model="form.desc[item.index]"
+                    class="product-editor mt-1"
+                    :options="editorOption"
+                  />
+                </a-form-model-item>
+              </div>
+              <span>
+                <div class="card_block main-table px-4 py-4">
+                  <FormTitle title="Параметры" />
+                  <div class="clearfix">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileList"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="handleChange"
+                    >
+                      <div v-if="fileList.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                  <!-- <a-form-model-item class="form-item mb-3" label="Instagram">
                 <a-input v-model="form.instagram" placeholder="link" />
               </a-form-model-item>
               <a-form-model-item class="form-item mb-3" label="Telegram">
@@ -94,12 +102,13 @@
               <a-form-model-item class="form-item mb-3" label="Facebook">
                 <a-input v-model="form.facebook" placeholder="link" />
               </a-form-model-item> -->
-              </div>
-            </span>
+                </div>
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </a-form-model>
+      </a-form-model>
+    </a-spin>
   </div>
 </template>
 <script>
@@ -128,6 +137,8 @@ export default {
   },
   data() {
     return {
+      delayTime: 0,
+      spinning: false,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
@@ -254,6 +265,7 @@ export default {
 
     async __GET_POSTS_BY_ID(id) {
       try {
+        this.spinning = true;
         const data = await this.$store.dispatch("fetchPosts/getPostsById", id);
         this.form = { ...data.post };
         if (this.form.sm_poster) {
@@ -267,6 +279,7 @@ export default {
             },
           ];
         }
+        this.spinning = false;
       } catch (e) {
         this.statusFunc(e);
       }

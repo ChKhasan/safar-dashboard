@@ -14,63 +14,64 @@
         </div>
       </div>
     </TitleBlock>
-    <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
-      <div class="pb-5 pt-5">
-        <div class="container_xl app-container d-flex flex-column">
-          <div class="">
-            <div>
-              <div class="card_block main-table px-4 py-4">
-                <FormTitle title="Информация о клиенте" />
-                <div class="order-grid-2">
-                  <a-form-model-item class="form-item mb-0" label="Имя">
-                    <a-input placeholder="Имя..." v-model="client.name" disabled />
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-0" label="Адрес">
-                    <a-input placeholder="Адрес" v-model="client.address" disabled />
-                  </a-form-model-item>
-                  <a-form-model-item
-                    class="form-item mb-0 disabled_input"
-                    label="Номер клиента "
+    <a-spin :spinning="spinning" :delay="delayTime">
+      <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+        <div class="pb-5 pt-5">
+          <div class="container_xl app-container d-flex flex-column">
+            <div class="">
+              <div>
+                <div class="card_block main-table px-4 py-4">
+                  <FormTitle title="Информация о клиенте" />
+                  <div class="order-grid-2">
+                    <a-form-model-item class="form-item mb-0" label="Имя">
+                      <a-input placeholder="Имя..." v-model="client.name" disabled />
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-0" label="Адрес">
+                      <a-input placeholder="Адрес" v-model="client.address" disabled />
+                    </a-form-model-item>
+                    <a-form-model-item
+                      class="form-item mb-0 disabled_input"
+                      label="Номер клиента "
+                    >
+                      <the-mask
+                        disabled
+                        class="w-100"
+                        type="text"
+                        placeholder="(___) ___-____"
+                        :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
+                        v-model="client.phone_number"
+                        label-position="top"
+                      />
+                    </a-form-model-item>
+
+                    <a-form-model-item class="form-item mb-3" label="Email">
+                      <a-input
+                        style="text-transform: capitalize"
+                        placeholder="Email"
+                        v-model="client.email"
+                        disabled
+                      />
+                    </a-form-model-item>
+                  </div>
+                </div>
+
+                <div class="mt-5">
+                  <FormTitle title="История заказов" />
+                </div>
+                <div class="card_block main-table px-4 py-4">
+                  <div
+                    class="d-flex justify-content-between align-items-center card_header"
                   >
-                    <the-mask
-                      disabled
-                      class="w-100"
-                      type="text"
-                      placeholder="(___) ___-____"
-                      :mask="['+ (998) ## ### ## ##', '+ (998) ## ### ## ##']"
-                      v-model="client.phone_number"
-                      label-position="top"
-                    />
-                  </a-form-model-item>
-
-                  <a-form-model-item class="form-item mb-3" label="Email">
-                    <a-input
-                      style="text-transform: capitalize"
-                      placeholder="Email"
-                      v-model="client.email"
-                      disabled
-                    />
-                  </a-form-model-item>
-                </div>
-              </div>
-
-              <div class="mt-5">
-                <FormTitle title="История заказов" />
-              </div>
-              <div class="card_block main-table px-4 py-4">
-                <div
-                  class="d-flex justify-content-between align-items-center card_header"
-                >
-                  <div class="prodduct-list-header-grid w-100 align-items-center"></div>
-                </div>
-                <a-table
-                  :columns="columns"
-                  :data-source="client.general_orders"
-                  :pagination="false"
-                  :loading="loading"
-                  align="center"
-                >
-                  <!-- <span
+                    <div class="prodduct-list-header-grid w-100 align-items-center"></div>
+                  </div>
+                  <a-table
+                    :columns="columns"
+                    :data-source="client.general_orders"
+                    :pagination="false"
+                    :loading="loading"
+                    align="center"
+                  >
+                    <!-- <span
                     to="/orders/1232/details"
                     slot="client"
                     slot-scope="text"
@@ -78,34 +79,34 @@
                   >
                     {{ text }}
                   </span> -->
-                  <a slot="amount" slot-scope="text">${{ text }}</a>
-                  <span slot="orders" slot-scope="text">{{
-                    text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
-                  }}</span>
-                  <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
-                  <!-- <span slot="client" slot-scope="text" class="column-client">{{
+                    <a slot="amount" slot-scope="text">${{ text }}</a>
+                    <span slot="orders" slot-scope="text">{{
+                      text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
+                    }}</span>
+                    <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
+                    <!-- <span slot="client" slot-scope="text" class="column-client">{{
                     text?.name ? text?.name : "----"
                   }}</span> -->
-                  <span slot="dataAdd" slot-scope="text">{{
-                    moment(text).format("DD/MM/YYYY")
-                  }}</span>
-                  <span slot="customTitle"></span>
+                    <span slot="dataAdd" slot-scope="text">{{
+                      moment(text).format("DD/MM/YYYY")
+                    }}</span>
+                    <span slot="customTitle"></span>
 
-                  <span
-                    slot="status"
-                    slot-scope="tags"
-                    class="tags-style"
-                    :class="{
-                      tag_success: tags == 'new',
-                      tag_inProgress: tags == 'in_process',
-                      tag_approved: tags == 'accepted',
-                      tag_rejected: tags == 'canceled',
-                    }"
-                  >
-                    {{ status[tags] }}
-                  </span>
-                  <span slot="btns" slot-scope="text">
-                    <!-- <span
+                    <span
+                      slot="status"
+                      slot-scope="tags"
+                      class="tags-style"
+                      :class="{
+                        tag_success: tags == 'new',
+                        tag_inProgress: tags == 'in_process',
+                        tag_approved: tags == 'accepted',
+                        tag_rejected: tags == 'canceled',
+                      }"
+                    >
+                      {{ status[tags] }}
+                    </span>
+                    <span slot="btns" slot-scope="text">
+                      <!-- <span
                       v-if="checkAccess('orders', 'put')"
                       class="action-btn"
                       v-html="eyeIcon"
@@ -119,16 +120,17 @@
                       v-html="editIcon"
                     >
                     </span> -->
-                    <!-- <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
+                      <!-- <span class="action-btn" @click="deleteAction(text)" v-html="deleteIcon">
             </span> -->
-                  </span>
-                </a-table>
+                    </span>
+                  </a-table>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </a-form-model>
+      </a-form-model>
+    </a-spin>
   </div>
 </template>
 <script>
@@ -150,6 +152,8 @@ export default {
   },
   data() {
     return {
+      delayTime: 0,
+      spinning: false,
       status: {
         new: "Новые",
         in_process: "Ожидание",
@@ -322,15 +326,17 @@ export default {
 
     async __GET_CLIENTS_BY_ID(id) {
       try {
+        this.spinning = true;
         const data = await this.$store.dispatch(
           "fetchClients/getClientsById",
           this.$route.params.index
         );
         this.visible = true;
-
         this.client = data?.client;
+        this.spinning = false;
       } catch (e) {
         this.statusFunc(e);
+        this.spinning = false;
       }
     },
   },

@@ -17,136 +17,141 @@
         </a-button>
       </div>
     </TitleBlock>
-    <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
-      <div class="pb-5 pt-5">
-        <div class="container_xl app-container d-flex flex-column">
-          <div class="form_tab">
-            <div>
-              <span
+    <a-spin :spinning="spinning" :delay="delayTime">
+      <a-form-model :model="form" ref="ruleForm" :rules="rules" layout="vertical">
+        <div class="pb-5 pt-5">
+          <div class="container_xl app-container d-flex flex-column">
+            <div class="form_tab">
+              <div>
+                <span
+                  v-for="(item, index) in formTabData"
+                  :key="index"
+                  @click="formTab = item.index"
+                  :class="{ 'avtive-formTab': formTab == item.index }"
+                >
+                  {{ item.label }}
+                </span>
+              </div>
+            </div>
+            <div class="posts-grid">
+              <div
+                class="card_block main-table px-4 py-4 border-left-radius"
                 v-for="(item, index) in formTabData"
                 :key="index"
-                @click="formTab = item.index"
-                :class="{ 'avtive-formTab': formTab == item.index }"
+                v-if="formTab == item.index"
               >
-                {{ item.label }}
+                <div class="d-flex gx-5" style="gap: 16px">
+                  <a-form-model-item
+                    class="form-item mb-3 w-100"
+                    label="Заголовок"
+                    :prop="item.index == 'ru' ? 'title.ru' : ''"
+                  >
+                    <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3 w-100" label="Подзаголовок">
+                    <a-input
+                      v-model="form.subtitle[item.index]"
+                      placeholder="Подзаголовок"
+                    />
+                  </a-form-model-item>
+                </div>
+
+                <a-form-model-item class="form-item mb-3" label="Описание">
+                  <quill-editor
+                    v-model="form.desc[item.index]"
+                    class="product-editor mt-1"
+                    :options="editorOption"
+                  />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 w-100" label="Адрес">
+                  <a-input
+                    type="textarea"
+                    rows="3"
+                    v-model="form.addresses[item.index]"
+                    placeholder="Адрес"
+                  />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 w-100" label="Время работы">
+                  <a-input
+                    type="textarea"
+                    rows="3"
+                    v-model="form.working_houses[item.index]"
+                    placeholder="Время работы"
+                  />
+                </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 w-100" label="Номер телефона">
+                  <a-input placeholder="(___) ___-____" v-model="form.phone_numbers" />
+                </a-form-model-item>
+              </div>
+              <span>
+                <div class="card_block px-4 py-4">
+                  <a-form-model-item class="form-item mb-3" label="Email">
+                    <a-input v-model="form.emails" placeholder="link" />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3" label="Instagram">
+                    <a-input v-model="form.instagram" placeholder="link" />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3" label="Telegram">
+                    <a-input v-model="form.telegram" placeholder="link" />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3" label="Facebook">
+                    <a-input v-model="form.facebook" placeholder="link" />
+                  </a-form-model-item>
+                  <a-form-model-item class="form-item mb-3" label="YouTube">
+                    <a-input v-model="form.youtube" placeholder="link" />
+                  </a-form-model-item>
+                  <a-form-model-item
+                    class="form-item mb-3"
+                    label="Втсавить карту(iframe)"
+                  >
+                    <a-input v-model="form.map" placeholder="iframe" />
+                  </a-form-model-item>
+                  <div class="clearfix d-flex">
+                    <a-form-model-item class="form-item mb-3 w-100" label="Лого">
+                      <a-upload
+                        action="https://api.safarpark.uz/api/files/upload"
+                        list-type="picture-card"
+                        :headers="headers"
+                        :file-list="fileListLogo"
+                        @preview="handlePreview"
+                        @change="($event) => handleChange($event, 'logo')"
+                      >
+                        <div v-if="fileListLogo.length < 1">
+                          <a-icon type="plus" />
+                          <div class="ant-upload-text">Загрузить</div>
+                        </div>
+                      </a-upload>
+                    </a-form-model-item>
+                    <a-form-model-item class="form-item mb-3 w-100" label="Favicon">
+                      <a-upload
+                        action="https://api.safarpark.uz/api/files/upload"
+                        list-type="picture-card"
+                        :file-list="fileListFavicon"
+                        :headers="headers"
+                        @preview="handlePreview"
+                        @change="($event) => handleChange($event, 'favicon')"
+                      >
+                        <div v-if="fileListFavicon.length < 1">
+                          <a-icon type="plus" />
+                          <div class="ant-upload-text">Загрузить</div>
+                        </div>
+                      </a-upload>
+                    </a-form-model-item>
+                    <a-modal
+                      :visible="previewVisible"
+                      :footer="null"
+                      @cancel="handleCancel"
+                    >
+                      <img alt="example" style="width: 100%" :src="previewImage" />
+                    </a-modal>
+                  </div>
+                </div>
               </span>
             </div>
           </div>
-          <div class="posts-grid">
-            <div
-              class="card_block main-table px-4 py-4 border-left-radius"
-              v-for="(item, index) in formTabData"
-              :key="index"
-              v-if="formTab == item.index"
-            >
-              <div class="d-flex gx-5" style="gap: 16px">
-                <a-form-model-item
-                  class="form-item mb-3 w-100"
-                  label="Заголовок"
-                  :prop="item.index == 'ru' ? 'title.ru' : ''"
-                >
-                  <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3 w-100" label="Подзаголовок">
-                  <a-input
-                    v-model="form.subtitle[item.index]"
-                    placeholder="Подзаголовок"
-                  />
-                </a-form-model-item>
-              </div>
-
-              <a-form-model-item class="form-item mb-3" label="Описание">
-                <quill-editor
-                  v-model="form.desc[item.index]"
-                  class="product-editor mt-1"
-                  :options="editorOption"
-                />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 w-100" label="Адрес">
-                <a-input
-                  type="textarea"
-                  rows="3"
-                  v-model="form.addresses[item.index]"
-                  placeholder="Адрес"
-                />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 w-100" label="Время работы">
-                <a-input
-                  type="textarea"
-                  rows="3"
-                  v-model="form.working_houses[item.index]"
-                  placeholder="Время работы"
-                />
-              </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 w-100" label="Номер телефона">
-                <a-input placeholder="(___) ___-____" v-model="form.phone_numbers" />
-              </a-form-model-item>
-            </div>
-            <span>
-              <div class="card_block px-4 py-4">
-                <a-form-model-item class="form-item mb-3" label="Email">
-                  <a-input v-model="form.emails" placeholder="link" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Instagram">
-                  <a-input v-model="form.instagram" placeholder="link" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Telegram">
-                  <a-input v-model="form.telegram" placeholder="link" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Facebook">
-                  <a-input v-model="form.facebook" placeholder="link" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="YouTube">
-                  <a-input v-model="form.youtube" placeholder="link" />
-                </a-form-model-item>
-                <a-form-model-item class="form-item mb-3" label="Втсавить карту(iframe)">
-                  <a-input v-model="form.map" placeholder="iframe" />
-                </a-form-model-item>
-                <div class="clearfix d-flex">
-                  <a-form-model-item class="form-item mb-3 w-100" label="Лого">
-                    <a-upload
-                      action="https://api.safarpark.uz/api/files/upload"
-                      list-type="picture-card"
-                      :headers="headers"
-                      :file-list="fileListLogo"
-                      @preview="handlePreview"
-                      @change="($event) => handleChange($event, 'logo')"
-                    >
-                      <div v-if="fileListLogo.length < 1">
-                        <a-icon type="plus" />
-                        <div class="ant-upload-text">Загрузить</div>
-                      </div>
-                    </a-upload>
-                  </a-form-model-item>
-                  <a-form-model-item class="form-item mb-3 w-100" label="Favicon">
-                    <a-upload
-                      action="https://api.safarpark.uz/api/files/upload"
-                      list-type="picture-card"
-                      :file-list="fileListFavicon"
-                      :headers="headers"
-                      @preview="handlePreview"
-                      @change="($event) => handleChange($event, 'favicon')"
-                    >
-                      <div v-if="fileListFavicon.length < 1">
-                        <a-icon type="plus" />
-                        <div class="ant-upload-text">Загрузить</div>
-                      </div>
-                    </a-upload>
-                  </a-form-model-item>
-                  <a-modal
-                    :visible="previewVisible"
-                    :footer="null"
-                    @cancel="handleCancel"
-                  >
-                    <img alt="example" style="width: 100%" :src="previewImage" />
-                  </a-modal>
-                </div>
-              </div>
-            </span>
-          </div>
         </div>
-      </div>
-    </a-form-model>
+      </a-form-model>
+    </a-spin>
   </div>
 </template>
 <script>
@@ -173,6 +178,8 @@ export default {
   },
   data() {
     return {
+      delayTime: 0,
+      spinning: false,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
@@ -342,6 +349,7 @@ export default {
     },
     async __GET_STATIC_INFO() {
       try {
+        this.spinning = true;
         const data = await this.$store.dispatch("fetchStaticInfo/getStaticInfo");
         if (data.info) {
           this.form = { ...data.info };
@@ -368,8 +376,10 @@ export default {
             ];
           }
         }
+        this.spinning = false;
       } catch (e) {
         this.statusFunc(e);
+        this.spinning = false;
       }
     },
     handleChange({ fileList }, name) {
