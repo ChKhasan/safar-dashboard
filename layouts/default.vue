@@ -346,6 +346,14 @@ export default {
             to: "/applications",
             show: this.checkShow("applications"),
           },
+          {
+            key: "6",
+            name: "Партнеры",
+            to: "/partners",
+            add: "/partners",
+            edit: "/partners",
+            show: this.checkShow("/partners"),
+          },
         ],
       },
       {
