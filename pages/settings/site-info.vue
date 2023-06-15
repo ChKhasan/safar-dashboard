@@ -523,12 +523,12 @@ export default {
 }
 .galleries-grid-1 {
   display: grid;
-  grid-template-columns: 1fr 2fr 1.5fr;
+  grid-template-columns: 1fr 1.8fr 1.5fr;
   grid-gap: 10px;
 }
 .galleries-grid-2 {
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr;
+  grid-template-columns: 1.8fr 1fr 1.5fr;
   grid-gap: 10px;
 }
 .site-info .galleries-grid-1 .ant-upload.ant-upload-select-picture-card,
@@ -538,5 +538,6 @@ export default {
 .site-info .galleries-grid-1 .ant-upload-list-picture-card .ant-upload-list-item,
 .site-info .galleries-grid-2 .ant-upload-list-picture-card .ant-upload-list-item {
   width: 100%;
+  height: 180px;
 }
 </style>
