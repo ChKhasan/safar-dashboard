@@ -389,6 +389,12 @@ export default {
         map: "",
         logo: "",
         favicon: "",
+        photo1: "",
+        photo2: "",
+        photo3: "",
+        photo4: "",
+        photo5: "",
+        photo6: "",
       },
       previewVisible: false,
       previewImage: "",
@@ -402,12 +408,6 @@ export default {
         list_5: [],
         list_6: [],
       },
-      fileListGalleries_1: [],
-      fileListGalleries_2: [],
-      fileListGalleries_3: [],
-      fileListGalleries_4: [],
-      fileListGalleries_5: [],
-      fileListGalleries_6: [],
     };
   },
   mounted() {
@@ -427,6 +427,24 @@ export default {
         sm_favicon,
         sm_logo,
         updated_at,
+        lg_photo1,
+        lg_photo2,
+        lg_photo3,
+        lg_photo4,
+        lg_photo5,
+        lg_photo6,
+        sm_photo1,
+        sm_photo2,
+        sm_photo3,
+        sm_photo4,
+        sm_photo5,
+        sm_photo6,
+        md_photo1,
+        md_photo2,
+        md_photo3,
+        md_photo4,
+        md_photo5,
+        md_photo6,
         ...rest
       } = this.form;
       this.$refs["ruleForm"].validate((valid) => {
@@ -473,6 +491,19 @@ export default {
               },
             ];
           }
+          Object.keys(this.fileListGalleries).forEach((item, index) => {
+            if (this.form[`photo${index + 1}`]) {
+              this.fileListGalleries[item] = [
+                {
+                  uid: "-1",
+                  name: "image.png",
+                  status: "done",
+                  oldImg: true,
+                  url: this.form[`sm_photo${index + 1}`],
+                },
+              ];
+            }
+          });
         }
         this.spinning = false;
       } catch (e) {
@@ -495,7 +526,11 @@ export default {
     },
     handleChangeGaleries({ fileList }, index) {
       this.fileListGalleries[`list_${index}`] = fileList;
-      if (fileList[0]?.response?.path) this.form[name] = fileList[0]?.response?.path;
+      if (fileList[0]?.response?.path) {
+        this.form[`photo${index}`] = fileList[0]?.response?.path;
+      } else {
+        this.form[`photo${index}`] = "";
+      }
     },
     handleCancel() {
       this.previewVisible = false;
