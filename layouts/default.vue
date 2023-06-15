@@ -52,7 +52,7 @@
                 ><span v-if="!collapsed" class="menu-bullet"
                   ><span class="bullet-dot"></span
                 ></span>
-                <nuxt-link :to="items.to">{{ ordersCount(items) }} </nuxt-link>
+                <nuxt-link :to="items.to">{{ d(items) }} </nuxt-link>
               </a-menu-item>
             </a-sub-menu>
           </a-menu>
@@ -553,7 +553,7 @@ export default {
         this.openKeys = ["1"];
       }
     },
-    ordersCount(item) {
+    d(item) {
       switch (item.index) {
         case "31":
           return `${item.name} (${this.$store.state.orders.all})`;
