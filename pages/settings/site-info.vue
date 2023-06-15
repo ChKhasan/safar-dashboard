@@ -431,7 +431,7 @@ export default {
       } = this.form;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
-          this.__POST_STATIC_INFO(this.form);
+          this.__POST_STATIC_INFO(rest);
         } else {
           return false;
         }
@@ -486,7 +486,12 @@ export default {
       } else {
         this.fileListFavicon = fileList;
       }
-      if (fileList[0]?.response?.path) this.form[name] = fileList[0]?.response?.path;
+      console.log(fileList);
+      if (fileList[0]?.response?.path) {
+        this.form[name] = fileList[0]?.response?.path;
+      } else {
+        this.form[name] = null;
+      }
     },
     handleChangeGaleries({ fileList }, index) {
       this.fileListGalleries[`list_${index}`] = fileList;
