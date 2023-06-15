@@ -82,6 +82,90 @@
                 <a-form-model-item class="form-item mb-3 w-100" label="Номер телефона">
                   <a-input placeholder="(___) ___-____" v-model="form.phone_numbers" />
                 </a-form-model-item>
+                <a-form-model-item class="form-item mb-3 w-100" label="Галереи">
+                  <div class="galleries-grid-1">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_1"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 1)"
+                    >
+                      <div v-if="fileListGalleries.list_1.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_2"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 2)"
+                    >
+                      <div v-if="fileListGalleries.list_2.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_3"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 3)"
+                    >
+                      <div v-if="fileListGalleries.list_3.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                  </div>
+                  <div class="galleries-grid-2">
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_4"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 4)"
+                    >
+                      <div v-if="fileListGalleries.list_4.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_5"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 5)"
+                    >
+                      <div v-if="fileListGalleries.list_5.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                    <a-upload
+                      action="https://api.safarpark.uz/api/files/upload"
+                      list-type="picture-card"
+                      :file-list="fileListGalleries.list_6"
+                      :headers="headers"
+                      @preview="handlePreview"
+                      @change="($event) => handleChangeGaleries($event, 6)"
+                    >
+                      <div v-if="fileListGalleries.list_6.length < 1">
+                        <a-icon type="plus" />
+                        <div class="ant-upload-text">Загрузить</div>
+                      </div>
+                    </a-upload>
+                  </div>
+                </a-form-model-item>
               </div>
               <span>
                 <div class="card_block px-4 py-4">
@@ -310,6 +394,20 @@ export default {
       previewImage: "",
       fileListLogo: [],
       fileListFavicon: [],
+      fileListGalleries: {
+        list_1: [],
+        list_2: [],
+        list_3: [],
+        list_4: [],
+        list_5: [],
+        list_6: [],
+      },
+      fileListGalleries_1: [],
+      fileListGalleries_2: [],
+      fileListGalleries_3: [],
+      fileListGalleries_4: [],
+      fileListGalleries_5: [],
+      fileListGalleries_6: [],
     };
   },
   mounted() {
@@ -390,6 +488,10 @@ export default {
       }
       if (fileList[0]?.response?.path) this.form[name] = fileList[0]?.response?.path;
     },
+    handleChangeGaleries({ fileList }, index) {
+      this.fileListGalleries[`list_${index}`] = fileList;
+      if (fileList[0]?.response?.path) this.form[name] = fileList[0]?.response?.path;
+    },
     handleCancel() {
       this.previewVisible = false;
     },
@@ -418,5 +520,23 @@ export default {
 }
 .tel_number_input:focus {
   outline: none;
+}
+.galleries-grid-1 {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr;
+  grid-gap: 10px;
+}
+.galleries-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr;
+  grid-gap: 10px;
+}
+.site-info .galleries-grid-1 .ant-upload.ant-upload-select-picture-card,
+.site-info .galleries-grid-2 .ant-upload.ant-upload-select-picture-card,
+.site-info .galleries-grid-1 .ant-upload-list-picture-card-container,
+.site-info .galleries-grid-2 .ant-upload-list-picture-card-container,
+.site-info .galleries-grid-1 .ant-upload-list-picture-card .ant-upload-list-item,
+.site-info .galleries-grid-2 .ant-upload-list-picture-card .ant-upload-list-item {
+  width: 100%;
 }
 </style>
