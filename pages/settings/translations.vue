@@ -45,7 +45,9 @@
             <SearchInput
               placeholder="Поиск
             "
-              @changeSearch="changeSearch($event, '/settings/translations', '__GET_TRANSLATIONS')"
+              @changeSearch="
+                changeSearch($event, '/settings/translations', '__GET_TRANSLATIONS')
+              "
             />
             <div></div>
             <a-button
@@ -108,7 +110,11 @@
             style="width: 120px"
             @change="
               ($event) =>
-                changePageSizeGlobal($event, '/settings/translations', '__GET_TRANSLATIONS')
+                changePageSizeGlobal(
+                  $event,
+                  '/settings/translations',
+                  '__GET_TRANSLATIONS'
+                )
             "
           >
             <a-select-option
@@ -155,7 +161,7 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
@@ -205,14 +211,14 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOkTranslate"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="putTranslation"
           >
-          Сохранять
+            Сохранять
           </a-button>
         </div>
       </template>
@@ -385,6 +391,7 @@ export default {
       const data = await this.$store.dispatch("fetchTranslations/getTranslations", {
         ...this.$route.query,
       });
+      console.log(data, "asdasds");
       this.loading = false;
       const pageIndex = this.indexPage(
         data?.translates?.current_page,

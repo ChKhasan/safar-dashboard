@@ -58,7 +58,7 @@
                   changeSearch(
                     $event,
                     `/settings/translations-group/${$route.params.index}`,
-                    '__GET_TRANSLATIONS'
+                    '__GET_SEARCH_TRANSLATIONS'
                   )
               "
             />
@@ -129,7 +129,7 @@
             </a-popconfirm>
           </span>
         </a-table>
-        <div class="d-flex justify-content-between mt-4">
+        <!-- <div class="d-flex justify-content-between mt-4">
           <a-select
             v-model="params.pageSize"
             class="table-page-size"
@@ -158,7 +158,7 @@
             :total="totalPage"
             :page-size.sync="params.pageSize"
           />
-        </div>
+        </div> -->
       </div>
     </div>
     <a-modal
@@ -187,7 +187,7 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOk"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
@@ -237,14 +237,14 @@
             class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
             @click="handleOkTranslate"
           >
-          Отмена
+            Отмена
           </div>
           <a-button
             class="add-btn add-header-btn btn-primary"
             type="primary"
             @click="putTranslation"
           >
-          Сохранять
+            Сохранять
           </a-button>
         </div>
       </template>
@@ -407,6 +407,32 @@ export default {
       });
       this.groups = data?.groups?.data;
     },
+    async __GET_SEARCH_TRANSLATIONS() {
+      this.loading = true;
+      const data = await this.$store.dispatch("fetchTranslations/getTranslations", {
+        ...this.$route.query,
+      });
+      this.loading = false;
+      const pageIndex = this.indexPage(
+        data?.translates?.current_page,
+        data?.translates?.per_page
+      );
+      this.translations = data?.translates?.data.map((item, index) => {
+        return {
+          keyIndex: item.key,
+          keyGroup: {
+            key: item.key,
+            sub_text: item.group.sub_text,
+          },
+          key: index + pageIndex,
+          val: item.val,
+          id: item.id,
+          translate_group_id: item.translate_group_id,
+        };
+      });
+      this.totalPage = data?.translates?.total;
+    },
+
     async __GET_TRANSLATIONS() {
       this.loading = true;
       const data = await this.$store.dispatch("fetchTranslations/getTranslateGruop", {
@@ -495,7 +521,7 @@ export default {
   },
   watch: {
     async current(val) {
-      this.changePagination(val, "/faqs", "__GET_TRANSLATIONS");
+      this.changePagination(val, "/settings/translations-group/1", "__GET_TRANSLATIONS");
     },
     // visible(val) {
     //   if (val == false) {

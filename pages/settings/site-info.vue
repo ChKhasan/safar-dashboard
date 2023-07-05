@@ -63,6 +63,13 @@
                     :options="editorOption"
                   />
                 </a-form-model-item>
+                <a-form-model-item class="form-item mb-3" label="Описание (Партнеры)">
+                  <quill-editor
+                    v-model="form.become_partner[item.index]"
+                    class="product-editor mt-1"
+                    :options="editorOption"
+                  />
+                </a-form-model-item>
                 <a-form-model-item class="form-item mb-3 w-100" label="Адрес">
                   <a-input
                     type="textarea"
@@ -365,6 +372,11 @@ export default {
           uz: "",
           en: "",
         },
+        become_partner: {
+          ru: "",
+          uz: "",
+          en: "",
+        },
         desc: {
           ru: "",
           uz: "",
@@ -469,6 +481,13 @@ export default {
         const data = await this.$store.dispatch("fetchStaticInfo/getStaticInfo");
         if (data.info) {
           this.form = { ...data.info };
+          this.form.become_partner = data.info?.become_partner
+            ? data.info?.become_partner
+            : {
+                ru: "",
+                uz: "",
+                en: "",
+              };
           if (this.form.sm_logo) {
             this.fileListLogo = [
               {
