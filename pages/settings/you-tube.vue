@@ -244,10 +244,10 @@ export default {
           label: "O'zbek",
           index: "uz",
         },
-        // {
-        //   label: "English",
-        //   index: "en",
-        // },
+        {
+          label: "English",
+          index: "en",
+        },
       ],
       eyeIcon: require("../../assets/svg/Eye.svg?raw"),
       editIcon: require("../../assets/svg/edit.svg?raw"),

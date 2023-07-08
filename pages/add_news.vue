@@ -200,6 +200,10 @@ export default {
           label: "O'zbek",
           index: "uz",
         },
+        {
+          label: "English",
+          index: "en",
+        },
       ],
       rules: {
         title: {
