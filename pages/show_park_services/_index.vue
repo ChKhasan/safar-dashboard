@@ -133,7 +133,7 @@
                     </a-modal>
                   </div>
                 </a-form-model-item>
-                <a-form-model-item class="form-item mb-3 mt-3" label="Изображение">
+                <a-form-model-item class="form-item mb-3 mt-3" label="Карточка">
                   <div class="service-upload">
                     <a-upload
                       action="https://api.safarpark.uz/api/files/upload"
