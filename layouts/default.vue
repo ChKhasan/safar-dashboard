@@ -354,6 +354,14 @@ export default {
             edit: "/partners",
             show: this.checkShow("partners"),
           },
+          {
+            key: "9",
+            name: "Отзывы",
+            to: "/feedbacks",
+            add: "/feedbacks",
+            edit: "/feedbacks",
+            show: this.checkShow("feedbacks"),
+          },
         ],
       },
       {
