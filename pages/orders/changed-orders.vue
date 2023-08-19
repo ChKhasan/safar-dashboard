@@ -17,11 +17,20 @@
           <div class="prodduct-list-header-grid w-100 align-items-center">
             <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
             <div class="input status-select w-100">
-              <a-select v-model="secondCity">
-                <a-select-option v-for="city in cities" :key="city">
-                  {{ city }}
-                </a-select-option>
-              </a-select>
+              <a-form-model-item
+                class="form-item mb-0"
+                :class="{ 'select-placeholder': !value }"
+              >
+                <a-select v-model="value" placeholder="Услуга">
+                  <a-select-option
+                    v-for="service in services"
+                    :key="service?.id"
+                    placeholder="good"
+                  >
+                    {{ service?.name?.ru }}
+                  </a-select-option>
+                </a-select>
+              </a-form-model-item>
             </div>
             <a-button
               type="primary"
@@ -143,6 +152,7 @@ export default {
   mixins: [orderColumns, global, authAccess],
   data() {
     return {
+      services: [],
       provinceData,
       cityData,
       cities: cityData[provinceData[0]],
@@ -161,9 +171,25 @@ export default {
       },
     };
   },
-  mounted() {
-    this.getFirstData("/orders/changed-orders", "__GET_ORDERS");
+  async mounted() {
+    this.__GET_SERVICES();
     this.checkAllActions("orders");
+    if (
+      !Object.keys(this.$route.query).includes("page") ||
+      !Object.keys(this.$route.query).includes("per_page")
+    ) {
+      await this.$router.replace({
+        path: "/orders/changed-orders",
+        query: {
+          page: this.params.page,
+          per_page: this.params.pageSize,
+          is_edited: 1,
+        },
+      });
+    }
+    this.__GET_ORDERS();
+    this.current = Number(this.$route.query.page);
+    this.params.pageSize = Number(this.$route.query.per_page);
   },
   methods: {
     changeSearch(val) {
@@ -220,10 +246,29 @@ export default {
     indexPage(current_page, per_page) {
       return (current_page * 1 - 1) * per_page + 1;
     },
+    async __GET_SERVICES() {
+      const data = await this.$store.dispatch("fetchServices/getServices");
+      this.services = data?.services.map((item, index) => {
+        return {
+          ...item,
+          key: index + 1,
+        };
+      });
+    },
   },
   watch: {
     async current(val) {
       this.changePagination(val, "/orders/canceled-orders", "__GET_ORDERS");
+    },
+    async value(val) {
+      if (val) {
+        if (this.$route.query?.service != val)
+          await this.$router.replace({
+            path: "/orders/canceled-orders",
+            query: { ...this.$route.query, service: val },
+          });
+        if (val == this.$route.query.service) this.__GET_ORDERS();
+      }
     },
   },
   components: { TitleBlock, SearchInput, OrderBtns },
