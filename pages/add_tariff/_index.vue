@@ -55,14 +55,17 @@
               >
                 <a-input v-model="form.name[item.index]" placeholder="Название..." />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3 required inner" label="Подзаголовок">
-                <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок..." />
+              <a-form-model-item
+                class="form-item mb-3 required inner"
+                label="Подзаголовок"
+              >
+                <a-input
+                  v-model="form.subtitle[item.index]"
+                  placeholder="Подзаголовок..."
+                />
               </a-form-model-item>
             </div>
-            <a-form-model-item
-              class="form-item mb-3 inner"
-              label="Описание"
-            >
+            <a-form-model-item class="form-item mb-3 inner" label="Описание">
               <quill-editor
                 class="product-editor"
                 :options="editorOption"
@@ -244,7 +247,7 @@
                 <div class="grid-3-with-2delete">
                   <a-form-model-item class="form-item inner mb-3">
                     <a-input
-                      v-model="price.name"
+                      v-model="price.name[item.index]"
                       placeholder="Введите параметр (текст)"
                     />
                   </a-form-model-item>
@@ -737,7 +740,10 @@ export default {
         prices: [
           {
             id: 999,
-            name: "",
+            name: {
+              ru: "",
+              uz: "",
+            },
             price: null,
           },
         ],
@@ -809,10 +815,10 @@ export default {
           label: "O'zbek",
           index: "uz",
         },
-        {
-          label: "English",
-          index: "en",
-        },
+        // {
+        //   label: "English",
+        //   index: "en",
+        // },
       ],
       columns,
       rules: {
@@ -890,8 +896,8 @@ export default {
           if (
             item.price == null ||
             item.price == "" ||
-            item.name == null ||
-            item.name == ""
+            item.name.ru == null ||
+            item.name.ru == ""
           )
             priceRequired.push(item);
         });
@@ -947,7 +953,10 @@ export default {
     // },
     addPrices() {
       this.form.prices.push({
-        name: "",
+        name: {
+          ru: "",
+          uz: "",
+        },
         price: null,
         id: Math.max(...this.form.prices.map((o) => o.id)) + 1,
       });
@@ -997,7 +1006,10 @@ export default {
       this.form.prices = [
         {
           id: 999,
-          name: "",
+          name: {
+            ru: "",
+            uz: "",
+          },
           price: null,
         },
       ];
