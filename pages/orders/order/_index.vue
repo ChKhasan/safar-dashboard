@@ -244,6 +244,7 @@
     >
       <div class="d-flex flex-column">
         <a-calendar
+          v-model="targetTicket.date"
           mode="month"
           :disabled-date="disabledDate"
           @change="changeCalendar"
