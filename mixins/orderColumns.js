@@ -21,6 +21,14 @@ export default {
           key: "orders",
         },
         {
+          title: "Время начала",
+          dataIndex: "date_of_adoption",
+          scopedSlots: { customRender: "date_of_adoption" },
+          className: "column-name",
+          key: "date_of_adoption",
+          customRender: (text) => text ? text:'----'
+        },
+        {
           title: "сумма",
           dataIndex: "amount",
           scopedSlots: { customRender: "amount" },
