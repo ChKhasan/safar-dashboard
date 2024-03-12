@@ -54,7 +54,7 @@
           <span to="/orders/1232/details" slot="client" slot-scope="text" align="center">
             {{ text }}
           </span>
-          <a slot="amount" slot-scope="text">${{ text }}</a>
+          <a slot="amount" slot-scope="text">{{ text }}</a>
           <span slot="orders" slot-scope="text">{{
             text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
           }}</span>
