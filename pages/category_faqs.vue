@@ -255,7 +255,7 @@ export default {
       faqs: [],
       rules: {
         title: {
-          ru: [{ required: true, message: "This field is required", trigger: "change" }],
+          ru: [{ required: true, message: "This field is required", trigger: "blur" }],
         },
       },
       form: {
@@ -281,6 +281,7 @@ export default {
             this.__POST_FAQS(this.form);
           }
         } else {
+          this.formTab = 'ru'
           return false;
         }
       });

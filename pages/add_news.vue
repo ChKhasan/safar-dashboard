@@ -49,9 +49,9 @@
               >
                 <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
               </a-form-model-item>
-              <a-form-model-item class="form-item mb-3" label="Подзаголовок">
+              <!-- <a-form-model-item class="form-item mb-3" label="Подзаголовок">
                 <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок" />
-              </a-form-model-item>
+              </a-form-model-item> -->
               <a-form-model-item class="form-item mb-3" label="Описание">
                 <quill-editor
                   v-model="form.desc[item.index]"

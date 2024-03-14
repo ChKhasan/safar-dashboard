@@ -155,7 +155,7 @@
               @preview="handlePreview"
               @change="handleChange"
             >
-              <div v-if="fileList.length < 8">
+              <div >
                 <a-icon type="plus" />
                 <div class="ant-upload-text">Загрузить</div>
               </div>
