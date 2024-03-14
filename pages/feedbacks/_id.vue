@@ -1,6 +1,6 @@
 <template lang="html">
   <div class="posts">
-    <TitleBlock title="Новости" :breadbrumb="['Главный']" lastLink="Новости">
+    <TitleBlock title="Отзыв" :breadbrumb="['Главный']" lastLink="Отзыв">
       <div class="d-flex">
         <div
           class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
@@ -42,15 +42,15 @@
                 :key="index"
                 v-if="formTab == item.index"
               >
-                <FormTitle title="Новости" />
+                <FormTitle title="Отзыв" />
                 <a-form-model-item
                   class="form-item mb-3"
-                  label="Заголовок"
+                  label="Клиент"
                   prop="name.ru"
                 >
                   <a-input
                     v-model="form.name[item.index]"
-                    placeholder="Заголовок"
+                    placeholder="Клиент"
                     prop="title.ru"
                   />
                 </a-form-model-item>
