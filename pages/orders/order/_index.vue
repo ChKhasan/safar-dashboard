@@ -21,7 +21,7 @@
             <div class="order-grid">
               <div>
                 <div class="card_block main-table px-4 py-4">
-                  <FormTitle title="Данные заказа" />
+                  <FormTitle title="Данные заказа"/>
                   <div class="order-grid-2">
                     <a-form-model-item class="form-item mb-0" label="Дата заказа">
                       <a-input
@@ -31,7 +31,7 @@
                       />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="№ заказa">
-                      <a-input placeholder="№ заказa" v-model="order.id" disabled />
+                      <a-input placeholder="№ заказa" v-model="order.id" disabled/>
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="Сумма">
                       <a-input-number
@@ -72,10 +72,10 @@
                 </div>
 
                 <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
-                  <FormTitle title="Клиент" />
+                  <FormTitle title="Клиент"/>
                   <div class="order-client-grid-3">
                     <a-form-model-item class="form-item mb-0" label="ID клиента">
-                      <a-input placeholder="ID" v-model="order.client.id" disabled />
+                      <a-input placeholder="ID" v-model="order.client.id" disabled/>
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="Имя Клиента">
                       <a-input
@@ -102,7 +102,7 @@
                   </div>
                 </div>
                 <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
-                  <FormTitle title="Описание" />
+                  <FormTitle title="Описание"/>
                   <div class="">
                     <a-form-model-item class="form-item mb-0">
                       <quill-editor
@@ -115,7 +115,7 @@
                   </div>
                 </div>
                 <div class="mt-5">
-                  <FormTitle title="Билеты" />
+                  <FormTitle title="Билеты"/>
                 </div>
                 <div
                   class="order-bilets"
@@ -127,7 +127,7 @@
                       <h5>{{ orderIn?.service?.name?.ru }}</h5>
                       <div class="d-flex">
                         <span class="bilet-card-header-text"
-                          >Номер билета:
+                        >Номер билета:
                           <p>{{ orderIn.id }}</p></span
                         >
                         <div class="column-btns">
@@ -191,7 +191,7 @@
               </div>
               <div>
                 <div class="card_block main-table px-4 py-4">
-                  <FormTitle title="Параметры" />
+                  <FormTitle title="Параметры"/>
 
                   <a-form-model-item
                     class="form-item mb-3 status-style"
@@ -215,7 +215,13 @@
                   </a-button>
                   <a-form-model-item class="form-item mb-3 mt-3" label="Принял оператор">
                     <a-input
+                      v-if="order.user?.name"
                       v-model="order.user.name"
+                      placeholder="Принял оператор"
+                      disabled
+                    />
+                    <a-input
+                      v-else
                       placeholder="Принял оператор"
                       disabled
                     />
@@ -252,7 +258,7 @@
         >
           <ul slot="dateCellRender" slot-scope="value" class="events">
             <li v-for="item in getListData(value)" :key="item.content">
-              <a-badge :status="item.type" :text="item.content" />
+              <a-badge :status="item.type" :text="item.content"/>
             </li>
           </ul>
           <template slot="monthCellRender" slot-scope="value">
@@ -602,9 +608,9 @@ export default {
     moment,
     downloadItem(url) {
       this.$axios
-        .$get(url, { responseType: "blob" })
+        .$get(url, {responseType: "blob"})
         .then((response) => {
-          const blob = new Blob([response.data], { type: "application/pdf" });
+          const blob = new Blob([response.data], {type: "application/pdf"});
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
           link.download = "Safar park ticket";
@@ -616,7 +622,7 @@ export default {
         });
     },
     onSubmit() {
-      this.__EDIT_CATEGORIES({ status: this.statusValue });
+      this.__EDIT_CATEGORIES({status: this.statusValue});
     },
     handleOk() {
       this.visible = false;
@@ -673,12 +679,14 @@ export default {
         this.order.created_at = moment(data?.order?.created_at).format(
           "Do MMMM. YYYY hh:mm"
         );
-        this.order.user.created_at = moment(data?.order?.user?.created_at).format(
-          "Do MMMM. YYYY hh:mm"
-        );
-        this.spinning = false;
+        if (this.order.user)
+          this.order.user.created_at = moment(data?.order?.user?.created_at).format(
+            "Do MMMM. YYYY hh:mm"
+          );
       } catch (e) {
         this.statusFunc(e);
+      } finally {
+        this.spinning = false;
       }
     },
     async __GET_EMPTY_DATE(data) {
@@ -711,31 +719,36 @@ export default {
       }
     },
   },
-  components: { TitleBlock, FormTitle, BiletCard },
+  components: {TitleBlock, FormTitle, BiletCard},
 };
 </script>
 <style lang="css">
 @import "../../../assets/css/pages/order.css";
+
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-date {
   height: 70px !important;
 }
+
 .posts-grid {
   display: grid;
   grid-gap: 13px;
   grid-template-columns: 5fr 2fr;
 }
+
 .posts .ant-upload.ant-upload-select-picture-card,
 .posts .ant-upload-list-picture-card .ant-upload-list-item,
 .posts .ant-upload-list-picture-card-container {
   width: 100% !important;
   height: 150px !important;
 }
+
 .events {
   list-style: none;
   margin: 0;
   padding: 0;
 }
+
 .events .ant-badge-status {
   overflow: hidden;
   white-space: nowrap;
@@ -743,30 +756,37 @@ export default {
   text-overflow: ellipsis;
   font-size: 12px;
 }
+
 .notes-month {
   text-align: center;
   font-size: 28px;
 }
+
 .notes-month section {
   font-size: 28px;
 }
+
 .ant-fullcalendar-last-month-cell {
   pointer-events: none !important;
   opacity: 0;
 
   background-color: rgba(0, 0, 0, 0.06) !important;
 }
+
 .ant-fullcalendar-next-month-btn-day,
 .ant-fullcalendar-last-month-btn-day {
   pointer-events: none !important;
   opacity: 0;
 }
+
 .ant-fullcalendar td {
   overflow: hidden;
 }
+
 .ant-fullcalendar-disabled-cell {
   background-color: rgba(0, 0, 0, 0.06) !important;
 }
+
 .ant-fullcalendar-fullscreen .ant-fullcalendar-header .ant-radio-group {
   display: none !important;
 }

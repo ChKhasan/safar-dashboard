@@ -4,14 +4,14 @@
     </TitleBlock>
     <div class="container_xl app-container pb-4 pt-5">
       <div class="card_block main-table px-4 pb-3">
-        <OrderBtns />
+        <OrderBtns/>
       </div>
     </div>
     <div class="container_xl app-container pb-5 main-table">
       <div class="card_block main-table px-4 py-4">
         <div class="d-flex justify-content-between align-items-center card_header">
           <div class="prodduct-list-header-grid w-100 align-items-center">
-            <SearchInput placeholder="Поиск" @changeSearch="changeSearch" />
+            <SearchInput placeholder="Поиск" @changeSearch="changeSearch"/>
             <div class="input status-select w-100">
               <a-form-model-item
                 class="form-item mb-0"
@@ -35,7 +35,8 @@
               style="height: 38px"
             >
               <a-icon type="reload"
-            /></a-button>
+              />
+            </a-button>
             <!-- <a-button
               type="primary"
               class="d-flex align-items-center justify-content-center"
@@ -56,15 +57,16 @@
           </span>
           <a slot="amount" slot-scope="text">{{ text }}</a>
           <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
+          <span slot="date_of_adoption" slot-scope="text">{{ closestDate(text) }}</span>
           <span slot="orders" slot-scope="text">{{
-            text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
-          }}</span>
+              text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
+            }}</span>
           <span slot="client" slot-scope="text" class="column-client">{{
-            text?.name ? text?.name : "----"
-          }}</span>
+              text?.name ? text?.name : "----"
+            }}</span>
           <span slot="dataAdd" slot-scope="text">{{
-            moment(text?.created_at).format("DD/MM/YYYY")
-          }}</span>
+              moment(text?.created_at).format("DD/MM/YYYY HH:mm:ss")
+            }}</span>
           <span slot="customTitle"></span>
 
           <span
@@ -115,7 +117,7 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-              >{{ item.label }}
+            >{{ item.label }}
             </a-select-option>
           </a-select>
           <a-pagination
@@ -160,27 +162,46 @@ export default {
       },
     };
   },
+
   mounted() {
     this.getFirstData("/orders/all-orders", "__GET_ORDERS");
     this.__GET_SERVICES();
     this.checkAllActions("orders");
   },
   methods: {
+    closestDate(orders) {
+      const today = new Date();
+      const todayTimestamp = today.getTime();
+      let closest = null;
+      let minDifference = Infinity;
+
+      orders.map(item => new Date(item?.date)).forEach(date => {
+        const dateTimestamp = date.getTime();
+        const difference = Math.abs(dateTimestamp - todayTimestamp);
+        if (difference < minDifference) {
+          minDifference = difference;
+          closest = date;
+        }
+      });
+
+      return moment(closest).format('YYYY-MM-DD hh:mm:ss');
+    },
     changeSearch(val) {
       this.search = val.target.value;
     },
     moment,
-    deleteAction(id) {},
+    deleteAction(id) {
+    },
     async clearQuery(val) {
       this.value = "";
-      const query = { ...this.$route.query, page: 1 };
+      const query = {...this.$route.query, page: 1};
       this.current = 1;
       delete query.search;
       delete query.service;
       if (this.$route.query?.search || this.$route.query?.service) {
         await this.$router.replace({
           path: "/orders/all-orders",
-          query: { ...query },
+          query: {...query},
         });
         this.__GET_ORDERS();
       }
@@ -191,7 +212,7 @@ export default {
         if (this.$route.query?.search != val.target.value)
           await this.$router.replace({
             path: "/orders/all-orders",
-            query: { ...this.$route.query, search: val.target.value },
+            query: {...this.$route.query, search: val.target.value},
           });
         if (val.target.value == this.$route.query.search) this.__GET_ORDERS();
       } else if (val.target.value.length == 0) {
@@ -239,13 +260,13 @@ export default {
         if (this.$route.query?.service != val)
           await this.$router.replace({
             path: "/orders/all-orders",
-            query: { ...this.$route.query, service: val },
+            query: {...this.$route.query, service: val},
           });
         if (val == this.$route.query.service) this.__GET_ORDERS();
       }
     },
   },
-  components: { TitleBlock, SearchInput, OrderBtns },
+  components: {TitleBlock, SearchInput, OrderBtns},
 };
 </script>
 <style lang="css">

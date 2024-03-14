@@ -62,12 +62,13 @@
           <span slot="orders" slot-scope="text">{{
             text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
           }}</span>
+          <span slot="date_of_adoption" slot-scope="text">{{ closestDate(text) }}</span>
           <span slot="orderId" slot-scope="text">#{{ text?.id }}</span>
           <span slot="client" slot-scope="text" class="column-client">{{
             text?.name ? text?.name : "----"
           }}</span>
           <span slot="dataAdd" slot-scope="text">{{
-            moment(text?.created_at).format("DD/MM/YYYY")
+            moment(text?.created_at).format("DD/MM/YYYY HH:mm:ss")
           }}</span>
           <span slot="customTitle"></span>
 
@@ -186,6 +187,23 @@ export default {
     this.params.pageSize = Number(this.$route.query.per_page);
   },
   methods: {
+    closestDate(orders) {
+      const today = new Date();
+      const todayTimestamp = today.getTime();
+      let closest = null;
+      let minDifference = Infinity;
+
+      orders.map(item => new Date(item?.date)).forEach(date => {
+        const dateTimestamp = date.getTime();
+        const difference = Math.abs(dateTimestamp - todayTimestamp);
+        if (difference < minDifference) {
+          minDifference = difference;
+          closest = date;
+        }
+      });
+
+      return moment(closest).format('YYYY-MM-DD hh:mm:ss');
+    },
     changeSearch(val) {
       this.search = val.target.value;
     },

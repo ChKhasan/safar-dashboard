@@ -22,17 +22,17 @@ export default {
         },
         {
           title: "Время начала",
-          dataIndex: "date_of_adoption",
+          dataIndex: "orders",
           scopedSlots: { customRender: "date_of_adoption" },
           className: "column-name",
           key: "date_of_adoption",
-          customRender: (text) => text ? text:'----'
         },
         {
           title: "сумма",
           dataIndex: "amount",
           scopedSlots: { customRender: "amount" },
           className: "column-name",
+          customRender: (price) => Number(price)?.toLocaleString(),
           key: "amount",
         },
         {
