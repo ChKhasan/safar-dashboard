@@ -52,7 +52,9 @@
                     v-model="form.title[item.index]"
                     placeholder="Заголовок"
                     prop="title.ru"
+                    :maxLength="maxLength"
                   />
+                  <span class="text-count">{{maxLength}}/{{ maxLength - form.title[item.index].length }}</span>
                 </a-form-model-item>
                 <!-- <a-form-model-item class="form-item mb-3" label="Подзаголовок">
                   <a-input
@@ -137,6 +139,7 @@ export default {
   },
   data() {
     return {
+      maxLength: 100,
       delayTime: 0,
       spinning: false,
       headers: {
@@ -333,5 +336,12 @@ export default {
 .posts .ant-upload-list-picture-card-container {
   width: 100% !important;
   height: 150px !important;
+}
+.text-count {
+  position: absolute;
+  bottom: -7px;
+  right: 10px;
+  background: #fff;
+  font-size: 12px;
 }
 </style>

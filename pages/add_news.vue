@@ -47,7 +47,8 @@
                 label="Заголовок"
                 :prop="item.index == 'ru' ? 'title.ru' : ''"
               >
-                <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
+                <a-input v-model="form.title[item.index]" placeholder="Заголовок" :maxLength="maxLength"/>
+                <span class="text-count">{{maxLength}}/{{ maxLength - form.title[item.index].length }}</span>
               </a-form-model-item>
               <!-- <a-form-model-item class="form-item mb-3" label="Подзаголовок">
                 <a-input v-model="form.subtitle[item.index]" placeholder="Подзаголовок" />
@@ -126,6 +127,7 @@ export default {
   },
   data() {
     return {
+      maxLength: 100,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
@@ -287,5 +289,12 @@ export default {
 .posts .ant-upload-list-picture-card-container {
   width: 100% !important;
   height: 150px !important;
+}
+.text-count {
+  position: absolute;
+  bottom: -7px;
+  right: 10px;
+  background: #fff;
+  font-size: 12px;
 }
 </style>
