@@ -75,6 +75,69 @@
                   v-model="form.desc[item.index]"
                 />
               </a-form-model-item>
+              <a-form-model-item class="form-item mb-0 pb-0" label="Добавить статистику">
+                <div class="mt-3 statistic-grid">
+                  <div v-for="statistic in form.statistics" class="d-flex">
+                    <div class="clearfix">
+                      <a-upload
+                        action="https://api.safarpark.uz/api/files/upload"
+                        list-type="picture-card"
+                        :headers="headers"
+                        :file-list="statistic.statisticFile"
+                        @preview="handlePreview"
+                        @change="
+                          ($event) => handleChangeStatistic($event, statistic.indexId)
+                        "
+                      >
+                        <div v-if="statistic.statisticFile.length < 1">
+                          <a-icon type="plus" />
+                          <div class="ant-upload-text">Загрузить</div>
+                        </div>
+                      </a-upload>
+                      <a-modal
+                        :visible="previewVisible"
+                        :footer="null"
+                        @cancel="handleCancel"
+                      >
+                        <img alt="example" style="width: 100%" :src="previewImage" />
+                      </a-modal>
+                    </div>
+                    <div class="d-flex flex-column justify-content-between w-100">
+                      <a-form-model-item class="form-item mb-3">
+                        <a-input
+                          v-model="statistic.number[item.index]"
+                          placeholder="Количество статистики"
+                        />
+                      </a-form-model-item>
+                      <a-form-model-item class="form-item mb-3">
+                        <a-input
+                          v-model="statistic.name[item.index]"
+                          placeholder="Название"
+                        />
+                      </a-form-model-item>
+                    </div>
+                  </div>
+                </div>
+              </a-form-model-item>
+             
+              <div class="clearfix">
+                <a-upload
+                  action="https://api.safarpark.uz/api/files/upload"
+                  list-type="picture-card"
+                  :file-list="form.fileListStat"
+                  :headers="headers"
+                  @preview="handlePreview"
+                  @change="handleChangeStat"
+                >
+                  <div v-if="form.fileListStat.length < 4">
+                    <a-icon type="plus" />
+                    <div class="ant-upload-text">Загрузить</div>
+                  </div>
+                </a-upload>
+                <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+                  <img alt="example" style="width: 100%" :src="previewImage" />
+                </a-modal>
+              </div>
             </div>
           </div>
           <div class="container_xl app-container">
@@ -364,7 +427,7 @@
             </div>
           </div>
 
-          <div class="container_xl app-container d-flex flex-column mt-4">
+          <!-- <div class="container_xl app-container d-flex flex-column mt-4">
             <div class="form_tab">
               <div>
                 <span
@@ -428,6 +491,7 @@
                   </div>
                 </div>
               </a-form-model-item>
+             
               <div class="clearfix">
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
@@ -448,7 +512,7 @@
                 </a-modal>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </a-spin>
     </a-form-model>
@@ -503,14 +567,7 @@ const columns = [
 ];
 
 const data = [
-  {
-    key: "1",
-    name: "Воскресенье",
-    time: 1,
-    id: 1,
-    address: "mavjud",
-    tags: "mavjud",
-  },
+ 
   {
     key: "2",
     name: "Понедельник",
@@ -556,6 +613,14 @@ const data = [
     name: "Суббота",
     time: 7,
     id: 7,
+    address: "mavjud",
+    tags: "mavjud",
+  },
+  {
+    key: "1",
+    name: "Воскресенье",
+    time: 1,
+    id: 1,
     address: "mavjud",
     tags: "mavjud",
   },

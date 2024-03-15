@@ -168,6 +168,7 @@
                     <div v-if="fileGalleries.length < 50">
                       <a-icon type="plus" />
                       <div class="ant-upload-text">Загрузить</div>
+                      <p class="ant-upload-size">(1440px x 1080px)</p>
                     </div>
                   </a-upload>
                   <a-modal
@@ -253,7 +254,17 @@
                 :key="moment.indexId"
               >
                 <a-form-model-item class="form-item mb-3">
-                  <a-input v-model="moment.title[item.index]" placeholder="Text" />
+                  <a-input
+                    class="max-width-input"
+                    v-model="moment.title[item.index]"
+                    placeholder="Text"
+                    :maxLength="maxWidthText"
+                  />
+                  <span class="text-count"
+                    >{{ maxWidthText }}/{{
+                      maxWidthText - moment.title[item.index].length
+                    }}</span
+                  >
                 </a-form-model-item>
                 <div class="d-flex align-items-start">
                   <div
@@ -263,7 +274,7 @@
                   ></div>
                 </div>
               </div>
-              <div class="create-inner-variant mt-4" @click="addMoments">
+              <div class="create-inner-variant mt-4" @click="addMoments" v-if="form.moments.length < 3">
                 <span v-html="plusIcon"> </span>
                 Добавить
               </div>
@@ -399,9 +410,19 @@
                     />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-0" label="Цена услуг">
-                    <a-input
+                    <a-input-number
                       :max-length="8"
                       v-model="service.price"
+                      :formatter="
+                      (value) =>
+                        `${value.replace(/[^0-9.]/g, '')}`.replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ' '
+                        )
+                    "
+                    :parser="
+                      (value) => value.replace(/[^0-9.]/g, '').replace(/\$\s?|( *)/g, '')
+                    "
                       placeholder="Service price"
                     />
                   </a-form-model-item>
@@ -784,6 +805,7 @@ export default {
   mixins: [status, authAccess],
   data() {
     return {
+      maxWidthText: 150,
       delayTime: 0,
       spinning: false,
       headers: {
@@ -1520,4 +1542,18 @@ export default {
 <style lang="css">
 @import "../../assets/css/pages/services.css";
 @import "../../assets/css/pages/tariff.css";
+.ant-upload-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.text-count {
+  position: absolute;
+  bottom: -7px;
+  right: 10px;
+  background: #fff;
+  font-size: 12px;
+}
+.max-width-input {
+  padding-right: 44px !important;
+}
 </style>

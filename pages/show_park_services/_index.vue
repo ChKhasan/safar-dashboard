@@ -174,6 +174,7 @@
                     <div v-if="fileGalleries.length < 1">
                       <a-icon type="plus" />
                       <div class="ant-upload-text">Загрузить</div>
+                      <p class="ant-upload-size">(1440px x 1080px)</p>
                     </div>
                   </a-upload>
                   <a-modal
@@ -1265,4 +1266,8 @@ export default {
 <style lang="css">
 @import "../../assets/css/pages/services.css";
 @import "../../assets/css/pages/tariff.css";
+.ant-upload-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
 </style>

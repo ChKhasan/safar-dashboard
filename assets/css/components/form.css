@@ -40,7 +40,7 @@
 .form-item input,
 .form-item .ant-select-selection {
   background: #fff;
-  padding: 10px 13px !important;
+  padding: 10px 13px;
   border: 1px solid #e4e6ef;
   border-radius: 6.175px;
   font-family: "Inter", sans-serif;

@@ -43,6 +43,9 @@
                 @change="onChange"
                 :format="dateFormat"
                 v-model:value="calendarDate"
+                :locale="locale"
+                :weekStart="2"
+                format="YYYY-MM-DD"
               />
               <a-button
                 type="primary"
@@ -174,6 +177,7 @@ export default {
         new Date().getDate() + 14
       ),
       calendarDate: [],
+ 
       dateFormat: "DD/MM/YYYY",
       services: [],
       calendar: [],
@@ -226,6 +230,15 @@ export default {
     },
   },
   methods: {
+    getStartDayLocaleData() {
+      const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const weekdaysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      const firstDayOfWeek = weekdays.shift();
+      weekdays.push(firstDayOfWeek);
+      const firstDayShort = weekdaysShort.shift();
+      weekdaysShort.push(firstDayShort);
+      return { week: { weekdays, weekdaysShort } };
+    },
     moment,
     toBooked(orders) {
       this.$router.push({

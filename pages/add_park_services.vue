@@ -168,6 +168,7 @@
                   <div v-if="fileGalleries.length < 50">
                     <a-icon type="plus" />
                     <div class="ant-upload-text">Загрузить</div>
+                    <p class="ant-upload-size">(1440px x 1080px)</p>
                   </div>
                 </a-upload>
                 <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -227,10 +228,7 @@
                   </div>
                   <div class="d-flex flex-column justify-content-between w-100">
                     <a-form-model-item class="form-item mb-3">
-                      <a-input
-                        v-model="card.name[item.index]"
-                        placeholder="Название"
-                      />
+                      <a-input v-model="card.name[item.index]" placeholder="Название" />
                     </a-form-model-item>
                     <!-- <a-form-model-item class="form-item mb-3">
                       <a-input
@@ -251,8 +249,18 @@
               v-for="(moment, index) in form.moments"
               :key="moment.indexId"
             >
-              <a-form-model-item class="form-item mb-3">
-                <a-input v-model="moment.title[item.index]" placeholder="Текст" />
+              <a-form-model-item class="form-item mb-3 position-relative">
+                <a-input
+                  class="max-width-input"
+                  v-model="moment.title[item.index]"
+                  :maxLength="maxWidthText"
+                  placeholder="Текст"
+                />
+                <span class="text-count"
+                  >{{ maxWidthText }}/{{
+                    maxWidthText - moment.title[item.index].length
+                  }}</span
+                >
               </a-form-model-item>
               <div class="d-flex align-items-start">
                 <div
@@ -262,7 +270,11 @@
                 ></div>
               </div>
             </div>
-            <div class="create-inner-variant mt-4" @click="addMoments">
+            <div
+              class="create-inner-variant mt-4"
+              @click="addMoments"
+              v-if="form.moments.length < 3"
+            >
               <span v-html="plusIcon"> </span>
               Добавить
             </div>
@@ -324,10 +336,7 @@
                 </div>
                 <div class="d-flex flex-column justify-content-between w-100">
                   <a-form-model-item class="form-item mb-3">
-                    <a-input
-                      v-model="statistic.name[item.index]"
-                      placeholder="Число"
-                    />
+                    <a-input v-model="statistic.name[item.index]" placeholder="Число" />
                   </a-form-model-item>
                   <a-form-model-item class="form-item mb-3">
                     <a-input
@@ -378,10 +387,20 @@
                   />
                 </a-form-model-item>
                 <a-form-model-item class="form-item mb-0" label="Цена услуг">
-                  <a-input
+                  <a-input-number
                     :max-length="8"
-                    :value="service.price"
+                    :value="service.price"  
                     v-model="service.price"
+                    :formatter="
+                      (value) =>
+                        `${value.replace(/[^0-9.]/g, '')}`.replace(
+                          /\B(?=(\d{3})+(?!\d))/g,
+                          ' '
+                        )
+                    "
+                    :parser="
+                      (value) => value.replace(/[^0-9.]/g, '').replace(/\$\s?|( *)/g, '')
+                    "
                     placeholder="Service price"
                   />
                 </a-form-model-item>
@@ -554,7 +573,10 @@
               <div>
                 <div class="grid-with-btn">
                   <a-form-model-item class="form-item mb-3" label="Пользователь">
-                    <a-input v-model="feedback.name[item.index]" placeholder="Пользователь..." />
+                    <a-input
+                      v-model="feedback.name[item.index]"
+                      placeholder="Пользователь..."
+                    />
                   </a-form-model-item>
                   <div class="d-flex align-items-center">
                     <div
@@ -736,6 +758,7 @@ export default {
   mixins: [status, authAccess],
   data() {
     return {
+      maxWidthText: 150,
       title: "Добавить",
       formTabModal: "ru",
       formFaq: {
@@ -1330,4 +1353,18 @@ export default {
 </script>
 <style lang="css">
 @import "../assets/css/pages/services.css";
+.text-count {
+  position: absolute;
+  bottom: -7px;
+  right: 10px;
+  background: #fff;
+  font-size: 12px;
+}
+.ant-upload-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
+.max-width-input {
+  padding-right: 44px !important;
+}
 </style>

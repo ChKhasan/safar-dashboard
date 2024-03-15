@@ -137,6 +137,7 @@
             >
               <a-input v-model="form.title[item.index]" placeholder="Заголовок" />
             </a-form-model-item>
+
             <a-form-model-item class="form-item mb-3" label="Описание">
               <quill-editor
                 class="product-editor mt-1"
@@ -155,9 +156,10 @@
               @preview="handlePreview"
               @change="handleChange"
             >
-              <div >
+              <div>
                 <a-icon type="plus" />
                 <div class="ant-upload-text">Загрузить</div>
+                <p class="ant-upload-size">(1440px x 1080px)</p>
               </div>
             </a-upload>
             <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
@@ -261,6 +263,7 @@ export default {
   mixins: [status, global, authAccess],
   data() {
     return {
+      maxLength: 40,
       headers: {
         authorization: `Bearer ${localStorage.getItem("auth_token")}`,
       },
@@ -485,11 +488,25 @@ export default {
         this.emptyData();
       }
     },
+    'form.desc.uz'(newVal, oldVal) {
+      if (newVal?.length > this.maxLength) {
+        this.form.desc.uz = oldVal; 
+      }
+    },
+    'form.desc.ru'(newVal, oldVal) {
+      if (newVal?.length > this.maxLength) {
+        this.form.desc.ru = oldVal; 
+      }
+    },
   },
   components: { TitleBlock, SearchInput },
 };
 </script>
 <style lang="css">
+.ant-upload-size {
+  font-size: 12px;
+  white-space: nowrap;
+}
 .prodduct-list-header-grid {
   display: grid;
   grid-template-columns: 3fr 2fr 40px;
