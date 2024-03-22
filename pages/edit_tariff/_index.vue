@@ -119,7 +119,7 @@
                   </div>
                 </div>
               </a-form-model-item>
-             
+
               <div class="clearfix">
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
@@ -196,16 +196,16 @@
                   </div>
                 </span>
                 <span slot="id" slot-scope="text">
-                  <span
-                    >Круглосутоно
-                    <a-checkbox
-                      class="mx-3"
-                      v-if="form.schedule.length > 0"
-                      :checked="form.schedule[text - 1][0].disabled"
-                      @change="($event) => onChangeDay($event, text - 1)"
-                    >
-                    </a-checkbox
-                  ></span>
+<!--                  <span-->
+<!--                    >Круглосутоно-->
+<!--                    <a-checkbox-->
+<!--                      class="mx-3"-->
+<!--                      v-if="form.schedule.length > 0"-->
+<!--                      :checked="form.schedule[text - 1][0].disabled"-->
+<!--                      @change="($event) => onChangeDay($event, text - 1)"-->
+<!--                    >-->
+<!--                    </a-checkbox-->
+<!--                  ></span>-->
                 </span>
               </a-table>
             </div>
@@ -491,7 +491,7 @@
                   </div>
                 </div>
               </a-form-model-item>
-             
+
               <div class="clearfix">
                 <a-upload
                   action="https://api.safarpark.uz/api/files/upload"
@@ -567,7 +567,7 @@ const columns = [
 ];
 
 const data = [
- 
+
   {
     key: "2",
     name: "Понедельник",
@@ -938,6 +938,12 @@ export default {
         this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
           (item) => item.id != id
         );
+      } else {
+        this.form.schedule[arrayId][0] = {
+          id: 1,
+          start: "",
+          end: "",
+        }
       }
       this.form.schedule = [...this.form.schedule];
     },

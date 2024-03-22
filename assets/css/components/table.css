@@ -46,6 +46,7 @@
   font-style: normal;
   line-height: 18px;
   color: #b5b5c3 !important;
+  word-break: break-all;
 }
 .column-date {
   color: #3699ff !important;

@@ -130,6 +130,7 @@ const columns = [
     key: "message",
     className: "column-subservice",
     scopedSlots: { customRender: "message" },
+    width: '50%'
   },
 
   {
@@ -146,7 +147,7 @@ const columns = [
 export default {
   name: "IndexPage",
   head: {
-    title: "Applications",
+    title: "Приложения",
   },
   mixins: [status, global, authAccess],
   data() {
@@ -200,6 +201,10 @@ export default {
       } catch (e) {
         this.statusFunc(e);
       }
+    },
+  }, watch: {
+    async current(val) {
+      this.changePagination(val, "/applications", "__GET_APPLICATIONS");
     },
   },
   components: { TitleBlock, SearchInput },

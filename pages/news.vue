@@ -136,7 +136,7 @@ const columns = [
     slots: { title: "customTitle" },
     scopedSlots: { customRender: "name" },
     className: "column-name",
-    width: "20%",
+    width: "40%",
     colSpan: 0,
   },
   {

@@ -60,6 +60,46 @@
         </div>
       </div>
     </a-form-model>
+    <a-modal
+      v-model="visible"
+      centered
+      :title="title"
+      :closable="false"
+      width="540px"
+      @ok="handleOk"
+    >
+      <div class="d-flex flex-column">
+        <div class="d-flex flex-column">
+          <a-form-model
+            :model="form"
+            ref="ruleFormPassword"
+            :rules="rules"
+            layout="vertical"
+          >
+            <a-form-model-item class="form-item mb-3" label="Пароль">
+              <a-input type="password" placeholder="******" />
+            </a-form-model-item>
+          </a-form-model>
+        </div>
+      </div>
+      <template slot="footer">
+        <div class="add_modal-footer d-flex justify-content-end">
+          <div
+            class="add-btn add-header-btn add-header-btn-padding btn-light-primary mx-3"
+            @click="handleOk"
+          >
+            Отмена
+          </div>
+          <a-button
+            class="add-btn add-header-btn btn-primary"
+            type="primary"
+            @click="saveData"
+          >
+          Отправить
+          </a-button>
+        </div>
+      </template>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -79,6 +119,7 @@ export default {
   data() {
     return {
       value: [],
+      visible: false,
       rules: {
         message: [
           {
@@ -100,6 +141,9 @@ export default {
     this.__GET_CLIENTS();
   },
   methods: {
+    handleOk() {
+      this.visible = false;
+    },
     onSubmit() {
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
@@ -127,6 +171,10 @@ export default {
     async __POST_MAILING(data) {
       try {
         await this.$store.dispatch("fetchClients/postMailing", data);
+        this.form = {
+          clients: [],
+          message: "",
+        };
         this.notification("success", "success", "Успешно отправлен");
       } catch (e) {
         this.statusFunc(e);

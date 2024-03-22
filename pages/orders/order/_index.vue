@@ -21,7 +21,7 @@
             <div class="order-grid">
               <div>
                 <div class="card_block main-table px-4 py-4">
-                  <FormTitle title="Данные заказа"/>
+                  <FormTitle title="Данные заказа" />
                   <div class="order-grid-2">
                     <a-form-model-item class="form-item mb-0" label="Дата заказа">
                       <a-input
@@ -31,7 +31,7 @@
                       />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="№ заказa">
-                      <a-input placeholder="№ заказa" v-model="order.id" disabled/>
+                      <a-input placeholder="№ заказa" v-model="order.id" disabled />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="Сумма">
                       <a-input-number
@@ -72,10 +72,10 @@
                 </div>
 
                 <div class="card_block main-table px-4 mt-4 py-4" v-if="order.client">
-                  <FormTitle title="Клиент"/>
+                  <FormTitle title="Клиент" />
                   <div class="order-client-grid-3">
                     <a-form-model-item class="form-item mb-0" label="ID клиента">
-                      <a-input placeholder="ID" v-model="order.client.id" disabled/>
+                      <a-input placeholder="ID" v-model="order.client.id" disabled />
                     </a-form-model-item>
                     <a-form-model-item class="form-item mb-0" label="Имя Клиента">
                       <a-input
@@ -102,7 +102,7 @@
                   </div>
                 </div>
                 <div class="card_block main-table px-4 mt-4 py-4" v-if="order.comments">
-                  <FormTitle title="Описание"/>
+                  <FormTitle title="Описание" />
                   <div class="">
                     <a-form-model-item class="form-item mb-0">
                       <quill-editor
@@ -115,19 +115,19 @@
                   </div>
                 </div>
                 <div class="mt-5">
-                  <FormTitle title="Билеты"/>
+                  <FormTitle title="Билеты" />
                 </div>
-                <div
-                  class="order-bilets"
-                  v-for="orderIn in order.orders"
-                  :key="orderIn.id"
-                >
-                  <div class="bilet-card">
+                <div class="order-bilets">
+                  <div
+                    class="bilet-card"
+                    v-for="orderIn in order.orders"
+                    :key="orderIn.id"
+                  >
                     <div class="bilet-card-header">
                       <h5>{{ orderIn?.service?.name?.ru }}</h5>
                       <div class="d-flex">
                         <span class="bilet-card-header-text"
-                        >Номер билета:
+                          >Номер билета:
                           <p>{{ orderIn.id }}</p></span
                         >
                         <div class="column-btns">
@@ -191,7 +191,7 @@
               </div>
               <div>
                 <div class="card_block main-table px-4 py-4">
-                  <FormTitle title="Параметры"/>
+                  <FormTitle title="Параметры" />
 
                   <a-form-model-item
                     class="form-item mb-3 status-style"
@@ -220,13 +220,13 @@
                       placeholder="Принял оператор"
                       disabled
                     />
-                    <a-input
-                      v-else
-                      placeholder="Принял оператор"
-                      disabled
-                    />
+                    <a-input v-else placeholder="Принял оператор" disabled />
                   </a-form-model-item>
-                  <a-form-model-item v-if="order.date_of_adoption" class="form-item mb-3" label="Дата принятия">
+                  <a-form-model-item
+                    v-if="order.date_of_adoption"
+                    class="form-item mb-3"
+                    label="Дата принятия"
+                  >
                     <a-input
                       v-model="order.date_of_adoption"
                       placeholder="Дата принятия"
@@ -258,7 +258,7 @@
         >
           <ul slot="dateCellRender" slot-scope="value" class="events">
             <li v-for="item in getListData(value)" :key="item.content">
-              <a-badge :status="item.type" :text="item.content"/>
+              <a-badge :status="item.type" :text="item.content" />
             </li>
           </ul>
           <template slot="monthCellRender" slot-scope="value">
@@ -351,8 +351,10 @@ import moment from "moment";
 
 export default {
   mixins: [status, authAccess],
-  head: {
-    title: "Новости",
+  head() {
+    return {
+      title: `Заказ №${this.order?.id}`,
+    };
   },
   data() {
     return {
@@ -533,11 +535,12 @@ export default {
       );
     },
     async changeCalendar(e) {
+      console.log(this.order);
       this.currentDay = e;
       this.disabledDays();
       this.__GET_TARIFF_SESSIONS({
         tariff_id: this.targetTicket.tariff.id,
-        date: moment(e).format("YYYY-MM-DD"),
+        date: moment(this.currentDay).format("YYYY-MM-DD"),
         guests_count: this.countSumm(),
       });
     },
@@ -554,7 +557,8 @@ export default {
       await this.disabledDays();
     },
     async editTicket(data) {
-      this.targetTicket = await data;
+      console.log(data);
+      this.targetTicket = await {...data};
       await this.__GET_EMPTY_DATE();
       await this.disabledDays();
       this.visible = true;
@@ -572,7 +576,6 @@ export default {
       } else {
         this.disabledDates = dates;
       }
-      console.log(this.disabledDates);
     },
     getListData(value) {
       let listData;
@@ -608,9 +611,9 @@ export default {
     moment,
     downloadItem(url) {
       this.$axios
-        .$get(url, {responseType: "blob"})
+        .$get(url, { responseType: "blob" })
         .then((response) => {
-          const blob = new Blob([response.data], {type: "application/pdf"});
+          const blob = new Blob([response.data], { type: "application/pdf" });
           const link = document.createElement("a");
           link.href = URL.createObjectURL(blob);
           link.download = "Safar park ticket";
@@ -622,7 +625,7 @@ export default {
         });
     },
     onSubmit() {
-      this.__EDIT_CATEGORIES({status: this.statusValue});
+      this.__EDIT_CATEGORIES({ status: this.statusValue });
     },
     handleOk() {
       this.visible = false;
@@ -674,7 +677,7 @@ export default {
           "fetchOrders/getOrdersById",
           this.$route.params.index
         );
-        this.order = data?.order;
+        this.order = {...data?.order};
         this.statusValue = data?.order?.status;
         this.order.created_at = moment(data?.order?.created_at).format(
           "Do MMMM. YYYY hh:mm"
@@ -704,7 +707,6 @@ export default {
     async __GET_TARIFF_SESSIONS(data1) {
       try {
         const data = await this.$store.dispatch("fetchTariff/getTariffSessions", data1);
-        console.log(data);
         this.sessions = data.sessions;
         this.formModal.session = null;
         if (this.sessions == null) {
@@ -719,11 +721,16 @@ export default {
       }
     },
   },
-  components: {TitleBlock, FormTitle, BiletCard},
+  components: { TitleBlock, FormTitle, BiletCard },
 };
 </script>
 <style lang="css">
 @import "../../../assets/css/pages/order.css";
+.order-bilets {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
 .ant-fullcalendar-fullscreen .ant-fullcalendar-month,
 .ant-fullcalendar-fullscreen .ant-fullcalendar-date {

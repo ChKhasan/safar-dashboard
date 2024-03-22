@@ -143,6 +143,9 @@ import OrderBtns from "../../components/order-btns.vue";
 export default {
   layout: "toolbar",
   mixins: [orderColumns, global, authAccess],
+  head: {
+    title: "Новые заказы",
+  },
   data() {
     return {
       services: [],

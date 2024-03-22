@@ -79,7 +79,7 @@
                   >
                     {{ text }}
                   </span> -->
-                    <a slot="amount" slot-scope="text">${{ text }}</a>
+                    <a slot="amount" slot-scope="text">{{ Number(text).toLocaleString() }}</a>
                     <span slot="orders" slot-scope="text">{{
                       text[0].service?.name?.ru ? text[0].service?.name?.ru : "------"
                     }}</span>

@@ -41,6 +41,18 @@
           <span slot="date" slot-scope="text">{{
             text ? text.replace(/-/g, "/") : "----"
           }}</span>
+          <span
+            slot="is_active"
+            slot-scope="value"
+            class="tags-style"
+            :class="{
+              tag_success: value,
+              tag_rejected: !value,
+            }"
+          >
+            <!-- 'new', 'canceled', 'accepted', 'in_process' -->
+            {{ value ? 'Активный':'Неактивный' }}
+          </span>
           <span slot="service" slot-scope="text">{{
             text?.name?.ru ? text?.name?.ru : "-------"
           }}</span>
@@ -225,7 +237,16 @@ const columns = [
     align: "left",
   },
   {
-    title: "Количество",
+    title: "Статус",
+    dataIndex: "is_active",
+    key: "is_active",
+    slots: { title: "customTitle" },
+    scopedSlots: { customRender: "is_active" },
+    className: "column-tags",
+    align: "left",
+  },
+  {
+    title: "Сумма",
     dataIndex: "amount",
     key: "amount",
     slots: { title: "customTitle" },
@@ -256,10 +277,11 @@ export default {
   name: "IndexPage",
   mixins: [status, global, authAccess],
   head: {
-    title: "F.A.Q",
+    title: "Промо",
   },
   data() {
     return {
+
       editorOption: {
         theme: "snow",
         modules: {

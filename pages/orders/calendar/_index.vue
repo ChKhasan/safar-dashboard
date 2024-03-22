@@ -163,7 +163,9 @@ import moment from "moment";
 export default {
   transitions: 'home',
   mixins: [authAccess,status],
-
+  head: {
+    title: "Календарь",
+  },
   data() {
     return {
       show: false,

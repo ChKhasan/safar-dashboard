@@ -53,7 +53,7 @@
                 label="Название"
                 prop="name.ru"
               >
-                <a-input v-model="form.name[item.index]" placeholder="Название..." />
+                <a-input v-model="form.name[item.index]" placeholder="Название..."/>
               </a-form-model-item>
               <a-form-model-item
                 class="form-item mb-3 required inner"
@@ -90,7 +90,7 @@
                       "
                     >
                       <div v-if="statistic.statisticFile.length < 1">
-                        <a-icon type="plus" />
+                        <a-icon type="plus"/>
                         <div class="ant-upload-text">Загрузить</div>
                       </div>
                     </a-upload>
@@ -99,7 +99,7 @@
                       :footer="null"
                       @cancel="handleCancel"
                     >
-                      <img alt="example" style="width: 100%" :src="previewImage" />
+                      <img alt="example" style="width: 100%" :src="previewImage"/>
                     </a-modal>
                   </div>
                   <div class="d-flex flex-column justify-content-between w-100">
@@ -130,12 +130,12 @@
                   @change="handleChangeStat"
                 >
                   <div v-if="form.fileListStat.length < 4">
-                    <a-icon type="plus" />
+                    <a-icon type="plus"/>
                     <div class="ant-upload-text">Загрузить</div>
                   </div>
                 </a-upload>
                 <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-                  <img alt="example" style="width: 100%" :src="previewImage" />
+                  <img alt="example" style="width: 100%" :src="previewImage"/>
                 </a-modal>
               </div>
             </a-form-model-item>
@@ -171,7 +171,7 @@
                     <span
                       class="d-flex align-items-center"
                       style="margin-left: 3px; margin-right: 3px"
-                      >-</span
+                    >-</span
                     >
                     <input
                       v-model="timePicker.end"
@@ -195,14 +195,14 @@
                 </div>
               </span>
               <span slot="id" slot-scope="text">
-                <span
-                  >Круглосутоно
-                  <a-checkbox
-                    class="mx-3"
-                    @change="($event) => onChangeDay($event, text - 1)"
-                  >
-                  </a-checkbox
-                ></span>
+<!--                <span-->
+<!--                >Круглосутоно-->
+<!--                  <a-checkbox-->
+<!--                    class="mx-3"-->
+<!--                    @change="($event) => onChangeDay($event, text - 1)"-->
+<!--                  >-->
+<!--                  </a-checkbox-->
+<!--                  ></span>-->
               </span>
             </a-table>
           </div>
@@ -227,7 +227,7 @@
             :key="index2"
             v-if="formTab.tariff == item.index"
           >
-            <span class="px-4"><FormTitle title="Добавить цены" /></span>
+            <span class="px-4"><FormTitle title="Добавить цены"/></span>
             <div class="grid-3 px-4">
               <a-form-model-item class="form-item inner mb-3" label="Тип">
                 <a-select :default-value="services[0].value" v-model="form.type">
@@ -545,13 +545,14 @@ function getBase64(file) {
     reader.onerror = (error) => reject(error);
   });
 }
+
 const columns = [
   {
     title: "Календарь",
     dataIndex: "name",
     key: "name",
-    slots: { title: "customTitle" },
-    scopedSlots: { customRender: "name" },
+    slots: {title: "customTitle"},
+    scopedSlots: {customRender: "name"},
     className: "column-name",
     width: "200px",
     fixed: "left",
@@ -561,7 +562,7 @@ const columns = [
     dataIndex: "time",
     key: "time",
     className: "column-times",
-    scopedSlots: { customRender: "time" },
+    scopedSlots: {customRender: "time"},
   },
   {
     title: "Дополнительно",
@@ -569,13 +570,13 @@ const columns = [
     key: "id",
     align: "left",
     dataIndex: "id",
-    scopedSlots: { customRender: "id" },
+    scopedSlots: {customRender: "id"},
     width: "200px",
   },
 ];
 
 const data = [
- 
+
   {
     key: "2",
     name: "Понедельник",
@@ -720,8 +721,8 @@ export default {
         },
       },
       services: [
-        { name: "Tarif", value: "tariff" },
-        { name: "By count", value: "by_count" },
+        {name: "Tarif", value: "tariff"},
+        {name: "By count", value: "by_count"},
         // { name: "By count and tarif", value: "multi" },
       ],
       count: 0,
@@ -862,7 +863,7 @@ export default {
         fileListStat: [],
       },
       bottom: 10,
-      wrapperCol: { span: 14 },
+      wrapperCol: {span: 14},
       xIcon: require("../../assets/svg/x.svg?raw"),
       plusIcon: require("../../assets/svg/plus.svg?raw"),
       infoIcon: require("../../assets/svg/info.svg?raw"),
@@ -891,13 +892,13 @@ export default {
       columns,
       rules: {
         name: {
-          ru: [{ required: true, message: "This field is required", trigger: "change" }],
+          ru: [{required: true, message: "This field is required", trigger: "change"}],
         },
         min_clients: [
-          { required: true, message: "This field is required", trigger: "blur" },
+          {required: true, message: "This field is required", trigger: "blur"},
         ],
         max_clients: [
-          { required: true, message: "This field is required", trigger: "blur" },
+          {required: true, message: "This field is required", trigger: "blur"},
         ],
       },
     };
@@ -947,12 +948,12 @@ export default {
         statistics: this.form.statistics
           .filter((elem) => elem.name.ru || elem.number.ru)
           .map((item) => {
-            const { statisticFile, indexId, ...rest } = item;
+            const {statisticFile, indexId, ...rest} = item;
             return rest;
           }),
       };
       data.schedule = data.schedule.map((item) => {
-        item && item[0] == "" ? [] : item;
+     return item[0] === "" ? [] : item;
       });
       let priceRequired = [];
       if (data.type == "by_count") {
@@ -970,14 +971,14 @@ export default {
             priceRequired.push(item);
         });
       }
-      const { fileListStat, ...rest } = data;
+      const {fileListStat, ...rest} = data;
       this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           priceRequired.length == 0
             ? this.__POST_TARIFF(rest)
             : data.type == "by_count"
-            ? this.notification("error", "Tariff", "Price is required")
-            : this.notification("error", "Tariff", "Price and price text is required");
+              ? this.notification("error", "Tariff", "Price is required")
+              : this.notification("error", "Tariff", "Price and price text is required");
         } else {
           return false;
         }
@@ -1001,10 +1002,18 @@ export default {
       this.data = [...this.data];
     },
     deleteTimePicker(arrayId, id) {
-      if (this.form.schedule[arrayId].length > 1)
+      if (this.form.schedule[arrayId].length > 1) {
         this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
           (item) => item.id != id
         );
+      } else {
+        this.form.schedule[arrayId][0] = {
+          id: 1,
+          start: "",
+          end: "",
+        }
+      }
+
 
       this.form.schedule = [...this.form.schedule];
     },
@@ -1049,7 +1058,7 @@ export default {
       this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
-    handleChangeStatistic({ fileList }, id) {
+    handleChangeStatistic({fileList}, id) {
       const stat = this.form.statistics.find((item) => item.indexId == id);
       stat.statisticFile = fileList;
       if (fileList[0]?.response?.path) {
@@ -1058,7 +1067,7 @@ export default {
         stat.img = [];
       }
     },
-    handleChangeStat({ fileList }) {
+    handleChangeStat({fileList}) {
       this.form.fileListStat = fileList;
       if (fileList[0]?.response?.path) {
         this.form.files = fileList.map((item) => item?.response?.path);
@@ -1088,10 +1097,10 @@ export default {
         this.rules = {
           ...this.rules,
           min_clients: [
-            { required: true, message: "This field is required", trigger: "blur" },
+            {required: true, message: "This field is required", trigger: "blur"},
           ],
           max_clients: [
-            { required: true, message: "This field is required", trigger: "blur" },
+            {required: true, message: "This field is required", trigger: "blur"},
           ],
         };
         this.form.min_clients = "";
@@ -1099,7 +1108,7 @@ export default {
       }
     },
   },
-  components: { TitleBlock, FormTitle },
+  components: {TitleBlock, FormTitle},
 };
 </script>
 <style lang="css">

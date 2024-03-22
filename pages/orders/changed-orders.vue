@@ -151,6 +151,9 @@ const cityData = {
 export default {
   layout: "toolbar",
   mixins: [orderColumns, global, authAccess],
+  head: {
+    title: "Измененные заказы",
+  },
   data() {
     return {
       services: [],
