@@ -150,7 +150,6 @@
                       class="time_picker"
                       style="margin-right: 16px"
                       v-for="(timePicker, ind) in form.schedule[text - 1]"
-                      :class="{ disabledTime: timePicker.disabled }"
                     >
                       <span
                         @click="deleteTimePicker(text - 1, timePicker.id)"
@@ -164,8 +163,6 @@
                         name="time"
                         min="00:00"
                         max="23:59"
-                        :class="{ disabledTime: timePicker.disabled }"
-                        :disabled="timePicker.disabled"
                         pattern="[0-2][0-9]:[0-5][0-9]"
                       />
                       <span
@@ -176,8 +173,6 @@
                       <input
                         v-model="timePicker.end"
                         type="time"
-                        :class="{ disabledTime: timePicker.disabled }"
-                        :disabled="timePicker.disabled"
                         id="time-input"
                         name="time"
                         min="00:00"
@@ -188,7 +183,6 @@
                     <div
                       class="outline-btn time-add-btn"
                       v-if="form.schedule.length > 0"
-                      :class="{ disabledTime: form.schedule[text - 1][0].disabled }"
                       @click="addTimePicker(text - 1)"
                     >
                       <span v-html="plusIcon"> </span>
