@@ -3,7 +3,7 @@
     <div class="calendar-order-card-left">
       <h6>{{ order?.name }}</h6>
       <div class="calendar-order-card-services" v-for="service in order?.data">
-        <span>{{ service?.name }}</span>
+        <span>{{ service?.name?.ru }}</span>
         <p>{{ service?.count }} x</p>
       </div>
     </div>

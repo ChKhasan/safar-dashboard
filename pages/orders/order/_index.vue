@@ -162,7 +162,7 @@
                         :key="index"
                       >
                         <div class="bilet-card-services">
-                          <span>{{ dataIn?.name }}</span>
+                          <span>{{ dataIn?.name?.ru }}</span>
                         </div>
                         <p>
                           <span>{{ dataIn.count }} x </span>

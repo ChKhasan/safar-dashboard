@@ -926,7 +926,7 @@ export default {
         start: "",
         end: "",
       });
-    },
+    }, 
     deleteTimePicker(arrayId, id) {
       if (this.form.schedule[arrayId].length > 1) {
         this.form.schedule[arrayId] = this.form.schedule[arrayId].filter(
