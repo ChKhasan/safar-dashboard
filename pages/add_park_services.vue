@@ -258,7 +258,7 @@
                 />
                 <span class="text-count"
                   >{{ maxWidthText }}/{{
-                    maxWidthText - moment.title[item.index].length
+                    maxWidthText - moment.title[item.index]?.length
                   }}</span
                 >
               </a-form-model-item>
@@ -858,10 +858,10 @@ export default {
           label: "O'zbek",
           index: "uz",
         },
-        {
-          label: "English",
-          index: "en",
-        },
+        // {
+        //   label: "English",
+        //   index: "en",
+        // },
       ],
       editorOption: {
         // Some Quill options...
