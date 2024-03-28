@@ -1025,7 +1025,11 @@ export default {
       this.form.prices = data?.tariff.prices.map((item, index) => {
         return {
           id: 999 + index,
-          name: item.name,
+          name: item.name?.ru ? item.name:{
+            ru: item.name,
+            uz: '',
+            en: ''
+          },
           price: item.price,
         };
       });
